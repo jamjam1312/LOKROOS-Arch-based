@@ -8,7 +8,7 @@ arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Appstore-githubconnection'
 license=('CC0-1.0' 'Apache-2.0' 'MIT' 'GPL-2.0-or-later' 'GPL-3.0-only' 'GPL-3.0-or-later' 'LGPL-3.0-or-later' 'MPL-2.0')
 depends=('python' 'pyside6' 'flatpak')
-makedepends=('python-build' 'python-installer' 'python-wheel')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$_upstream_version.tar.gz::https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v$_upstream_version")
 sha256sums=('1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177')
 

@@ -168,7 +168,7 @@ if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome c
 if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
 if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome center does not expose the app store");
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
-for (const storeInvariant of ["_upstream_version=0.1.0-alpha.3", "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177", "assets/icons/*.svg"]) {
+for (const storeInvariant of ["_upstream_version=0.1.0-alpha.3", "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177", "python-setuptools", "assets/icons/*.svg"]) {
   if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-3 invariant: ${storeInvariant}`);
 }
 
