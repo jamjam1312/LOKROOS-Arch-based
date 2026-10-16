@@ -20,9 +20,9 @@ The `offline` image contains the office and German-language payload. The smaller
 
 ## Downloads
 
-There is no trusted public ISO until the GitHub build has completed successfully. Run the **Build alpha ISO** workflow with `publish_release` enabled; it builds both variants, performs BIOS and UEFI Plasma smoke boots, checks the 4 GiB size limit, and only then creates an alpha prerelease.
+The latest tested download is [LOKRO OS 0.1.0-alpha.12](https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.12). Its GitHub workflow built both variants, performed BIOS and UEFI Plasma smoke boots, checked the 4 GiB size limit, and only then created the alpha prerelease.
 
-Expected release assets:
+Release assets:
 
 - `lokro-os-offline-0.1.0-alpha.12-x86_64.iso` — full offline application payload.
 - `lokro-os-online-0.1.0-alpha.12-x86_64.iso` — smaller image with a minimal offline fallback and optional network downloads.
