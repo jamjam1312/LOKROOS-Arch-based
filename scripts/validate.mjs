@@ -7,7 +7,7 @@ import process from "node:process";
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/(.:)/, "$1")), "..");
 const failures = [];
 const required = [
-  "VERSION", "Makefile", "CONTRIBUTORS.md", "AI_INFO.md", "desktop/README.md", "server/README.md",
+  "VERSION", "Makefile", "CONTRIBUTORS.md", "AI_INFO.md", "AGENTS.md", "desktop/README.md", "server/README.md",
   "design-packs/README.md", "design-packs/design-pack.schema.json",
   "design-packs/org.lokro.monochrome/design.json", "docs/DESIGN_PACKS.md",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
@@ -17,6 +17,7 @@ const required = [
   "vendor/ckbcomp/PKGBUILD",
   "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
+  "packages/lokro-store/PKGBUILD",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.search/metadata.json",
@@ -89,7 +90,7 @@ for (const [file, packages] of Object.entries(packageSets)) {
   const dupes = packages.filter((x, i) => packages.indexOf(x) !== i);
   if (dupes.length) failures.push(`${file}: duplicate package names: ${[...new Set(dupes)].join(", ")}`);
 }
-for (const localPackage of ["ckbcomp", "calamares-lokro", "lokro-branding", "lokro-shell", "lokro-installer-config", "lokro-ai-setup"]) {
+for (const localPackage of ["ckbcomp", "calamares-lokro", "lokro-branding", "lokro-shell", "lokro-installer-config", "lokro-ai-setup", "lokro-store"]) {
   if (!packageSets["archiso/packages/common.x86_64"].includes(localPackage)) failures.push(`common ISO package list is missing ${localPackage}`);
 }
 for (const requiredOffline of ["libreoffice-fresh", "libreoffice-fresh-de"]) {
@@ -103,7 +104,7 @@ for (const requiredCommon of [
   "pipewire", "wireplumber", "grub", "efibootmgr", "cryptsetup", "sddm",
   "pacman-contrib", "partitionmanager", "flatpak", "discover", "systemsettings", "powerdevil",
   "plasma-systemmonitor", "kinfocenter", "os-prober", "fuse3",
-  "ark", "7zip", "unzip", "zip", "vlc"
+  "ark", "7zip", "unzip", "zip", "vlc", "lokro-store"
 ]) {
   if (!packageSets["archiso/packages/common.x86_64"].includes(requiredCommon)) failures.push(`common ISO package list is missing ${requiredCommon}`);
 }
@@ -164,6 +165,12 @@ const lokroAction = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs
 const welcomeQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/welcome/main.qml"), "utf8");
 if (!lokroAction.includes("design-packs) launch lokro-design-pack-gui")) failures.push("LOKRO action router cannot open design packs");
 if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome center does not expose design packs");
+if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
+if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome center does not expose the app store");
+const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
+for (const storeInvariant of ["_upstream_version=0.1.0-alpha.3", "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177", "assets/icons/*.svg"]) {
+  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-3 invariant: ${storeInvariant}`);
+}
 
 const prepareProfile = fs.readFileSync(path.join(root, "scripts/prepare-profile.sh"), "utf8");
 if (!prepareProfile.includes("ln -sfn /etc/systemd/system/lokro-live-user.service")) {

@@ -63,6 +63,14 @@
       "usage": "unmodified signed Arch package used by the LOKRO Media launcher and file associations"
     },
     {
+      "name": "LOKRO Store",
+      "version": "0.1.0-alpha.3",
+      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.3",
+      "sha256": "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177",
+      "license": "CC0-1.0; bundled third-party icons retain their documented upstream licenses",
+      "usage": "checksum-pinned offline catalog and Qt UI built by packages/lokro-store/PKGBUILD"
+    },
+    {
       "name": "7-Zip",
       "source": "https://archlinux.org/packages/extra/x86_64/7zip/",
       "usage": "unmodified signed Arch archive backend used together with Ark"

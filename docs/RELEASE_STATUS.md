@@ -1,4 +1,4 @@
-# LOKRO OS 0.1.0-alpha.12 release status
+# LOKRO OS 0.1.0-alpha.13 development status
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
@@ -11,6 +11,7 @@ This file separates implemented source from tested release claims. An item being
 - Fully embedded Arch base, kernel and firmware; no pre-installed operating system is required.
 - UEFI and legacy BIOS boot configuration; GPT/ext4 default, manual partitioning and optional LUKS encryption.
 - Pacman base-system management plus Flatpak, Flathub setup and KDE Discover.
+- Pinned LOKRO Store `v0.1.0-alpha.3` with an offline catalog, search, categories, upstream links and user-scoped Flathub installation. Its ArtCraft suite preview is clearly experimental and link-only; the remote catalog cannot provide shell commands or executable downloads.
 - NetworkManager, Wi-Fi database and iwd tooling, LAN support through the Linux kernel, Bluetooth, USB utilities, Thunderbolt tooling and current Arch firmware packages.
 - Mesa/OpenGL, AMD/Intel/Nouveau Vulkan and video acceleration. The offline installer can optionally install `nvidia-open`, `nvidia-utils` and `lib32-nvidia-utils` for supported Turing-or-newer NVIDIA hardware.
 - PipeWire audio, power management, ZRAM, KDE settings, theming and desktop widgets.
@@ -54,4 +55,4 @@ The alpha.5 CI attempt successfully produced both hybrid ISO files, including a 
 - A custom package server, custom desktop environment, LibreOffice fork or bundled AI model.
 - General-purpose live kernel replacement. The running kernel remains active until reboot; only its matching modules are retained safely.
 
-Alpha.12 is downloadable after successful builds, size checks and BIOS/UEFI live-Plasma smoke boots. It remains an experimental test image: Calamares installed-disk, real-hardware, gaming and install-alongside acceptance still require human testing before any daily-driver claim.
+Alpha.12 remains the latest downloadable build after successful size checks and BIOS/UEFI live-Plasma smoke boots. Alpha.13 source adds the independently tested LOKRO Store but is not downloadable until its own ISO build and both VM smoke boots pass. Every alpha remains experimental: Calamares installed-disk, real-hardware, gaming and install-alongside acceptance still require human testing before any daily-driver claim.

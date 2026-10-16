@@ -4,7 +4,7 @@ This file is the machine-readable starting point for coding assistants and human
 
 ## Product contract
 
-- Product: experimental x86_64 desktop distribution, currently `0.1.0-alpha.12`.
+- Product: experimental x86_64 desktop distribution, currently developing `0.1.0-alpha.13`.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -21,6 +21,7 @@ This file is the machine-readable starting point for coding assistants and human
 | `packages/lokro-shell/` | Search, Hub, welcome screen, graphical tools, safe updater and desktop integration. |
 | `packages/lokro-installer-config/` | Calamares flow, package choices, administrator creation, encryption and GRUB. |
 | `packages/lokro-ai-setup/` | Optional, checksum-pinned local-AI setup. No model is embedded. |
+| `packages/lokro-store/` | Pinned, checksum-verified build of the separate LOKRO Store catalog and Qt UI. |
 | `design-packs/` | Reviewed declarative appearance packs, schema and contribution rules. |
 | `vendor/` | Pinned source recipes required to build software unavailable as an official Arch binary. |
 | `scripts/` | Validation, package/repository construction, Archiso builds, metadata and VM smoke tests. |
@@ -64,6 +65,7 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - `lokro-design-pack` validates and installs user-scoped color/wallpaper packs without executing pack content; repository packs are staged into `lokro-shell` at build time.
 - **LOKRO Link Installer** installs GPG-verifiable Arch package links, Flatpak refs/bundles and user-scoped AppImages. It never executes downloaded scripts.
 - **LOKRO Media** is a branded launcher around the official VLC package and owns the common audio/video associations.
+- **LOKRO Store** `v0.1.0-alpha.3` ships a validated offline catalog and installs exact Flathub IDs for the current user; the remote catalog cannot supply shell commands. Experimental upstream projects such as ArtCraft are link-only until a concrete Linux build and checksum are reviewed.
 
 ## Status discipline
 

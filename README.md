@@ -1,12 +1,12 @@
 # Lokro OS
 
-Lokro OS is an experimental, Arch-based x86_64 desktop distribution built around KDE Plasma 6, Wayland, Pacman and Flatpak. Version `0.1.0-alpha.12` is intended for virtual machines and test hardware, not production systems.
+Lokro OS is an experimental, Arch-based x86_64 desktop distribution built around KDE Plasma 6, Wayland, Pacman and Flatpak. The source tree is developing `0.1.0-alpha.13`; the latest tested download remains alpha.12 and is intended for virtual machines and test hardware, not production systems.
 
 Official repository: [jamjam1312/LOKROOS-Arch-based](https://github.com/jamjam1312/LOKROOS-Arch-based). This is openly AI-assisted integration work for the LOKRO community, not a claim that upstream components were authored here.
 
 Lokro OS is **64-bit only**. It does not ship a 32-bit kernel or a 32-bit ISO. The enabled Arch `multilib` repository supplies selected 32-bit compatibility libraries required by Steam and older games on the 64-bit system.
 
-The repository contains two standalone Archiso profiles, four Lokro packages, a pinned Calamares build recipe, a black-and-white Plasma theme, an animated dot-and-slash wallpaper, safe user-scoped design packs, a first-run welcome center, the Lokro Hub widget, offline NVIDIA and gaming package paths, a safe link installer, a graphical boot helper, a VLC-backed LOKRO media launcher and an optional local-AI setup tool. The ISO embeds the signed Arch base, kernel and firmware; an existing Arch installation is not required.
+The repository contains two standalone Archiso profiles, five Lokro packages, a pinned Calamares build recipe, a black-and-white Plasma theme, an animated dot-and-slash wallpaper, safe user-scoped design packs, a first-run welcome center, the Lokro Hub widget, offline NVIDIA and gaming package paths, a safe link installer, a graphical boot helper, a VLC-backed LOKRO media launcher, the separately maintained [LOKRO Store](https://github.com/jamjam1312/LOKROOS-Appstore-githubconnection) and an optional local-AI setup tool. The ISO embeds the signed Arch base, kernel and firmware; an existing Arch installation is not required.
 
 The `offline` image contains the office and German-language payload. The smaller `online` image offers a minimal offline fallback or downloads the selected application payload from signed Arch repositories. Both images contain Firefox, Pacman, Flatpak, Plasma, Dolphin, Ark/7zip, VLC, the LOKRO Task Manager and the installer. Plasma's movable panel and KRunner search are standard; an optional Hyprland session adds keyboard-first dynamic tiling. Steam/Prism Launcher support is an explicit optional installer choice.
 
@@ -48,7 +48,7 @@ Artifacts are written to `out/`. Package builds use official Arch repositories p
 ## Developer interface
 
 - `make validate` — static repository checks and ShellCheck when available.
-- `make packages` — build Calamares and the four Lokro packages, then create a local repository.
+- `make packages` — build Calamares and the five Lokro packages, then create a local repository.
 - `sudo make iso` / `sudo make iso-offline` — build the complete offline image.
 - `sudo make iso-online` — build the smaller network installer.
 - `make vm-bios` / `make vm-uefi` — boot the newest ISO in QEMU.

@@ -25,6 +25,7 @@ case "$action" in
     users) launch systemsettings kcm_users ;;
     appearance) launch systemsettings kcm_lookandfeel ;;
     design-packs) launch lokro-design-pack-gui ;;
+    app-store) launch lokro-store ;;
     wallpaper)
         launch kdialog --title "LOKRO Hintergrund" --msgbox \
             'Klicke mit der rechten Maustaste auf eine freie Stelle des Plasma-Desktops und wähle "Desktop und Hintergrund einrichten". Dort kannst du Bild, Animation und Darstellung ändern.'

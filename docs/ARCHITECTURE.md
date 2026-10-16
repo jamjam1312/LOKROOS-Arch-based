@@ -2,7 +2,7 @@
 
 ## Build flow
 
-1. `scripts/build-packages.sh` builds a checksum-pinned Calamares source release and the four Lokro packages with `makepkg`.
+1. `scripts/build-packages.sh` builds a checksum-pinned Calamares source release and the five Lokro packages with `makepkg`.
 2. `repo-add` creates an ephemeral local repository under `out/repo`.
 3. `scripts/prepare-profile.sh` builds either the `offline` or `online` profile from shared and variant-specific manifests.
 4. The offline profile stores zstd-compressed, signed NVIDIA, gaming and optional Hyprland-session packages under `/opt/lokro/repo`. The online profile resolves them from Arch mirrors only when selected.

@@ -224,13 +224,13 @@ ApplicationWindow {
                 }
                 WelcomeCard {
                     title: qsTr("Apps")
-                    iconName: "plasmadiscover"
-                    detail: qsTr("Discover installiert Flatpaks. Unterstützte HTTPS-Downloads lassen sich kontrolliert über den Link Installer hinzufügen.")
-                    primaryText: qsTr("Discover öffnen")
-                    secondaryText: qsTr("Link installieren")
-                    onPrimary: root.openAction("discover")
-                    onSecondary: root.openAction("link-installer")
-                    footer: qsTr("Pacman bleibt alleiniger Manager des Basissystems")
+                    iconName: "lokro-store"
+                    detail: qsTr("LOKRO Store zeigt einen geprüften Offline-Katalog freier Apps und installiert sie benutzerbezogen über Flathub.")
+                    primaryText: qsTr("LOKRO Store")
+                    secondaryText: qsTr("Discover")
+                    onPrimary: root.openAction("app-store")
+                    onSecondary: root.openAction("discover")
+                    footer: qsTr("Keine Download-Skripte · Pacman verwaltet das Basissystem")
                 }
                 WelcomeCard {
                     title: qsTr("System & Boot")

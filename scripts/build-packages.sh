@@ -61,7 +61,7 @@ log 'building pinned Calamares package'
 build_one "${PROJECT_ROOT}/vendor/calamares"
 install_local_build_dependency 'calamares-lokro-[0-9]*-x86_64.pkg.tar.zst'
 
-for package in lokro-branding lokro-shell lokro-installer-config lokro-ai-setup; do
+for package in lokro-branding lokro-shell lokro-installer-config lokro-ai-setup lokro-store; do
     log "building ${package}"
     build_one "${PROJECT_ROOT}/packages/${package}"
 done
