@@ -5,7 +5,7 @@ source "$(dirname "$0")/common.sh"
 require_arch
 need pacman
 
-local_packages=(ckbcomp calamares-lokro lokro-branding lokro-shell lokro-installer-config lokro-ai-setup)
+local_packages=(ckbcomp calamares-lokro lokro-branding lokro-shell lokro-installer-config lokro-ai-setup lokro-store)
 mapfile -t candidates < <(
     cat "${PROJECT_ROOT}/archiso/packages/common.x86_64" \
         "${PROJECT_ROOT}/archiso/packages/offline.x86_64"

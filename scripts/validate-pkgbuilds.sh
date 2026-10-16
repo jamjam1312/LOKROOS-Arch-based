@@ -9,6 +9,7 @@ recipes=(
     packages/lokro-shell
     packages/lokro-installer-config
     packages/lokro-ai-setup
+    packages/lokro-store
 )
 
 validation_root=''
