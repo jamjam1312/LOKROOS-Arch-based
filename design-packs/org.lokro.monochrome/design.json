@@ -1,0 +1,17 @@
+{
+  "$schema": "../design-pack.schema.json",
+  "schemaVersion": 1,
+  "id": "org.lokro.monochrome",
+  "name": "LOKRO Monochrome",
+  "version": "1.0.0",
+  "author": "LOKRO OS contributors",
+  "license": "CC-BY-SA-4.0",
+  "description": "The built-in black-and-white LOKRO appearance with the interactive Slashes wallpaper.",
+  "plasma": {
+    "lookAndFeel": "org.lokro.dark",
+    "colorScheme": "LokroDark",
+    "cursorTheme": "breeze_cursors",
+    "cursorSize": 24,
+    "wallpaperPlugin": "org.lokro.slashes"
+  }
+}

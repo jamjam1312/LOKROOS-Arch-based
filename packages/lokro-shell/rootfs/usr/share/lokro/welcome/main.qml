@@ -197,10 +197,10 @@ ApplicationWindow {
                     iconName: "preferences-desktop-theme"
                     detail: qsTr("Dark/Light, Startmenü, Hintergrund, Panels und Widgets über Plasma anpassen.")
                     primaryText: qsTr("Erscheinungsbild")
-                    secondaryText: qsTr("Widgets")
+                    secondaryText: qsTr("Design-Packs")
                     onPrimary: root.openAction("appearance")
-                    onSecondary: root.openAction("widgets")
-                    footer: qsTr("LOKRO Dark ist der Standard")
+                    onSecondary: root.openAction("design-packs")
+                    footer: qsTr("LOKRO Dark ist der Standard · Widgets per Desktop-Rechtsklick")
                 }
                 WelcomeCard {
                     title: qsTr("Benutzer")

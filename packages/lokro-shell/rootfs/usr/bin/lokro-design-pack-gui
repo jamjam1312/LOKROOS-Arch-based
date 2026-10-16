@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+set -euo pipefail
+
+show_result() {
+    local title="$1" message="$2"
+    kdialog --title "$title" --msgbox "$message" >/dev/null 2>&1 || true
+}
+
+run_pack_command() {
+    local operation="$1" source="$2" output status
+    set +e
+    output="$(/usr/bin/lokro-design-pack "$operation" "$source" 2>&1)"
+    status=$?
+    set -e
+    if (( status == 0 )); then
+        show_result 'LOKRO Design Packs' "$output"
+    else
+        kdialog --title 'LOKRO Design Packs' --error "$output" >/dev/null 2>&1 || true
+    fi
+}
+
+choice="$(kdialog --title 'LOKRO Design Packs' --menu \
+    'Installiere nur Design-Packs aus Quellen, denen du vertraust. LOKRO lehnt Skripte und ausführbare Dateien ab.' \
+    apply 'Installiertes Design anwenden' \
+    folder 'Design-Pack-Ordner installieren' \
+    archive '.lokrodesign-Datei installieren' \
+    appearance 'Plasma-Einstellungen öffnen' 2>/dev/null || true)"
+
+case "$choice" in
+    apply)
+        mapfile -t packs < <(/usr/bin/lokro-design-pack list)
+        (( ${#packs[@]} > 0 )) || {
+            show_result 'LOKRO Design Packs' 'Es wurden keine gültigen Design-Packs gefunden.'
+            exit 0
+        }
+        menu=()
+        for pack in "${packs[@]}"; do
+            IFS=$'\t' read -r id name version origin <<< "$pack"
+            menu+=("$id" "$name — $version ($origin)")
+        done
+        selected="$(kdialog --title 'LOKRO Design Packs' --menu 'Design auswählen:' "${menu[@]}" 2>/dev/null || true)"
+        [[ -n "$selected" ]] && run_pack_command apply "$selected"
+        ;;
+    folder)
+        selected="$(kdialog --title 'Design-Pack-Ordner auswählen' --getexistingdirectory "$HOME" 2>/dev/null || true)"
+        [[ -n "$selected" ]] && run_pack_command install "$selected"
+        ;;
+    archive)
+        selected="$(kdialog --title '.lokrodesign-Datei auswählen' --getopenfilename "$HOME" '*.lokrodesign|LOKRO Design Pack (*.lokrodesign)' 2>/dev/null || true)"
+        [[ -n "$selected" ]] && run_pack_command install "$selected"
+        ;;
+    appearance) systemsettings kcm_lookandfeel >/dev/null 2>&1 & ;;
+esac

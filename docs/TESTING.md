@@ -21,6 +21,8 @@ For each mode and image variant, verify the live session reaches Plasma, the wel
 
 In Plasma, verify that the panel search button opens KRunner, localized shutdown/restart/update launchers appear as search results, `Ctrl+Esc` and the LOKRO Task Manager show processes and resource sensors, cursor size changes persist, and `Meta+T` opens KWin's tiling editor. For Hyprland, select the session in SDDM and verify Waybar, Wofi, `Meta+Arrow`, `Meta+L`, portals and screenshots.
 
+Open LOKRO Design Packs, install the bundled `org.lokro.monochrome` folder (or an equivalent `.lokrodesign` archive), apply it, and confirm colors plus wallpaper update. Confirm that a pack containing an unknown payload, executable file, symlink or archive `..` path is rejected without writing outside `~/.local/share`.
+
 ## Hardware matrix before an alpha release
 
 - AMD GPU with Mesa and Vulkan.

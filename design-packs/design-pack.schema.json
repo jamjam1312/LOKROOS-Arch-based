@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jamjam1312/LOKROOS-Arch-based/raw/main/design-packs/design-pack.schema.json",
+  "title": "LOKRO OS design pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "version", "author", "license", "description", "plasma"],
+  "properties": {
+    "$schema": { "type": "string", "maxLength": 240 },
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)+$", "maxLength": 128 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$", "maxLength": 64 },
+    "author": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "license": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "description": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "plasma": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "lookAndFeel": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128 },
+        "colorScheme": { "type": "string", "pattern": "^[A-Za-z0-9._ -]+$", "maxLength": 128 },
+        "cursorTheme": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128 },
+        "cursorSize": { "type": "integer", "minimum": 16, "maximum": 96 },
+        "wallpaperPlugin": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128 },
+        "wallpaper": { "type": "string", "pattern": "^payload/wallpapers/[A-Za-z0-9._/-]+$", "maxLength": 240 }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ This file is the machine-readable starting point for coding assistants and human
 
 ## Product contract
 
-- Product: experimental x86_64 desktop distribution, currently `0.1.0-alpha.11`.
+- Product: experimental x86_64 desktop distribution, currently `0.1.0-alpha.12`.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -21,6 +21,7 @@ This file is the machine-readable starting point for coding assistants and human
 | `packages/lokro-shell/` | Search, Hub, welcome screen, graphical tools, safe updater and desktop integration. |
 | `packages/lokro-installer-config/` | Calamares flow, package choices, administrator creation, encryption and GRUB. |
 | `packages/lokro-ai-setup/` | Optional, checksum-pinned local-AI setup. No model is embedded. |
+| `design-packs/` | Reviewed declarative appearance packs, schema and contribution rules. |
 | `vendor/` | Pinned source recipes required to build software unavailable as an official Arch binary. |
 | `scripts/` | Validation, package/repository construction, Archiso builds, metadata and VM smoke tests. |
 | `docs/` | Architecture, hardware, gaming, dual-boot, update, test and release truth. |
@@ -60,6 +61,7 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - Dolphin and Baloo provide filename-first indexed search in the home directory. Hidden folders, caches and build trees are excluded.
 - The taskbar search opens KRunner on Plasma and Wofi on Hyprland. Its context menu exposes settings, task manager, updates and power actions.
 - Plasma provides configurable panels, widgets, themes, cursor size, shortcuts and `Meta+T` tiling. Hyprland is selected independently on the SDDM login screen.
+- `lokro-design-pack` validates and installs user-scoped color/wallpaper packs without executing pack content; repository packs are staged into `lokro-shell` at build time.
 - **LOKRO Link Installer** installs GPG-verifiable Arch package links, Flatpak refs/bundles and user-scoped AppImages. It never executes downloaded scripts.
 - **LOKRO Media** is a branded launcher around the official VLC package and owns the common audio/video associations.
 

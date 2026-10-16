@@ -8,14 +8,19 @@ Exec=lokro-action settings
 Icon=preferences-system
 Terminal=false
 Categories=Settings;
-Keywords=settings;appearance;wallpaper;cursor;users;network;bluetooth;power;shortcuts;widgets;
-Keywords[de]=Einstellungen;Aussehen;Hintergrund;Cursor;Benutzer;Netzwerk;Bluetooth;Energie;Tastenkürzel;Widgets;
-Actions=Appearance;Wallpaper;Cursor;Users;Network;Bluetooth;Shortcuts;Power;Widgets;DesktopSession;
+Keywords=settings;appearance;theme;design;wallpaper;cursor;users;network;bluetooth;power;shortcuts;widgets;
+Keywords[de]=Einstellungen;Aussehen;Design;Hintergrund;Cursor;Benutzer;Netzwerk;Bluetooth;Energie;Tastenkürzel;Widgets;
+Actions=Appearance;DesignPacks;Wallpaper;Cursor;Users;Network;Bluetooth;Shortcuts;Power;Widgets;DesktopSession;
 
 [Desktop Action Appearance]
 Name=Appearance and style
 Name[de]=Aussehen und Stil
 Exec=lokro-action appearance
+
+[Desktop Action DesignPacks]
+Name=LOKRO Design Packs
+Name[de]=LOKRO-Design-Packs
+Exec=lokro-action design-packs
 
 [Desktop Action Wallpaper]
 Name=Wallpaper help

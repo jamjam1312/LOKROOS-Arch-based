@@ -14,6 +14,10 @@ build_one() {
     work_dir="${BUILD_DIR}/pkg/$(basename "$source_dir")"
     rm -rf "$work_dir"
     cp -a "$source_dir" "$work_dir"
+    if [[ "$(basename "$source_dir")" == lokro-shell ]]; then
+        mkdir -p "$work_dir/rootfs/usr/share/lokro/design-packs"
+        cp -a "${PROJECT_ROOT}/design-packs/." "$work_dir/rootfs/usr/share/lokro/design-packs/"
+    fi
     if (( EUID == 0 )); then
         local build_user=lokro-builder
         id "$build_user" >/dev/null 2>&1 || useradd --system --create-home "$build_user"

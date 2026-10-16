@@ -10,6 +10,7 @@ help:
 validate:
 	@node scripts/validate.mjs
 	@if command -v python3 >/dev/null 2>&1; then python3 scripts/validate_yaml.py; else echo 'python3 not installed; YAML validation skipped'; fi
+	@if command -v python3 >/dev/null 2>&1; then python3 scripts/test-design-packs.py; else echo 'python3 not installed; design-pack tests skipped'; fi
 	@if command -v makepkg >/dev/null 2>&1; then bash scripts/validate-pkgbuilds.sh; else echo 'makepkg not installed; PKGBUILD parse checks skipped'; fi
 	@qml_linter="$$(command -v qmllint || command -v qmllint6 || true)"; if [[ -z "$$qml_linter" && -x /usr/lib/qt6/bin/qmllint ]]; then qml_linter=/usr/lib/qt6/bin/qmllint; fi; if [[ -n "$$qml_linter" ]]; then find packages -type f -name '*.qml' -print0 | xargs -0 -r "$$qml_linter"; else echo 'qmllint not installed; QML validation skipped'; fi
 	@if command -v shellcheck >/dev/null 2>&1; then files="$$(grep -Ilr -E '^#!(/usr/bin/env (ba)?sh|/bin/(ba)?sh)' scripts packages archiso || true)"; if [[ -n "$$files" ]]; then shellcheck -x -e SC1091 $$files; fi; else echo 'shellcheck not installed; skipped'; fi

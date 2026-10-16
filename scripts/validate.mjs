@@ -8,6 +8,8 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace
 const failures = [];
 const required = [
   "VERSION", "Makefile", "CONTRIBUTORS.md", "AI_INFO.md", "desktop/README.md", "server/README.md",
+  "design-packs/README.md", "design-packs/design-pack.schema.json",
+  "design-packs/org.lokro.monochrome/design.json", "docs/DESIGN_PACKS.md",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
   "docs/RELEASE_STATUS.md", "docs/STANDALONE_INSTALL.md", "archiso/packages/common.x86_64",
   "archiso/packages/offline.x86_64", "archiso/packages/online.x86_64",
@@ -31,11 +33,14 @@ const required = [
   "packages/lokro-shell/rootfs/usr/bin/lokro-link-installer-gui",
   "packages/lokro-shell/rootfs/usr/bin/lokro-media",
   "packages/lokro-shell/rootfs/usr/bin/lokro-boot-manager",
+  "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack",
+  "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack-gui",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-control-center.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-desktop-sessions.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-link-installer.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-media.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-boot-manager.desktop",
+  "packages/lokro-shell/rootfs/usr/share/applications/lokro-design-packs.desktop",
   "packages/lokro-shell/rootfs/usr/lib/systemd/system/lokro-update.timer",
   "packages/lokro-shell/rootfs/usr/lib/lokro-update/keep-running-kernel",
   "packages/lokro-installer-config/rootfs/etc/calamares/modules/packagechooser-gaming.conf",
@@ -47,6 +52,7 @@ const required = [
   "archiso/airootfs/usr/local/sbin/lokro-smoke-ready",
   "archiso/airootfs/etc/systemd/system/lokro-smoke-ready.service",
   "scripts/smoke-boot.sh",
+  "scripts/test-design-packs.py",
   "scripts/validate-pkgbuilds.sh",
   "third_party/sources.json", "docs/AI_DISCLOSURE.md"
 ];
@@ -140,6 +146,24 @@ if (fs.existsSync(path.join(root, "packages/lokro-branding/rootfs/etc/mkinitcpio
 
 const version = fs.readFileSync(path.join(root, "VERSION"), "utf8").trim();
 if (!/^\d+\.\d+\.\d+-alpha\.\d+$/.test(version)) failures.push(`VERSION is not an alpha SemVer: ${version}`);
+
+const designSchema = JSON.parse(fs.readFileSync(path.join(root, "design-packs/design-pack.schema.json"), "utf8"));
+const designExample = JSON.parse(fs.readFileSync(path.join(root, "design-packs/org.lokro.monochrome/design.json"), "utf8"));
+for (const key of designSchema.required ?? []) {
+  if (!(key in designExample)) failures.push(`example design pack is missing schema-required key: ${key}`);
+}
+if (designExample.schemaVersion !== 1) failures.push("example design pack must use schemaVersion 1");
+if (designExample.id !== "org.lokro.monochrome") failures.push("example design-pack directory and id must match");
+const designTool = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack"), "utf8");
+for (const safetyInvariant of ["MAX_FILES", "MAX_FILE_SIZE", "MAX_TOTAL_SIZE", "path.is_symlink()", "stat.S_ISLNK", "executable files are not allowed", "only schemaVersion 1 is supported"]) {
+  if (!designTool.includes(safetyInvariant)) failures.push(`design-pack importer is missing safety invariant: ${safetyInvariant}`);
+}
+const packageBuilder = fs.readFileSync(path.join(root, "scripts/build-packages.sh"), "utf8");
+if (!packageBuilder.includes('PROJECT_ROOT}/design-packs/.')) failures.push("lokro-shell package build does not stage repository design packs");
+const lokroAction = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/bin/lokro-action"), "utf8");
+const welcomeQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/welcome/main.qml"), "utf8");
+if (!lokroAction.includes("design-packs) launch lokro-design-pack-gui")) failures.push("LOKRO action router cannot open design packs");
+if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome center does not expose design packs");
 
 const prepareProfile = fs.readFileSync(path.join(root, "scripts/prepare-profile.sh"), "utf8");
 if (!prepareProfile.includes("ln -sfn /etc/systemd/system/lokro-live-user.service")) {

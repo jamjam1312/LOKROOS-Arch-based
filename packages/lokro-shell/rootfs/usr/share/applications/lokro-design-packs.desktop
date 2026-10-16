@@ -1,0 +1,28 @@
+[Desktop Entry]
+Type=Application
+Name=LOKRO Design Packs
+Name[de]=LOKRO-Design-Packs
+Comment=Install and apply safe user-scoped appearance packs
+Comment[de]=Sichere benutzerspezifische Design-Packs installieren und anwenden
+Exec=lokro-design-pack-gui
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=Settings;DesktopSettings;
+Keywords=theme;design;appearance;color;wallpaper;cursor;
+Keywords[de]=Design;Aussehen;Farbe;Hintergrund;Cursor;
+Actions=Apply;InstallFolder;InstallArchive;
+
+[Desktop Action Apply]
+Name=Apply a design pack
+Name[de]=Design-Pack anwenden
+Exec=lokro-design-pack-gui
+
+[Desktop Action InstallFolder]
+Name=Install a design-pack folder
+Name[de]=Design-Pack-Ordner installieren
+Exec=lokro-design-pack-gui
+
+[Desktop Action InstallArchive]
+Name=Install a .lokrodesign file
+Name[de]=.lokrodesign-Datei installieren
+Exec=lokro-design-pack-gui

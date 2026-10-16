@@ -14,7 +14,7 @@ The profile copy is deliberate: Archiso's boot files evolve with Arch. Lokro own
 ## Runtime components
 
 - `lokro-branding`: color scheme, static background, Plymouth theme, KDE defaults and one-time Plasma setup.
-- `lokro-shell`: interactive wallpaper, Lokro Hub and search widgets, graphical settings/boot launchers, safe HTTPS link installer, VLC-backed media launcher, update client, service-manifest merger and Flathub setup.
+- `lokro-shell`: interactive wallpaper, Lokro Hub and search widgets, graphical settings/boot launchers, safe user-scoped design-pack importer, safe HTTPS link installer, VLC-backed media launcher, update client, service-manifest merger and Flathub setup.
 - `lokro-installer-config`: Calamares flow, branding, administrator and hostname setup, optional LUKS1 encryption, ext4/GPT defaults, desktop-session and NVIDIA choices.
 - `lokro-ai-setup`: optional Ollama downloader with pinned checksums plus official-Arch OpenCode installation.
 
@@ -23,6 +23,8 @@ System packages are updated only with Pacman. Discover is intended for Flatpaks.
 The link installer deliberately accepts only HTTPS `.flatpakref`, `.flatpak`, detached-signature-verified Arch package and user-scoped AppImage links. It never executes downloaded shell scripts and rejects DEB, RPM and arbitrary archives. Its update button checks only AppImages previously installed by the same tool; OS updates remain handled by the separate Pacman-based LOKRO updater.
 
 Plasma is the supported default environment. The optional Hyprland packages add a second selectable SDDM Wayland session and keyboard-first dynamic tiling without forking either desktop. Plasma System Settings remains the graphical configuration surface for appearance, pointer, users, networking, Bluetooth, shortcuts and power.
+
+Repository design packs live under `design-packs/` and are staged into the `lokro-shell` package during the isolated package build. The runtime importer accepts a reviewed directory or ZIP-compatible `.lokrodesign` file, validates every path and file, then installs only to the current user's XDG data directory. It never invokes a package manager or executes pack content.
 
 ## Performance policy
 
