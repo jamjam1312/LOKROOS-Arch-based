@@ -2,7 +2,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
 
-if [[ "$(id -un)" != liveuser ]] || [[ ! -e /run/archiso/bootmnt ]]; then
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+status_file="${runtime_dir}/lokro-installer.status"
+install -d -m 0700 "$runtime_dir"
+
+if [[ "$(id -un)" != liveuser ]]; then
+    printf '%s\n' 'rejected user-is-not-liveuser' > "$status_file"
+    exit 1
+fi
+
+if [[ ! -e /run/archiso/bootmnt ]]; then
+    printf '%s\n' 'rejected live-media-not-mounted' > "$status_file"
     if command -v kdialog >/dev/null 2>&1; then
         kdialog --title 'LOKRO OS Installer' --sorry \
             'Der Installer ist nur im gestarteten LOKRO-Live-System verfügbar.' >/dev/null 2>&1 || true
@@ -11,12 +21,15 @@ if [[ "$(id -un)" != liveuser ]] || [[ ! -e /run/archiso/bootmnt ]]; then
 fi
 
 if pgrep -x calamares >/dev/null 2>&1; then
+    printf '%s\n' 'already-running' > "$status_file"
     exit 0
 fi
 
-runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-status_file="${runtime_dir}/lokro-installer.status"
-install -d -m 0700 "$runtime_dir"
+exec 9>"${runtime_dir}/lokro-installer.lock"
+if ! flock -n 9; then
+    exit 0
+fi
+
 printf '%s\n' 'starting' > "$status_file"
 
 if /usr/bin/pkexec /usr/bin/calamares -d; then

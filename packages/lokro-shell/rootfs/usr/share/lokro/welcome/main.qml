@@ -282,6 +282,16 @@ ApplicationWindow {
                     onSecondary: root.openAction("minecraft")
                     footer: qsTr("Spiele, Konten und Minecraft-Assets benötigen später Internet")
                 }
+                WelcomeCard {
+                    title: qsTr("Credits")
+                    iconName: "help-about"
+                    detail: qsTr("Jamie Milo Cürten hat LOKRO OS mitinitiiert und mitentwickelt und mit Hilfe von ChatGPT / OpenAI Codex die technische Grundlage erstellt.")
+                    primaryText: qsTr("Über LOKRO OS")
+                    secondaryText: qsTr("Open Source")
+                    onPrimary: root.openAction("credits")
+                    onSecondary: Qt.openUrlExternally("https://github.com/jamjam1312/LOKROOS-Arch-based")
+                    footer: qsTr("LOKKROGAMER · Jamie Milo Cürten · OpenAI Codex · Upstream-Projekte")
+                }
             }
 
             RowLayout {

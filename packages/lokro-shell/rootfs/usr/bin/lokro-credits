@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+set -euo pipefail
+
+credits_file=/usr/share/doc/lokro-os/CREDITS.md
+message='Jamie Milo Cürten hat LOKRO OS mitinitiiert und mitentwickelt und mit Hilfe von ChatGPT / OpenAI Codex die technische Grundlage des Betriebssystems erstellt.
+
+LOKKROGAMER prägt Produktrichtung, Community-Anforderungen und die Identität des LOKRO-Netzwerks.
+
+LOKRO OS verbindet bestehende Open-Source-Projekte. Die vollständigen Credits und Lizenzhinweise sind im System enthalten.'
+
+if command -v kdialog >/dev/null 2>&1; then
+    kdialog --title 'Über LOKRO OS' --msgbox "$message"
+elif [[ -f "$credits_file" ]]; then
+    xdg-open "$credits_file"
+else
+    printf '%s\n' "$message"
+fi

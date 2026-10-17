@@ -5,8 +5,13 @@ if ! id liveuser >/dev/null 2>&1; then
     useradd --create-home --shell /bin/bash --groups wheel,audio,video,storage,input,lp,network liveuser
     passwd --delete liveuser
 fi
-install -d -m 0755 -o liveuser -g liveuser /home/liveuser/Desktop
+install -d -m 0755 -o liveuser -g liveuser \
+    /home/liveuser/Desktop \
+    /home/liveuser/.config/autostart
 install -m 0755 -o liveuser -g liveuser \
     /etc/xdg/autostart/lokro-live-installer.desktop \
     /home/liveuser/Desktop/Install-LOKRO-OS.desktop
+install -m 0644 -o liveuser -g liveuser \
+    /etc/xdg/autostart/lokro-live-installer.desktop \
+    /home/liveuser/.config/autostart/lokro-live-installer.desktop
 chown -R liveuser:liveuser /home/liveuser

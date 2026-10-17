@@ -1,0 +1,8 @@
+# Credit attribution and its enforcement require explicit project-owner review.
+/CREDITS.md @jamjam1312
+/CONTRIBUTORS.md @jamjam1312
+/packages/lokro-shell/rootfs/usr/share/doc/lokro-os/CREDITS.md @jamjam1312
+/packages/lokro-shell/rootfs/usr/bin/lokro-credits @jamjam1312
+/packages/lokro-shell/rootfs/usr/share/applications/lokro-credits.desktop @jamjam1312
+/scripts/validate.mjs @jamjam1312
+/.github/CODEOWNERS @jamjam1312

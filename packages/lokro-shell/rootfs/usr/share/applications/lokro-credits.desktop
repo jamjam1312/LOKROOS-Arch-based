@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=About LOKRO OS
+Name[de]=Über LOKRO OS
+Comment=Project credits and open-source attribution
+Comment[de]=Projekt-Credits und Open-Source-Anerkennung
+Exec=lokro-credits
+Icon=help-about
+Terminal=false
+Categories=System;Documentation;
+Keywords=credits;contributors;about;Jamie;LOKRO;

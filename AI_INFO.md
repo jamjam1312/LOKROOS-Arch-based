@@ -5,7 +5,7 @@ This file is the machine-readable starting point for coding assistants and human
 ## Product contract
 
 - Product: experimental x86_64 desktop distribution. Source candidate is
-  `0.1.0-alpha.16`; current tested/downloadable release is `0.1.0-alpha.14`.
+  `0.1.0-alpha.17`; current tested/downloadable release is `0.1.0-alpha.14`.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -66,6 +66,9 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - `lokro-design-pack` validates and installs user-scoped color/wallpaper packs without executing pack content; repository packs are staged into `lokro-shell` at build time.
 - **LOKRO Link Installer** installs GPG-verifiable Arch package links, Flatpak refs/bundles and user-scoped AppImages. It never executes downloaded scripts.
 - **LOKRO Media** is a branded launcher around the official VLC package and owns the common audio/video associations.
+- **LOKRO Credits** exposes the protected project attribution in the welcome
+  center, application menu and `/usr/share/doc/lokro-os/CREDITS.md`. The root
+  and packaged copies must remain byte-identical.
 - **LOKRO Store** `v0.1.0-alpha.6` ships a validated offline catalog, repairs
   the user-scoped Flathub remote and installs exact Flatpak IDs without a
   shell. ArtCraft Launcher 0.3.2 uses its official, versioned x86_64 Flatpak

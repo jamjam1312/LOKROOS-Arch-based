@@ -1,5 +1,5 @@
 # Contributors
-- **Jamjam1312** — Admin and main Developer of LOKROOS.
+- **Jamie Milo Cürten (Jamjam1312)** — co-initiated and co-developed LOKRO OS and created its technical foundation with help from ChatGPT / OpenAI Codex.
 - **LOKKROGAMER** — project direction, product requirements and community identity.
 - **ChatGPT / OpenAI Codex** — AI-assisted implementation, integration, validation and documentation.
 

@@ -28,7 +28,7 @@ for ((attempt = 1; attempt <= 600; attempt++)); do
         emit 'LOKRO_LIVE_READY'
         exit 0
     fi
-    if (( installer_ready == 0 )) && [[ -f "$installer_status" ]] && grep -q '^exited code=' "$installer_status"; then
+    if (( installer_ready == 0 )) && [[ -f "$installer_status" ]] && grep -Eq '^(exited code=|rejected )' "$installer_status"; then
         status="$(tr '\n' ' ' < "$installer_status")"
         emit "LOKRO_SMOKE_FAILED plasma_ready=${plasma_ready} installer_ready=0 installer_status=${status}"
         exit 1

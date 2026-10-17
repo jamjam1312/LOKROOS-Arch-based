@@ -46,6 +46,7 @@ chmod 0755 "$PROFILE_DIR/airootfs/usr/local/sbin/lokro-smoke-ready"
 chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lokro-live-installer"
 chmod 0440 "$PROFILE_DIR/airootfs/etc/sudoers.d/10-liveuser"
 chmod 0644 "$PROFILE_DIR/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"
+chmod 0644 "$PROFILE_DIR/airootfs/etc/systemd/user/lokro-live-installer.service"
 mkdir -p "$PROFILE_DIR/airootfs/etc/lokro" "$PROFILE_DIR/airootfs/etc/calamares/modules"
 printf '%s\n' "$variant" > "$PROFILE_DIR/airootfs/etc/lokro/build-variant"
 cp "${PROJECT_ROOT}/packages/lokro-installer-config/rootfs/etc/calamares/modules/packages-${variant}.conf" \
@@ -152,6 +153,9 @@ ln -sfn /usr/lib/systemd/system/sddm.service \
     "$PROFILE_DIR/airootfs/etc/systemd/system/display-manager.service"
 ln -sfn /etc/systemd/system/lokro-smoke-ready.service \
     "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/lokro-smoke-ready.service"
+mkdir -p "$PROFILE_DIR/airootfs/etc/systemd/user/plasma-workspace.target.wants"
+ln -sfn /etc/systemd/user/lokro-live-installer.service \
+    "$PROFILE_DIR/airootfs/etc/systemd/user/plasma-workspace.target.wants/lokro-live-installer.service"
 ln -sfn /usr/lib/systemd/system/lokro-services-merge.service \
     "$PROFILE_DIR/airootfs/etc/systemd/system/multi-user.target.wants/lokro-services-merge.service"
 ln -sfn /usr/lib/systemd/system/lokro-services-merge.path \

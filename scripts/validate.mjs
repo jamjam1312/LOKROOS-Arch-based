@@ -7,7 +7,7 @@ import process from "node:process";
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/(.:)/, "$1")), "..");
 const failures = [];
 const required = [
-  "VERSION", "Makefile", "CONTRIBUTORS.md", "AI_INFO.md", "AGENTS.md", "desktop/README.md", "server/README.md",
+  "VERSION", "Makefile", "CONTRIBUTORS.md", "CREDITS.md", "AI_INFO.md", "AGENTS.md", ".github/CODEOWNERS", "desktop/README.md", "server/README.md",
   "design-packs/README.md", "design-packs/design-pack.schema.json",
   "design-packs/org.lokro.monochrome/design.json", "docs/DESIGN_PACKS.md",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
@@ -17,6 +17,7 @@ const required = [
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules",
+  "archiso/airootfs/etc/systemd/user/lokro-live-installer.service",
   "vendor/ckbcomp/PKGBUILD",
   "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
@@ -39,12 +40,15 @@ const required = [
   "packages/lokro-shell/rootfs/usr/bin/lokro-boot-manager",
   "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack",
   "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack-gui",
+  "packages/lokro-shell/rootfs/usr/bin/lokro-credits",
+  "packages/lokro-shell/rootfs/usr/share/doc/lokro-os/CREDITS.md",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-control-center.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-desktop-sessions.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-link-installer.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-media.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-boot-manager.desktop",
   "packages/lokro-shell/rootfs/usr/share/applications/lokro-design-packs.desktop",
+  "packages/lokro-shell/rootfs/usr/share/applications/lokro-credits.desktop",
   "packages/lokro-shell/rootfs/usr/lib/systemd/system/lokro-update.timer",
   "packages/lokro-shell/rootfs/usr/lib/lokro-update/keep-running-kernel",
   "packages/lokro-installer-config/rootfs/etc/calamares/modules/packagechooser-gaming.conf",
@@ -142,7 +146,7 @@ const grubConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-con
 if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB is not configured to discover other operating systems");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
-for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules"]) {
+for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service"]) {
   if (!installerCleanup.includes(liveArtifact)) failures.push(`installer cleanup does not remove live artifact: ${liveArtifact}`);
 }
 if (!installerCleanup.includes("HOOKS=(base systemd plymouth autodetect")) failures.push("installed target does not receive a disk-root initramfs configuration");
@@ -170,6 +174,8 @@ if (!lokroAction.includes("design-packs) launch lokro-design-pack-gui")) failure
 if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome center does not expose design packs");
 if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
 if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome center does not expose the app store");
+if (!lokroAction.includes("credits) launch lokro-credits")) failures.push("LOKRO action router cannot open project credits");
+if (!welcomeQml.includes('openAction("credits")')) failures.push("welcome center does not expose project credits");
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
 for (const storeInvariant of ["_upstream_version=0.1.0-alpha.6", "5819d364577a421c58c189a32b2523bf3bd422df3f31f93f4939106bc475c37c", "python-setuptools", "assets/icons/*.svg"]) {
   if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-6 invariant: ${storeInvariant}`);
@@ -204,7 +210,7 @@ if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.tes
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
 const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
-for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/pkexec /usr/bin/calamares -d", "lokro-installer.status", "exited code=%s"]) {
+for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/pkexec /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "rejected live-media-not-mounted", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
 }
 const liveInstallerPolicy = fs.readFileSync(path.join(root, "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"), "utf8");
@@ -217,12 +223,18 @@ if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer")
 }
 const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-create-live-user"), "utf8");
 if (!liveUserScript.includes("/home/liveuser/Desktop/Install-LOKRO-OS.desktop")) failures.push("live desktop is missing a visible installer shortcut");
+if (!liveUserScript.includes("/home/liveuser/.config/autostart/lokro-live-installer.desktop")) failures.push("live user is missing a user-scoped installer autostart fallback");
+const liveInstallerUserService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/user/lokro-live-installer.service"), "utf8");
+for (const serviceInvariant of ["After=plasma-workspace.target", "PartOf=plasma-workspace.target", "ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/local/bin/lokro-live-installer", "WantedBy=plasma-workspace.target"]) {
+  if (!liveInstallerUserService.includes(serviceInvariant)) failures.push(`live installer user service is missing invariant: ${serviceInvariant}`);
+}
+if (!prepareProfile.includes("/etc/systemd/user/plasma-workspace.target.wants/lokro-live-installer.service")) failures.push("live installer user service is not enabled for Plasma");
 const liveSddm = fs.readFileSync(path.join(root, "archiso/airootfs/etc/sddm.conf.d/10-lokro-live.conf"), "utf8");
 for (const displayInvariant of ["Session=plasma", "DisplayServer=x11"]) {
   if (!liveSddm.includes(displayInvariant)) failures.push(`live SDDM configuration is missing: ${displayInvariant}`);
 }
 const smokeScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-smoke-ready"), "utf8");
-for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "lokro-installer.status", "^exited code=", "installer_status=", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
+for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "lokro-installer.status", "exited code=|rejected", "installer_status=", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
   if (!smokeScript.includes(invariant)) failures.push(`smoke watcher is missing invariant: ${invariant}`);
 }
 const smokeBoot = fs.readFileSync(path.join(root, "scripts/smoke-boot.sh"), "utf8");
@@ -274,6 +286,19 @@ if (updateChannel.version !== version) failures.push("update channel version dif
 if (updateChannel.repository !== "jamjam1312/LOKROOS-Arch-based") failures.push("update channel repository is not pinned");
 if (updateChannel.architecture !== "x86_64") failures.push("update channel architecture must be x86_64");
 if (updateChannel.automaticPolicy?.installWithoutLocalConfirmation !== false) failures.push("remote policy must not permit unattended installation");
+
+const protectedCredit = "Jamie Milo Cürten";
+const protectedCreditStatement = "hat LOKRO OS mitinitiiert und mitentwickelt und mit Hilfe von ChatGPT / OpenAI Codex die technische Grundlage des Betriebssystems erstellt.";
+const rootCreditsText = fs.readFileSync(path.join(root, "CREDITS.md"), "utf8");
+const packagedCreditsText = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/doc/lokro-os/CREDITS.md"), "utf8");
+if (rootCreditsText !== packagedCreditsText) failures.push("packaged credits differ from root CREDITS.md");
+for (const creditInvariant of [protectedCredit, protectedCreditStatement, "LOKKROGAMER", "ChatGPT / OpenAI Codex"]) {
+  if (!rootCreditsText.includes(creditInvariant)) failures.push(`protected credits are missing invariant: ${creditInvariant}`);
+}
+const codeowners = fs.readFileSync(path.join(root, ".github/CODEOWNERS"), "utf8");
+for (const protectedPath of ["/CREDITS.md", "/CONTRIBUTORS.md", "/packages/lokro-shell/rootfs/usr/share/doc/lokro-os/CREDITS.md", "/scripts/validate.mjs", "/.github/CODEOWNERS"]) {
+  if (!codeowners.includes(`${protectedPath} @jamjam1312`)) failures.push(`CODEOWNERS does not protect credit path: ${protectedPath}`);
+}
 
 const services = JSON.parse(fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/services.json"), "utf8"));
 if (!Array.isArray(services.services)) failures.push("services.json must contain a services array");
