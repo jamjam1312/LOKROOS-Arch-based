@@ -1,9 +1,0 @@
-[Unit]
-Description=Start the guarded LOKRO OS live installer
-Documentation=https://github.com/jamjam1312/LOKROOS-Arch-based
-ConditionPathExists=/run/archiso/bootmnt
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/lokro-live-installer
-Restart=no

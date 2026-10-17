@@ -17,7 +17,6 @@ const required = [
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules",
-  "archiso/airootfs/etc/systemd/user/lokro-live-installer.service",
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
   "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
   "vendor/ckbcomp/PKGBUILD",
@@ -226,16 +225,12 @@ if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer")
 const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-create-live-user"), "utf8");
 if (!liveUserScript.includes("/home/liveuser/Desktop/Install-LOKRO-OS.desktop")) failures.push("live desktop is missing a visible installer shortcut");
 if (!liveUserScript.includes("/home/liveuser/.config/autostart/lokro-live-installer.desktop")) failures.push("live user is missing a user-scoped installer autostart fallback");
-const liveInstallerUserService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/user/lokro-live-installer.service"), "utf8");
-for (const serviceInvariant of ["ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/local/bin/lokro-live-installer", "Type=simple"]) {
-  if (!liveInstallerUserService.includes(serviceInvariant)) failures.push(`live installer user service is missing invariant: ${serviceInvariant}`);
-}
 const liveInstallerSupervisor = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor"), "utf8");
-for (const supervisorInvariant of ["pgrep -u liveuser -x plasmashell", "/run/user/${live_uid}", "DBUS_SESSION_BUS_ADDRESS=unix:path=", "systemctl --user set-environment", "systemctl --user start lokro-live-installer.service", "LOKRO_INSTALLER_SERVICE_REQUESTED", "LOKRO_INSTALLER_SUPERVISOR_FAILED"]) {
+for (const supervisorInvariant of ["pgrep -u liveuser -x plasmashell", "/run/user/${live_uid}", "DBUS_SESSION_BUS_ADDRESS=unix:path=", "/usr/local/bin/lokro-live-installer", "LOKRO_INSTALLER_DIRECT_LAUNCH", "LOKRO_INSTALLER_SUPERVISOR_FAILED"]) {
   if (!liveInstallerSupervisor.includes(supervisorInvariant)) failures.push(`live installer supervisor is missing invariant: ${supervisorInvariant}`);
 }
 const liveInstallerSupervisorService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service"), "utf8");
-for (const supervisorServiceInvariant of ["After=lokro-live-user.service sddm.service", "ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor", "WantedBy=multi-user.target"]) {
+for (const supervisorServiceInvariant of ["After=lokro-live-user.service sddm.service", "ConditionPathExists=/run/archiso/bootmnt", "Type=simple", "ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor", "WantedBy=multi-user.target"]) {
   if (!liveInstallerSupervisorService.includes(supervisorServiceInvariant)) failures.push(`live installer supervisor service is missing invariant: ${supervisorServiceInvariant}`);
 }
 if (!prepareProfile.includes("/etc/systemd/system/multi-user.target.wants/lokro-live-installer-supervisor.service")) failures.push("live installer supervisor is not enabled in the live image");

@@ -33,24 +33,16 @@ for ((attempt = 1; attempt <= 300; attempt++)); do
             "XDG_RUNTIME_DIR=${runtime_dir}"
             "DBUS_SESSION_BUS_ADDRESS=unix:path=${user_bus}"
         )
-        if (( ${#desktop_environment[@]} > 0 )); then
-            if ! "${user_connection[@]}" /usr/bin/systemctl --user set-environment \
-                "${desktop_environment[@]}"; then
-                printf '%s\n' 'failed user-environment-import' > "$supervisor_status"
-                emit 'LOKRO_INSTALLER_SUPERVISOR_FAILED user_environment_import'
-                exit 1
-            fi
-        fi
-
-        printf '%s\n' 'requesting-user-service' > "$supervisor_status"
-        if "${user_connection[@]}" /usr/bin/systemctl --user start lokro-live-installer.service; then
-            printf '%s\n' 'user-service-requested' > "$supervisor_status"
-            emit 'LOKRO_INSTALLER_SERVICE_REQUESTED'
+        printf '%s\n' 'launching-user-process' > "$supervisor_status"
+        emit 'LOKRO_INSTALLER_DIRECT_LAUNCH'
+        if "${user_connection[@]}" "${desktop_environment[@]}" \
+            /usr/local/bin/lokro-live-installer; then
+            printf '%s\n' 'user-process-exited code=0' > "$supervisor_status"
             exit 0
         else
             exit_code=$?
-            printf 'failed systemctl-exit=%s\n' "$exit_code" > "$supervisor_status"
-            emit "LOKRO_INSTALLER_SUPERVISOR_FAILED systemctl_exit=${exit_code}"
+            printf 'failed user-process-exit=%s\n' "$exit_code" > "$supervisor_status"
+            emit "LOKRO_INSTALLER_SUPERVISOR_FAILED user_process_exit=${exit_code}"
             exit "$exit_code"
         fi
     fi

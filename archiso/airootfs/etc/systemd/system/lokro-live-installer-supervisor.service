@@ -6,9 +6,9 @@ Wants=sddm.service
 ConditionPathExists=/run/archiso/bootmnt
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor
-RemainAfterExit=yes
+Restart=no
 
 [Install]
 WantedBy=multi-user.target
