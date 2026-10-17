@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lokro OS — Experimentelles Arch-Desktop-System</title>
+<meta name="description" content="Lokro OS: experimentelles x86_64-Desktop-Betriebssystem auf Arch-Basis mit KDE Plasma 6, Calamares-Installer und sicherem Update-Modell.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        lokro: { bg: '#0d0d10', panel: '#111019', card: '#151518', line: '#3f3f46', soft: '#27272a', txt: '#f5f4fb', mut: '#a1a1aa', dim: '#71717a' }
+      },
+      fontFamily: { sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'] }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+<style>
+  body { background:#0d0d10; }
+  .bg-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(244,244,245,.09) 1px, transparent 0);
+    background-size: 34px 34px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%);
+  }
+  .glass { background: rgba(255,255,255,.06); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.12); }
+  .glass-soft { background: rgba(255,255,255,.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.09); }
+  .glow { box-shadow: 0 0 80px -20px rgba(244,244,245,.25); }
+  .slash { background: linear-gradient(115deg, transparent 42%, #f4f4f5 42%, #f4f4f5 46%, transparent 46%, transparent 54%, #71717a 54%, #71717a 56%, transparent 56%); }
+</style>
+</head>
+<body class="text-lokro-txt font-sans antialiased" x-data="{ menu:false }">
+
+<!-- Hintergrund -->
+<div class="fixed inset-0 -z-10">
+  <div class="absolute inset-0 bg-grid"></div>
+  <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full opacity-25 blur-[140px]" style="background:radial-gradient(closest-side,#52525b,transparent)"></div>
+  <div class="absolute bottom-0 right-0 w-[500px] h-[400px] rounded-full opacity-15 blur-[120px]" style="background:radial-gradient(closest-side,#3f3f46,transparent)"></div>
+</div>
+
+<!-- NAV -->
+<header class="fixed top-0 inset-x-0 z-50">
+  <nav class="glass mx-3 sm:mx-6 mt-3 rounded-2xl px-4 sm:px-6 py-3 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <span class="w-9 h-9 rounded-xl bg-lokro-txt text-black font-extrabold flex items-center justify-center text-xl">L</span>
+      <span class="font-bold tracking-tight">LOKRO <span class="text-lokro-mut font-medium">OS</span></span>
+      <span class="hidden sm:inline text-xs px-2 py-1 rounded-full glass-soft text-lokro-mut">v0.1.0-alpha.11</span>
+    </a>
+    <div class="hidden md:flex items-center gap-7 text-sm text-lokro-mut">
+      <a href="#features" class="hover:text-white transition">Features</a>
+      <a href="#desktop" class="hover:text-white transition">Desktop</a>
+      <a href="#varianten" class="hover:text-white transition">Varianten</a>
+      <a href="#download" class="hover:text-white transition">Download</a>
+      <a href="#faq" class="hover:text-white transition">FAQ</a>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="https://github.com/jamjam1312/LOKROOS-Arch-based" class="hidden sm:inline-flex text-sm px-4 py-2 rounded-xl glass-soft hover:bg-white/10 transition">GitHub</a>
+      <a href="#download" class="text-sm font-semibold px-4 py-2 rounded-xl bg-lokro-txt text-black hover:bg-white transition">ISO holen</a>
+      <button @click="menu=!menu" class="md:hidden p-2 rounded-xl glass-soft" aria-label="Menü">
+        <svg x-show="!menu" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg x-show="menu" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" x-cloak><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </nav>
+  <div x-show="menu" x-cloak class="md:hidden mx-3 mt-2 rounded-2xl glass p-4 flex flex-col gap-3 text-sm">
+    <a href="#features" @click="menu=false" class="py-1">Features</a>
+    <a href="#desktop" @click="menu=false" class="py-1">Desktop</a>
+    <a href="#varianten" @click="menu=false" class="py-1">Varianten</a>
+    <a href="#download" @click="menu=false" class="py-1">Download</a>
+    <a href="#faq" @click="menu=false" class="py-1">FAQ</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="top" class="pt-32 sm:pt-40 pb-16 px-4 sm:px-6 max-w-6xl mx-auto text-center">
+  <div class="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full glass-soft text-lokro-mut mb-6">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    alpha.11 · BIOS- &amp; UEFI-Smoke verifiziert
+  </div>
+  <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">Lokro OS<br><span class="text-lokro-mut font-bold">Arch. Plasma. Dein System.</span></h1>
+  <p class="mt-5 max-w-2xl mx-auto text-lokro-mut text-base sm:text-lg">Experimentelles x86_64-Desktop-System auf Arch-Basis — mit KDE Plasma 6, Calamares-Installer, sicherem Update-Modell und eigener dunkler Identität. Für Test-VMs und Test-Hardware.</p>
+  <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="#download" class="px-7 py-3 rounded-2xl bg-lokro-txt text-black font-semibold hover:bg-white transition glow">Offline-ISO laden · 3,7 GB</a>
+    <a href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.11" class="px-7 py-3 rounded-2xl glass font-semibold hover:bg-white/10 transition">Release ansehen</a>
+  </div>
+  <div class="mt-10 grid grid-cols-3 max-w-xl mx-auto gap-3 text-center">
+    <div class="glass-soft rounded-2xl py-4"><div class="text-xl sm:text-2xl font-bold">3,7 GB</div><div class="text-xs text-lokro-mut mt-1">Offline-Variante</div></div>
+    <div class="glass-soft rounded-2xl py-4"><div class="text-xl sm:text-2xl font-bold">2,6 GB</div><div class="text-xs text-lokro-mut mt-1">Online-Variante</div></div>
+    <div class="glass-soft rounded-2xl py-4"><div class="text-xl sm:text-2xl font-bold">6.8</div><div class="text-xs text-lokro-mut mt-1">Plasma-Version</div></div>
+  </div>
+</section>
+
+<!-- DESKTOP MOCK -->
+<section id="desktop" class="px-4 sm:px-6 max-w-6xl mx-auto py-10">
+  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-center">Ein dunkler Desktop mit eigener Handschrift</h2>
+  <p class="text-center text-lokro-mut mt-3 max-w-2xl mx-auto">Lokro Dark, eigene Begrüßungszentrale, KRunner-Suche, Task-Manager — hier als stilisierte Vorschau im Glass-Look der Seite.</p>
+  <div class="mt-8 rounded-3xl glass overflow-hidden glow">
+    <div class="flex items-center gap-2 px-5 py-3 border-b border-white/10">
+      <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span><span class="w-3 h-3 rounded-full bg-[#febc2e]"></span><span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+      <span class="ml-3 text-xs text-lokro-mut">Willkommen bei LOKRO OS</span>
+    </div>
+    <div class="p-5 sm:p-8 grid sm:grid-cols-3 gap-4 bg-black/30">
+      <div class="glass-soft rounded-2xl p-5">
+        <div class="text-2xl mb-2">📶</div>
+        <div class="font-semibold">Verbindung</div>
+        <p class="text-sm text-lokro-mut mt-1">Online — Arch-Paketquellen sind erreichbar.</p>
+        <div class="flex gap-2 mt-4"><span class="text-xs px-3 py-1.5 rounded-lg bg-lokro-txt text-black font-semibold">Erneut prüfen</span><span class="text-xs px-3 py-1.5 rounded-lg glass-soft">Kurztest</span></div>
+      </div>
+      <div class="glass-soft rounded-2xl p-5">
+        <div class="text-2xl mb-2">🎨</div>
+        <div class="font-semibold">Personalisieren</div>
+        <p class="text-sm text-lokro-mut mt-1">Dark ist Standard. Panels, Widgets und Hintergrund frei anpassbar.</p>
+        <div class="flex gap-2 mt-4"><span class="text-xs px-3 py-1.5 rounded-lg bg-lokro-txt text-black font-semibold">Erscheinungsbild</span><span class="text-xs px-3 py-1.5 rounded-lg glass-soft">Widgets</span></div>
+      </div>
+      <div class="glass-soft rounded-2xl p-5">
+        <div class="text-2xl mb-2">🎮</div>
+        <div class="font-semibold">Gaming</div>
+        <p class="text-sm text-lokro-mut mt-1">Steam, Prism Launcher, GameMode und MangoHud als Option.</p>
+        <div class="flex gap-2 mt-4"><span class="text-xs px-3 py-1.5 rounded-lg bg-lokro-txt text-black font-semibold">Steam</span><span class="text-xs px-3 py-1.5 rounded-lg glass-soft">Minecraft</span></div>
+      </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/10 flex items-center justify-between text-xs text-lokro-mut">
+      <span>0.1.0 Alpha · Demo für Testgeräte</span><span class="hidden sm:inline">Ctrl+Esc Prozesse · Alt+Leertaste KRunner</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="px-4 sm:px-6 max-w-6xl mx-auto py-14">
+  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-center">Was drinsteckt</h2>
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🖥️</div><h3 class="font-semibold">KDE Plasma 6 auf Wayland</h3><p class="text-sm text-lokro-mut mt-2">Standard-Desktop mit XWayland für X11-Apps. Optional dazu eine Hyprland-Sitzung für Tastatur-Tiling.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">💿</div><h3 class="font-semibold">Calamares-Installer</h3><p class="text-sm text-lokro-mut mt-2">Gepinnter Calamares 3.3.14 mit Desktop-, Browser-, Grafik- und Gaming-Auswahl, LUKS-Option und GRUB für BIOS+UEFI.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">📦</div><h3 class="font-semibold">Offline- &amp; Online-Image</h3><p class="text-sm text-lokro-mut mt-2">Vollausstattung ohne Internet oder schlankes Image mit Netzinstallation — LibreOffice und Deutsch an Bord der Offline-Variante.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🎮</div><h3 class="font-semibold">Gaming-Pfad</h3><p class="text-sm text-lokro-mut mt-2">Steam, Prism Launcher, Java 8/17/21, GameMode, Gamescope, MangoHud — plus NVIDIA-open-Treiber für Turing und neuer.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🔄</div><h3 class="font-semibold">Sichere Updates</h3><p class="text-sm text-lokro-mut mt-2">5-Stunden-Timer mit niedriger Priorität, Backup vor jeder Installation, Kernel-Modul-Rettung — und nie etwas ohne deine Bestätigung.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🧩</div><h3 class="font-semibold">Flatpak &amp; Discover</h3><p class="text-sm text-lokro-mut mt-2">Pacman gehört das Basissystem, Flatpak die Apps. Dazu ein Link-Installer, der nur signierte HTTPS-Quellen akzeptiert.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🔍</div><h3 class="font-semibold">Suche &amp; Task-Manager</h3><p class="text-sm text-lokro-mut mt-2">KRunner/Wofi-Suche, Baloo-Index, Systemmonitor als Task-Manager, Cursor- und Tiling-Helfer ab Werk.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🎬</div><h3 class="font-semibold">LOKRO Media</h3><p class="text-sm text-lokro-mut mt-2">VLC-Engine mit eigenen Dateiassoziationen für MP3, MP4, Matroska und mehr — plus Ark und 7-Zip für Archive.</p></div>
+    <div class="glass rounded-2xl p-6 hover:bg-white/[.08] transition"><div class="text-2xl mb-3">🤖</div><h3 class="font-semibold">Lokale KI <span class="text-xs font-normal text-lokro-mut">(Konzept)</span></h3><p class="text-sm text-lokro-mut mt-2">Geplant: Benchmark beim Setup, Modell-Download nur nach Zustimmung, nichts vorinstalliert. Derzeit nur Doku, kein Code.</p></div>
+  </div>
+</section>
+
+<!-- VARIANTEN -->
+<section id="varianten" class="px-4 sm:px-6 max-w-4xl mx-auto py-10" x-data="{ tab:'offline' }">
+  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-center">Zwei Images, eine Basis</h2>
+  <div class="mt-6 flex justify-center gap-2">
+    <button @click="tab='offline'" :class="tab==='offline' ? 'bg-lokro-txt text-black' : 'glass-soft'" class="px-5 py-2 rounded-xl text-sm font-semibold transition">Offline · 3,7 GB</button>
+    <button @click="tab='online'" :class="tab==='online' ? 'bg-lokro-txt text-black' : 'glass-soft'" class="px-5 py-2 rounded-xl text-sm font-semibold transition">Online · 2,6 GB</button>
+  </div>
+  <div x-show="tab==='offline'" class="mt-6 glass rounded-3xl p-6 sm:p-8">
+    <h3 class="font-bold text-lg">Die vollständige Variante</h3>
+    <ul class="mt-4 space-y-2 text-sm text-lokro-mut">
+      <li>✔ Firefox, LibreOffice, Dolphin, Kate, Okular, Gwenview, Spectacle an Bord</li>
+      <li>✔ Installiert alles ohne Internet — ideal als Recovery-Medium</li>
+      <li>✔ Gaming- und NVIDIA-Pakete liegen als lokales Repo auf dem Stick</li>
+    </ul>
+  </div>
+  <div x-show="tab==='online'" x-cloak class="mt-6 glass rounded-3xl p-6 sm:p-8">
+    <h3 class="font-bold text-lg">Die schlanke Variante</h3>
+    <ul class="mt-4 space-y-2 text-sm text-lokro-mut">
+      <li>✔ Plasma + Firefox als Offline-Notfall — lädt den Rest aus signierten Arch-Repos</li>
+      <li>✔ Kleinerer Download, gleiche Installer-Auswahl</li>
+      <li>✔ Braucht für die Vollausstattung eine Netzverbindung</li>
+    </ul>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download" class="px-4 sm:px-6 max-w-6xl mx-auto py-14" x-data="{ copied:false }">
+  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-center">Download</h2>
+  <p class="text-center text-lokro-mut mt-3 max-w-2xl mx-auto">GitHub begrenzt Dateien auf unter 2 GiB — deshalb liegen die ISOs als nummerierte Teile im Release. Einfach alle Teile einer Variante laden und zusammensetzen.</p>
+  <div class="mt-8 grid md:grid-cols-2 gap-4">
+    <div class="glass rounded-3xl p-6 sm:p-8">
+      <div class="text-xs uppercase tracking-widest text-lokro-mut">Empfohlen</div>
+      <h3 class="font-bold text-xl mt-1">Offline · 3,7 GB</h3>
+      <div class="mt-4 flex flex-col gap-2 text-sm">
+        <a class="px-4 py-2.5 rounded-xl glass-soft hover:bg-white/10 transition text-center" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.11/lokro-os-offline-0.1.0-alpha.11-x86_64.iso.001">Teil 1 (.001)</a>
+        <a class="px-4 py-2.5 rounded-xl glass-soft hover:bg-white/10 transition text-center" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.11/lokro-os-offline-0.1.0-alpha.11-x86_64.iso.002">Teil 2 (.002)</a>
+      </div>
+    </div>
+    <div class="glass rounded-3xl p-6 sm:p-8">
+      <div class="text-xs uppercase tracking-widest text-lokro-mut">Schlank</div>
+      <h3 class="font-bold text-xl mt-1">Online · 2,6 GB</h3>
+      <div class="mt-4 flex flex-col gap-2 text-sm">
+        <a class="px-4 py-2.5 rounded-xl glass-soft hover:bg-white/10 transition text-center" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.11/lokro-os-online-0.1.0-alpha.11-x86_64.iso.001">Teil 1 (.001)</a>
+        <a class="px-4 py-2.5 rounded-xl glass-soft hover:bg-white/10 transition text-center" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.11/lokro-os-online-0.1.0-alpha.11-x86_64.iso.002">Teil 2 (.002)</a>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 glass rounded-3xl p-6 sm:p-8">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <h3 class="font-bold">Zusammensetzen &amp; prüfen (Linux)</h3>
+      <button @click="navigator.clipboard.writeText($refs.cmd.innerText); copied=true; setTimeout(()=>copied=false,2000)" class="text-xs px-3 py-1.5 rounded-lg glass-soft hover:bg-white/10 transition" x-text="copied ? 'Kopiert ✓' : 'Kopieren'"></button>
+    </div>
+    <pre x-ref="cmd" class="mt-3 text-xs sm:text-sm overflow-x-auto rounded-xl bg-black/50 p-4 text-lokro-mut">cat lokro-os-offline-0.1.0-alpha.11-x86_64.iso.??? &gt; lokro-os-offline-0.1.0-alpha.11-x86_64.iso
+sha256sum -c SHA256SUMS --ignore-missing</pre>
+    <p class="mt-3 text-sm text-lokro-mut">Prüfsummen: <a class="underline hover:text-white" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.11/SHA256SUMS">SHA256SUMS</a> · Anleitung: <a class="underline hover:text-white" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.11">REASSEMBLE im Release</a></p>
+  </div>
+  <div class="mt-4 glass-soft rounded-3xl p-6 text-sm text-lokro-mut">
+    📦 <strong class="text-white">Bald:</strong> Direkt-Download als ZIP bzw. vollständige ISO über <code>docs/</code> (Blob-/Usercontent-Link) — sobald das Paket dort liegt, wird es hier verlinkt.
+  </div>
+  <p class="mt-4 text-xs text-lokro-dim text-center">Experimentelle Alpha für Test-VMs und Test-Hardware — kein Produktivsystem, kein garantierter Dual-Boot. Vor dem Schreiben auf USB die Prüfsumme vergleichen.</p>
+</section>
+
+<!-- STATUS -->
+<section class="px-4 sm:px-6 max-w-4xl mx-auto py-10">
+  <div class="glass rounded-3xl p-6 sm:p-8">
+    <h2 class="font-bold text-lg">Ehrlicher Status: alpha.11</h2>
+    <div class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
+      <div class="rounded-2xl bg-emerald-400/10 border border-emerald-400/20 p-4">✔ BIOS- &amp; UEFI-Plasma-Smoke bestanden<br>✔ Beide ISOs gebaut &amp; Größen-Limit eingehalten<br>✔ Release mit Manifesten &amp; Lizenzen publiziert</div>
+      <div class="rounded-2xl bg-amber-400/10 border border-amber-400/20 p-4">○ VM-Installation &amp; Hardware-Matrix offen<br><span class="text-lokro-mut">AMD/NVIDIA, Audio, Bluetooth, Suspend, Steam — Menschenarbeit, kein Haken ohne Nachweis.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="px-4 sm:px-6 max-w-3xl mx-auto py-10" x-data="{ open:null }">
+  <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-center">FAQ</h2>
+  <div class="mt-6 space-y-3">
+    <div class="glass rounded-2xl overflow-hidden">
+      <button @click="open===1?open=null:open=1" class="w-full text-left px-5 py-4 font-semibold text-sm flex justify-between items-center">Was brauche ich zum Ausprobieren?<span x-text="open===1?'−':'+'"></span></button>
+      <div x-show="open===1" x-cloak class="px-5 pb-4 text-sm text-lokro-mut">Eine VM (4 GB RAM, 2 CPUs, 32 GB Platte) oder Test-Hardware, Ventoy/USB-Stick und ein Backup, falls du auf Hardware installierst.</div>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button @click="open===2?open=null:open=2" class="w-full text-left px-5 py-4 font-semibold text-sm flex justify-between items-center">Geht Dual-Boot mit Windows?<span x-text="open===2?'−':'+'"></span></button>
+      <div x-show="open===2" x-cloak class="px-5 pb-4 text-sm text-lokro-mut">Best-effort per os-prober, aber Alpha: BitLocker, Fast Startup und BIOS/UEFI-Mix können die Erkennung verhindern. Backup ist Pflicht.</div>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button @click="open===3?open=null:open=3" class="w-full text-left px-5 py-4 font-semibold text-sm flex justify-between items-center">Gibt es AUR-Helper oder Secure Boot?<span x-text="open===3?'−':'+'"></span></button>
+      <div x-show="open===3" x-cloak class="px-5 pb-4 text-sm text-lokro-mut">Nein — keine AUR-Helper im Image, keine Shell-Pipe-Installer. Secure Boot wird nicht unterstützt.</div>
+    </div>
+    <div class="glass rounded-2xl overflow-hidden">
+      <button @click="open===4?open=null:open=4" class="w-full text-left px-5 py-4 font-semibold text-sm flex justify-between items-center">Ist die KI schon drin?<span x-text="open===4?'−':'+'"></span></button>
+      <div x-show="open===4" x-cloak class="px-5 pb-4 text-sm text-lokro-mut">Nein. Es gibt nur einen optionalen Ollama-Downloader. Der Assistent mit Benchmark und Systemsteuerung ist ein dokumentiertes Konzept — kein Code.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="mt-10 border-t border-white/10 px-4 sm:px-6 py-8 text-center text-sm text-lokro-mut">
+  <div class="font-bold text-white">LOKRO OS <span class="font-normal text-lokro-mut">· v0.1.0-alpha.11 · x86_64</span></div>
+  <div class="mt-2 flex justify-center gap-5 flex-wrap">
+    <a href="https://github.com/jamjam1312/LOKROOS-Arch-based" class="hover:text-white">Quelle</a>
+    <a href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.11" class="hover:text-white">Releases</a>
+    <a href="https://github.com/jamjam1312/LOKROOS-Arch-based/issues" class="hover:text-white">Issues</a>
+    <a href="https://www.twitch.tv/lokrogamer" class="hover:text-white">Community</a>
+  </div>
+  <div class="mt-3 text-xs text-lokro-dim">Code GPL-3.0-or-later · Artwork CC-BY-SA-4.0 · Upstream-Lizenzen bleiben bestehen.</div>
+</footer>
+
+</body>
+</html>
