@@ -3,8 +3,10 @@
 set -euo pipefail
 
 if [[ "$(id -un)" != liveuser ]] || [[ ! -e /run/archiso/bootmnt ]]; then
-    command -v kdialog >/dev/null 2>&1 &&
-        kdialog --title 'LOKRO OS Installer' --sorry 'Der Installer ist nur im gestarteten LOKRO-Live-System verfügbar.' >/dev/null 2>&1 || true
+    if command -v kdialog >/dev/null 2>&1; then
+        kdialog --title 'LOKRO OS Installer' --sorry \
+            'Der Installer ist nur im gestarteten LOKRO-Live-System verfügbar.' >/dev/null 2>&1 || true
+    fi
     exit 1
 fi
 
