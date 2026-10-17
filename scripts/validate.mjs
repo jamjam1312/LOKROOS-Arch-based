@@ -14,6 +14,8 @@ const required = [
   "docs/RELEASE_STATUS.md", "docs/STANDALONE_INSTALL.md", "archiso/packages/common.x86_64",
   "archiso/packages/offline.x86_64", "archiso/packages/online.x86_64",
   "archiso/airootfs/etc/plymouth/plymouthd.conf",
+  "archiso/airootfs/usr/local/bin/lokro-live-installer",
+  "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "vendor/ckbcomp/PKGBUILD",
   "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
@@ -139,7 +141,7 @@ const grubConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-con
 if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB is not configured to discover other operating systems");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
-for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf"]) {
+for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer"]) {
   if (!installerCleanup.includes(liveArtifact)) failures.push(`installer cleanup does not remove live artifact: ${liveArtifact}`);
 }
 if (!installerCleanup.includes("HOOKS=(base systemd plymouth autodetect")) failures.push("installed target does not receive a disk-root initramfs configuration");
@@ -168,8 +170,14 @@ if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome c
 if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
 if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome center does not expose the app store");
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
-for (const storeInvariant of ["_upstream_version=0.1.0-alpha.3", "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177", "python-setuptools", "assets/icons/*.svg"]) {
-  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-3 invariant: ${storeInvariant}`);
+for (const storeInvariant of ["_upstream_version=0.1.0-alpha.6", "5819d364577a421c58c189a32b2523bf3bd422df3f31f93f4939106bc475c37c", "python-setuptools", "assets/icons/*.svg"]) {
+  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-6 invariant: ${storeInvariant}`);
+}
+
+const hubQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/contents/ui/main.qml"), "utf8");
+if (/required property string icon\b/.test(hubQml)) failures.push("LOKRO Hub must not override the Plasma Button final icon property");
+for (const role of ["serviceName", "serviceUrl", "serviceIcon"]) {
+  if (!hubQml.includes(role)) failures.push(`LOKRO Hub is missing safe model role: ${role}`);
 }
 
 const prepareProfile = fs.readFileSync(path.join(root, "scripts/prepare-profile.sh"), "utf8");
@@ -194,16 +202,26 @@ const liveUserService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/sy
 if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.test(liveUserService) || !/Before=sddm\.service/.test(liveUserService)) {
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
+const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
+for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "sudo -E /usr/bin/calamares -d"]) {
+  if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
+}
+const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
+if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
+  failures.push("live installer does not auto-start through the guarded launcher in Plasma");
+}
+const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-create-live-user"), "utf8");
+if (!liveUserScript.includes("/home/liveuser/Desktop/Install-LOKRO-OS.desktop")) failures.push("live desktop is missing a visible installer shortcut");
 const liveSddm = fs.readFileSync(path.join(root, "archiso/airootfs/etc/sddm.conf.d/10-lokro-live.conf"), "utf8");
 for (const displayInvariant of ["Session=plasma", "DisplayServer=x11"]) {
   if (!liveSddm.includes(displayInvariant)) failures.push(`live SDDM configuration is missing: ${displayInvariant}`);
 }
 const smokeScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-smoke-ready"), "utf8");
-for (const invariant of ["pgrep -u liveuser -x plasmashell", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_SMOKE_FAILED"]) {
+for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
   if (!smokeScript.includes(invariant)) failures.push(`smoke watcher is missing invariant: ${invariant}`);
 }
 const smokeBoot = fs.readFileSync(path.join(root, "scripts/smoke-boot.sh"), "utf8");
-for (const bootInvariant of ["-c /dev/kvm", "acceleration='kvm'", "tcg,thread=multi", "timeout 900s", "attempt < 900"]) {
+for (const bootInvariant of ["-c /dev/kvm", "acceleration='kvm'", "tcg,thread=multi", "timeout 900s", "attempt < 900", "LOKRO_LIVE_READY"]) {
   if (!smokeBoot.includes(bootInvariant)) failures.push(`VM smoke boot is missing acceleration/timeout invariant: ${bootInvariant}`);
 }
 for (const smokeArtifact of ["lokro-smoke-ready.service", "/usr/local/sbin/lokro-smoke-ready"]) {

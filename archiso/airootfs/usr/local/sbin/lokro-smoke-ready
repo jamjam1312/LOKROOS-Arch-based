@@ -11,9 +11,19 @@ emit() {
 }
 
 emit 'LOKRO_SMOKE_WATCHER_STARTED'
+plasma_ready=0
+installer_ready=0
 for ((attempt = 1; attempt <= 600; attempt++)); do
-    if pgrep -u liveuser -x plasmashell >/dev/null 2>&1; then
+    if (( plasma_ready == 0 )) && pgrep -u liveuser -x plasmashell >/dev/null 2>&1; then
         emit 'LOKRO_PLASMA_READY'
+        plasma_ready=1
+    fi
+    if (( installer_ready == 0 )) && pgrep -x calamares >/dev/null 2>&1; then
+        emit 'LOKRO_INSTALLER_READY'
+        installer_ready=1
+    fi
+    if (( plasma_ready == 1 && installer_ready == 1 )); then
+        emit 'LOKRO_LIVE_READY'
         exit 0
     fi
     if (( attempt % 30 == 0 )); then
@@ -22,5 +32,5 @@ for ((attempt = 1; attempt <= 600; attempt++)); do
     sleep 1
 done
 
-emit 'LOKRO_SMOKE_FAILED plasmashell-not-running'
+emit "LOKRO_SMOKE_FAILED plasma_ready=${plasma_ready} installer_ready=${installer_ready}"
 exit 1

@@ -54,7 +54,14 @@ case "$action" in
         launch kdialog --title "LOKRO Desktop-Sitzungen" --msgbox \
             "Plasma ist der unterstützte Standard. Wenn Hyprland im Installer gewählt wurde, kannst du am SDDM-Anmeldebildschirm über das Sitzungsmenü zwischen Plasma und Hyprland wechseln."
         ;;
-    installer) launch pkexec calamares -d ;;
+    installer)
+        if [[ -x /usr/local/bin/lokro-live-installer ]]; then
+            launch /usr/local/bin/lokro-live-installer
+        else
+            launch kdialog --title "LOKRO OS Installer" --sorry \
+                "Der Installer ist nur im gestarteten LOKRO-Live-System verfügbar."
+        fi
+        ;;
     steam)
         if command -v steam >/dev/null 2>&1; then launch steam; else launch plasma-discover; fi
         ;;

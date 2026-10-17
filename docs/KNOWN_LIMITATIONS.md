@@ -1,4 +1,4 @@
-# Known limitations — 0.1.0-alpha.14
+# Known limitations — 0.1.0-alpha.15
 
 - This is an alpha for test machines. Secure Boot and guaranteed dual-boot are not supported.
 - LUKS1 encryption is available but remains experimental until BIOS and UEFI installs have completed the full reboot test. LUKS2/Argon2 is intentionally deferred because stock GRUB compatibility needs more integration work.
@@ -6,7 +6,7 @@
 - NVIDIA's packaged open kernel module supports Turing / GTX 16 / RTX 20 and newer. Older NVIDIA hardware stays on Nouveau; no legacy AUR driver is installed.
 - Plasma is Wayland-only. X11 applications run through XWayland, but there is no Plasma X11 login session.
 - Hyprland is an optional secondary Wayland session, not a second full LOKRO desktop. Plasma remains the supported default and some KDE settings only affect Plasma.
-- Design packs are user-scoped and intentionally limited to declarative settings, KDE color files and ordinary wallpaper images. Arbitrary QML themes, scripts, executables and remotely downloaded packs are not accepted in this alpha; cursor and look-and-feel identifiers must already be installed by a trusted package.
+- Design packs are user-scoped and intentionally limited to declarative settings, KDE color files and ordinary wallpaper images. The Store accepts only reviewed packs with an immutable HTTPS URL and exact SHA-256; arbitrary remote packs, QML themes, scripts and executables remain blocked. Cursor and look-and-feel identifiers must already be installed by a trusted package.
 - LOKRO Media is a branded launcher and file-association layer around unmodified VLC, not a fork or a new decoding engine. VLC retains its own interface and license.
 - The Link Installer cannot safely turn every Linux download URL into an installable application. It accepts only HTTPS Flatpak refs/bundles, signature-verifiable Arch packages and AppImages; scripts, DEB/RPM packages and archives are rejected intentionally.
 - KRunner and Baloo approximate Everything-style search, but Linux permission boundaries still apply and filename results become complete only after initial indexing.

@@ -25,6 +25,7 @@ choice="$(kdialog --title 'LOKRO Design Packs' --menu \
     apply 'Installiertes Design anwenden' \
     folder 'Design-Pack-Ordner installieren' \
     archive '.lokrodesign-Datei installieren' \
+    catalog 'LOKRO Store nach Design-Packs durchsuchen' \
     appearance 'Plasma-Einstellungen öffnen' 2>/dev/null || true)"
 
 case "$choice" in
@@ -50,5 +51,6 @@ case "$choice" in
         selected="$(kdialog --title '.lokrodesign-Datei auswählen' --getopenfilename "$HOME" '*.lokrodesign|LOKRO Design Pack (*.lokrodesign)' 2>/dev/null || true)"
         [[ -n "$selected" ]] && run_pack_command install "$selected"
         ;;
+    catalog) /usr/bin/lokro-store >/dev/null 2>&1 & ;;
     appearance) systemsettings kcm_lookandfeel >/dev/null 2>&1 & ;;
 esac

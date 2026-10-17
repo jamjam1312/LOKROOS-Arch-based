@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-installer-config
 pkgver=0.1.0
-pkgrel=5
+pkgrel=6
 pkgdesc='Calamares configuration and branding for Lokro OS'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Arch-based'

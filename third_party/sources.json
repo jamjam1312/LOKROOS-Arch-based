@@ -64,11 +64,19 @@
     },
     {
       "name": "LOKRO Store",
-      "version": "0.1.0-alpha.3",
-      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.3",
-      "sha256": "1472848d780e4f38c1a74e783a607ae1bf02b4458a414f4d6641523655554177",
+      "version": "0.1.0-alpha.6",
+      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.6",
+      "sha256": "5819d364577a421c58c189a32b2523bf3bd422df3f31f93f4939106bc475c37c",
       "license": "CC0-1.0; bundled third-party icons retain their documented upstream licenses",
       "usage": "checksum-pinned offline catalog and Qt UI built by packages/lokro-store/PKGBUILD"
+    },
+    {
+      "name": "ArtCraft Launcher",
+      "version": "0.3.2",
+      "source": "https://github.com/storytold/craft-launcher/releases/download/v0.3.2/artcraft-launcher-0.3.2-linux-x86_64.flatpak",
+      "sha256": "67d135d290117b345b9a6ae3cab4391587cae3fa178a8abfcc2cd8e3f2d35d92",
+      "license": "MIT OR Apache-2.0; upstream branding remains subject to its separate trademark terms",
+      "usage": "optional user-requested Store download; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
     },
     {
       "name": "7-Zip",

@@ -43,6 +43,7 @@ printf '%s  %s\n' \
     "$PROFILE_DIR/airootfs/usr/share/lokro/flathub.flatpakrepo" | sha256sum --check --status
 chmod 0755 "$PROFILE_DIR/airootfs/usr/local/sbin/lokro-create-live-user"
 chmod 0755 "$PROFILE_DIR/airootfs/usr/local/sbin/lokro-smoke-ready"
+chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lokro-live-installer"
 chmod 0440 "$PROFILE_DIR/airootfs/etc/sudoers.d/10-liveuser"
 mkdir -p "$PROFILE_DIR/airootfs/etc/lokro" "$PROFILE_DIR/airootfs/etc/calamares/modules"
 printf '%s\n' "$variant" > "$PROFILE_DIR/airootfs/etc/lokro/build-variant"

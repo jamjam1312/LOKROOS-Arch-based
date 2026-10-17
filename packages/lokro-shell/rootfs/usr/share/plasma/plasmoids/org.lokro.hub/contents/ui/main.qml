@@ -27,8 +27,14 @@ PlasmoidItem {
                 servicesModel.clear()
                 for (var i = 0; i < entries.length; ++i) {
                     var item = entries[i]
-                    if (item.id && item.name && item.url && item.icon)
-                        servicesModel.append(item)
+                    if (item.id && item.name && item.url && item.icon) {
+                        servicesModel.append({
+                            serviceId: item.id,
+                            serviceName: item.name,
+                            serviceUrl: item.url,
+                            serviceIcon: item.icon
+                        })
+                    }
                 }
                 loadError = ""
             } catch (error) {
@@ -82,13 +88,13 @@ PlasmoidItem {
                 model: servicesModel
                 spacing: Kirigami.Units.smallSpacing
                 delegate: PlasmaComponents.Button {
-                    required property string name
-                    required property string url
-                    required property string icon
+                    required property string serviceName
+                    required property string serviceUrl
+                    required property string serviceIcon
                     width: ListView.view.width
-                    text: name
-                    icon.name: icon
-                    onClicked: Qt.openUrlExternally(url)
+                    text: serviceName
+                    icon.name: serviceIcon
+                    onClicked: Qt.openUrlExternally(serviceUrl)
                 }
             }
             PlasmaComponents.Label {

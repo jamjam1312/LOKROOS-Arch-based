@@ -2,6 +2,34 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
+## Alpha.15 source candidate — not yet released
+
+The current source version is `0.1.0-alpha.15`, while alpha.14 remains the
+latest downloadable build until the complete GitHub workflow succeeds. The
+candidate reacts to the first reported Intel NUC live-hardware test:
+
+- Calamares starts automatically after the Plasma live session appears and a
+  second, visible installer shortcut is placed on the live desktop. Both use a
+  live-media guard and the passwordless live-user sudo policy; no disk is
+  selected automatically.
+- The LOKRO Hub no longer declares `icon` on a Plasma button delegate, which
+  previously attempted to override a final QML property and prevented the
+  widget from loading.
+- LOKRO Store `v0.1.0-alpha.6` creates or repairs a user-scoped Flathub remote
+  before installing exact application IDs.
+- ArtCraft Launcher 0.3.2 is installable from its official versioned x86_64
+  Flatpak bundle after a fixed SHA-256 check. It remains clearly experimental.
+- The Design Pack dialog now opens the Store catalog as well as local folders
+  and `.lokrodesign` files. The Store includes one reviewed first-party pack
+  that is downloaded from an immutable tag, SHA-256 verified and passed to the
+  existing no-script importer.
+- The BIOS/UEFI smoke gate now requires both Plasma and the automatically
+  opened Calamares window instead of accepting the desktop alone.
+
+These points describe source implementation only. They have not yet passed the
+alpha.15 Arch package build, ISO build, BIOS/UEFI smoke boot or another physical
+installation attempt.
+
 ## Implemented in the source tree
 
 - x86_64-only Archiso desktop images, based on the official releng profile.
@@ -11,7 +39,7 @@ This file separates implemented source from tested release claims. An item being
 - Fully embedded Arch base, kernel and firmware; no pre-installed operating system is required.
 - UEFI and legacy BIOS boot configuration; GPT/ext4 default, manual partitioning and optional LUKS encryption.
 - Pacman base-system management plus Flatpak, Flathub setup and KDE Discover.
-- Pinned LOKRO Store `v0.1.0-alpha.3` with an offline catalog, search, categories, upstream links and user-scoped Flathub installation. Its ArtCraft suite preview is clearly experimental and link-only; the remote catalog cannot provide shell commands or executable downloads.
+- Pinned LOKRO Store `v0.1.0-alpha.6` with an offline catalog, search, categories, repaired user-scoped Flathub installation, a checksum-pinned ArtCraft Flatpak bundle and a checksum-pinned declarative LOKRO design pack. Catalog data still cannot provide shell commands.
 - NetworkManager, Wi-Fi database and iwd tooling, LAN support through the Linux kernel, Bluetooth, USB utilities, Thunderbolt tooling and current Arch firmware packages.
 - Mesa/OpenGL, AMD/Intel/Nouveau Vulkan and video acceleration. The offline installer can optionally install `nvidia-open`, `nvidia-utils` and `lib32-nvidia-utils` for supported Turing-or-newer NVIDIA hardware.
 - PipeWire audio, power management, ZRAM, KDE settings, theming and desktop widgets.
