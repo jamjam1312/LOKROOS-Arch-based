@@ -19,6 +19,9 @@ rm -f /etc/xdg/autostart/lokro-live-installer.desktop
 rm -f /etc/polkit-1/rules.d/49-lokro-live-installer.rules
 rm -f /etc/systemd/user/plasma-workspace.target.wants/lokro-live-installer.service
 rm -f /etc/systemd/user/lokro-live-installer.service
+rm -f /etc/systemd/system/multi-user.target.wants/lokro-live-installer-supervisor.service
+rm -f /etc/systemd/system/lokro-live-installer-supervisor.service
+rm -f /usr/local/sbin/lokro-live-installer-supervisor
 rm -f /root/customize_airootfs.sh /root/.automated_script.sh
 rm -f /usr/local/bin/Installation_guide /etc/motd
 rm -f /etc/pacman.d/hooks/uncomment-mirrors.hook

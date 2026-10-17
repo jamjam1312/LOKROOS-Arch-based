@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+set -euo pipefail
+
+serial=/dev/ttyS0
+supervisor_status=/run/lokro-installer-supervisor.status
+
+emit() {
+    if [[ -w "$serial" ]]; then
+        printf '%s\n' "$1" > "$serial" || true
+    fi
+}
+
+live_uid="$(id -u liveuser)"
+runtime_dir="/run/user/${live_uid}"
+user_bus="${runtime_dir}/bus"
+printf '%s\n' 'waiting-for-plasma' > "$supervisor_status"
+
+for ((attempt = 1; attempt <= 300; attempt++)); do
+    plasma_pid="$(pgrep -u liveuser -x plasmashell | head -n 1 || true)"
+    if [[ -n "$plasma_pid" && -S "$user_bus" ]]; then
+        desktop_environment=()
+        while IFS= read -r -d '' entry; do
+            case "$entry" in
+                DISPLAY=*|WAYLAND_DISPLAY=*|XDG_CURRENT_DESKTOP=*|XDG_SESSION_TYPE=*|QT_QPA_PLATFORM=*|XAUTHORITY=*)
+                    desktop_environment+=("$entry")
+                    ;;
+            esac
+        done < "/proc/${plasma_pid}/environ"
+
+        user_connection=(
+            /usr/bin/runuser -u liveuser -- /usr/bin/env
+            "XDG_RUNTIME_DIR=${runtime_dir}"
+            "DBUS_SESSION_BUS_ADDRESS=unix:path=${user_bus}"
+        )
+        if (( ${#desktop_environment[@]} > 0 )); then
+            if ! "${user_connection[@]}" /usr/bin/systemctl --user set-environment \
+                "${desktop_environment[@]}"; then
+                printf '%s\n' 'failed user-environment-import' > "$supervisor_status"
+                emit 'LOKRO_INSTALLER_SUPERVISOR_FAILED user_environment_import'
+                exit 1
+            fi
+        fi
+
+        printf '%s\n' 'requesting-user-service' > "$supervisor_status"
+        if "${user_connection[@]}" /usr/bin/systemctl --user start lokro-live-installer.service; then
+            printf '%s\n' 'user-service-requested' > "$supervisor_status"
+            emit 'LOKRO_INSTALLER_SERVICE_REQUESTED'
+            exit 0
+        else
+            exit_code=$?
+            printf 'failed systemctl-exit=%s\n' "$exit_code" > "$supervisor_status"
+            emit "LOKRO_INSTALLER_SUPERVISOR_FAILED systemctl_exit=${exit_code}"
+            exit "$exit_code"
+        fi
+    fi
+    sleep 1
+done
+
+printf '%s\n' 'failed plasma-or-user-bus-timeout' > "$supervisor_status"
+emit 'LOKRO_INSTALLER_SUPERVISOR_FAILED plasma_or_user_bus_timeout'
+exit 1

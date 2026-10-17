@@ -18,6 +18,8 @@ const required = [
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules",
   "archiso/airootfs/etc/systemd/user/lokro-live-installer.service",
+  "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
+  "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
   "vendor/ckbcomp/PKGBUILD",
   "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
@@ -146,7 +148,7 @@ const grubConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-con
 if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB is not configured to discover other operating systems");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
-for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service"]) {
+for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service", "lokro-live-installer-supervisor.service", "/usr/local/sbin/lokro-live-installer-supervisor"]) {
   if (!installerCleanup.includes(liveArtifact)) failures.push(`installer cleanup does not remove live artifact: ${liveArtifact}`);
 }
 if (!installerCleanup.includes("HOOKS=(base systemd plymouth autodetect")) failures.push("installed target does not receive a disk-root initramfs configuration");
@@ -214,7 +216,7 @@ for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
 }
 const liveInstallerPolicy = fs.readFileSync(path.join(root, "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"), "utf8");
-for (const policyInvariant of ["com.github.calamares.calamares.pkexec.run", 'subject.user === "liveuser"', "subject.local", "subject.active", "polkit.Result.YES"]) {
+for (const policyInvariant of ["com.github.calamares.calamares.pkexec.run", 'subject.user === "liveuser"', "polkit.Result.YES", "removed from the installed target"]) {
   if (!liveInstallerPolicy.includes(policyInvariant)) failures.push(`live installer Polkit rule is missing invariant: ${policyInvariant}`);
 }
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
@@ -225,16 +227,24 @@ const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/loc
 if (!liveUserScript.includes("/home/liveuser/Desktop/Install-LOKRO-OS.desktop")) failures.push("live desktop is missing a visible installer shortcut");
 if (!liveUserScript.includes("/home/liveuser/.config/autostart/lokro-live-installer.desktop")) failures.push("live user is missing a user-scoped installer autostart fallback");
 const liveInstallerUserService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/user/lokro-live-installer.service"), "utf8");
-for (const serviceInvariant of ["After=plasma-workspace.target", "PartOf=plasma-workspace.target", "ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/local/bin/lokro-live-installer", "WantedBy=plasma-workspace.target"]) {
+for (const serviceInvariant of ["ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/local/bin/lokro-live-installer", "Type=simple"]) {
   if (!liveInstallerUserService.includes(serviceInvariant)) failures.push(`live installer user service is missing invariant: ${serviceInvariant}`);
 }
-if (!prepareProfile.includes("/etc/systemd/user/plasma-workspace.target.wants/lokro-live-installer.service")) failures.push("live installer user service is not enabled for Plasma");
+const liveInstallerSupervisor = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor"), "utf8");
+for (const supervisorInvariant of ["pgrep -u liveuser -x plasmashell", "/run/user/${live_uid}", "DBUS_SESSION_BUS_ADDRESS=unix:path=", "systemctl --user set-environment", "systemctl --user start lokro-live-installer.service", "LOKRO_INSTALLER_SERVICE_REQUESTED", "LOKRO_INSTALLER_SUPERVISOR_FAILED"]) {
+  if (!liveInstallerSupervisor.includes(supervisorInvariant)) failures.push(`live installer supervisor is missing invariant: ${supervisorInvariant}`);
+}
+const liveInstallerSupervisorService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service"), "utf8");
+for (const supervisorServiceInvariant of ["After=lokro-live-user.service sddm.service", "ConditionPathExists=/run/archiso/bootmnt", "ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor", "WantedBy=multi-user.target"]) {
+  if (!liveInstallerSupervisorService.includes(supervisorServiceInvariant)) failures.push(`live installer supervisor service is missing invariant: ${supervisorServiceInvariant}`);
+}
+if (!prepareProfile.includes("/etc/systemd/system/multi-user.target.wants/lokro-live-installer-supervisor.service")) failures.push("live installer supervisor is not enabled in the live image");
 const liveSddm = fs.readFileSync(path.join(root, "archiso/airootfs/etc/sddm.conf.d/10-lokro-live.conf"), "utf8");
 for (const displayInvariant of ["Session=plasma", "DisplayServer=x11"]) {
   if (!liveSddm.includes(displayInvariant)) failures.push(`live SDDM configuration is missing: ${displayInvariant}`);
 }
 const smokeScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-smoke-ready"), "utf8");
-for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "lokro-installer.status", "exited code=|rejected", "installer_status=", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
+for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "lokro-installer.status", "lokro-installer-supervisor.status", "exited code=|rejected", "supervisor_status=", "installer_status=", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
   if (!smokeScript.includes(invariant)) failures.push(`smoke watcher is missing invariant: ${invariant}`);
 }
 const smokeBoot = fs.readFileSync(path.join(root, "scripts/smoke-boot.sh"), "utf8");

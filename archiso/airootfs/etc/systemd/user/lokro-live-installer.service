@@ -1,14 +1,9 @@
 [Unit]
 Description=Start the guarded LOKRO OS live installer
 Documentation=https://github.com/jamjam1312/LOKROOS-Arch-based
-After=plasma-workspace.target
-PartOf=plasma-workspace.target
 ConditionPathExists=/run/archiso/bootmnt
 
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/lokro-live-installer
 Restart=no
-
-[Install]
-WantedBy=plasma-workspace.target
