@@ -1,17 +1,22 @@
-# LOKRO OS 0.1.0-alpha.14 release status
+# LOKRO OS release status (alpha.16 source / alpha.14 release)
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Alpha.15 source candidate — not yet released
+## Alpha.16 source candidate — not yet released
 
-The current source version is `0.1.0-alpha.15`, while alpha.14 remains the
-latest downloadable build until the complete GitHub workflow succeeds. The
-candidate reacts to the first reported Intel NUC live-hardware test:
+The current source version is `0.1.0-alpha.16`, while alpha.14 remains the
+latest downloadable build until the complete GitHub workflow succeeds. It
+keeps the alpha.15 hardware-test fixes and corrects the installer launch path
+that failed alpha.15's automated BIOS test:
 
-- Calamares starts automatically after the Plasma live session appears and a
-  second, visible installer shortcut is placed on the live desktop. Both use a
-  live-media guard and the passwordless live-user sudo policy; no disk is
-  selected automatically.
+- Calamares is requested through its upstream, GUI-capable Polkit action. A
+  live-image-only rule permits exactly that action for the active local
+  `liveuser`; the rule is deleted from the installed system by Calamares.
+- The guarded auto-start and visible desktop shortcut remain available, and no
+  disk is selected automatically.
+- The launcher writes a runtime status marker. The VM watcher reports a failed
+  installer exit immediately instead of waiting for the full timeout, while
+  still requiring both Plasma and a running Calamares process for success.
 - The LOKRO Hub no longer declares `icon` on a Plasma button delegate, which
   previously attempted to override a final QML property and prevented the
   widget from loading.
@@ -23,12 +28,12 @@ candidate reacts to the first reported Intel NUC live-hardware test:
   and `.lokrodesign` files. The Store includes one reviewed first-party pack
   that is downloaded from an immutable tag, SHA-256 verified and passed to the
   existing no-script importer.
-- The BIOS/UEFI smoke gate now requires both Plasma and the automatically
-  opened Calamares window instead of accepting the desktop alone.
+- The BIOS/UEFI smoke gate requires both Plasma and the automatically opened
+  Calamares process instead of accepting the desktop alone.
 
-These points describe source implementation only. They have not yet passed the
-alpha.15 Arch package build, ISO build, BIOS/UEFI smoke boot or another physical
-installation attempt.
+These alpha.16 points describe source implementation only. They have not yet
+passed the alpha.16 Arch package build, ISO build, BIOS/UEFI smoke boot or
+another physical installation attempt.
 
 ## Implemented in the source tree
 
@@ -64,7 +69,7 @@ installation attempt.
 
 QML linting and PKGBUILD parsing are enforced in the Arch build workflow, where the required Arch/KDE tools are available.
 
-The alpha.5 CI attempt successfully produced both hybrid ISO files, including a roughly 2.5 GiB online image, but its six-minute BIOS check ended without userspace diagnostics. Alpha.6 confirmed the runner exposes KVM and reproduced the missing marker after 15 minutes; its serial log still showed only the bootloader because the kernel command line did not route boot output to serial. Alpha.7 added kernel/systemd serial diagnostics and successfully built both images, but the offline image exceeded the 4 GiB acceptance limit by about 39 MB because the optional offline repository duplicated package archives already installed in the live root. Alpha.8 introduced duplicate removal but stopped before ISO creation because the current Pacman rejects `--print-format` for file queries. Alpha.9 produced a 3,670,376,448-byte offline ISO and a 2,646,310,912-byte online ISO; BIOS reached userspace in 13.2 seconds but the live-user helper received `203/EXEC` before Plasma. Alpha.10 fixed that helper startup and reached the Plasma live session in the BIOS VM after 32 seconds. Its UEFI firmware reached systemd-boot, but no Linux entry was shown because the serial-debug rewrite had appended kernel parameters to systemd-boot's `linux` kernel-path directive. Alpha.11 fixed that rewrite, passed both BIOS and UEFI Plasma smoke boots, and was published as a checksummed multipart GitHub prerelease. Alpha.12 added the design-pack format and importer, built a 3,673,702,400-byte offline ISO and a 2,648,637,440-byte online ISO, passed the 4 GiB limit plus both BIOS and UEFI Plasma smoke boots, and was published on 16 October 2026. Alpha.13 stopped safely during the new Store package build because `python-setuptools` was missing; it produced and published no ISO. Alpha.14 corrected that dependency, built a 3,687,088,128-byte offline ISO and a 2,660,270,080-byte online ISO, passed the size limit plus both BIOS and UEFI Plasma smoke boots, and was published on 16 October 2026.
+The alpha.5 CI attempt successfully produced both hybrid ISO files, including a roughly 2.5 GiB online image, but its six-minute BIOS check ended without userspace diagnostics. Alpha.6 confirmed the runner exposes KVM and reproduced the missing marker after 15 minutes; its serial log still showed only the bootloader because the kernel command line did not route boot output to serial. Alpha.7 added kernel/systemd serial diagnostics and successfully built both images, but the offline image exceeded the 4 GiB acceptance limit by about 39 MB because the optional offline repository duplicated package archives already installed in the live root. Alpha.8 introduced duplicate removal but stopped before ISO creation because the current Pacman rejects `--print-format` for file queries. Alpha.9 produced a 3,670,376,448-byte offline ISO and a 2,646,310,912-byte online ISO; BIOS reached userspace in 13.2 seconds but the live-user helper received `203/EXEC` before Plasma. Alpha.10 fixed that helper startup and reached the Plasma live session in the BIOS VM after 32 seconds. Its UEFI firmware reached systemd-boot, but no Linux entry was shown because the serial-debug rewrite had appended kernel parameters to systemd-boot's `linux` kernel-path directive. Alpha.11 fixed that rewrite, passed both BIOS and UEFI Plasma smoke boots, and was published as a checksummed multipart GitHub prerelease. Alpha.12 added the design-pack format and importer, built a 3,673,702,400-byte offline ISO and a 2,648,637,440-byte online ISO, passed the 4 GiB limit plus both BIOS and UEFI Plasma smoke boots, and was published on 16 October 2026. Alpha.13 stopped safely during the new Store package build because `python-setuptools` was missing; it produced and published no ISO. Alpha.14 corrected that dependency, built a 3,687,088,128-byte offline ISO and a 2,660,270,080-byte online ISO, passed the size limit plus both BIOS and UEFI Plasma smoke boots, and was published on 16 October 2026. Alpha.15 built the same-size offline and online ISOs and passed the size gate. Its BIOS VM reached Plasma, but the `sudo -E` GUI launcher did not leave Calamares running; the smoke gate correctly failed and no alpha.15 release was published.
 
 ## Required before sharing an ISO as tested
 

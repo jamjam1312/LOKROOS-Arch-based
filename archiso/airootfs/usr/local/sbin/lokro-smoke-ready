@@ -3,6 +3,8 @@
 set -euo pipefail
 
 serial=/dev/ttyS0
+live_uid="$(id -u liveuser)"
+installer_status="/run/user/${live_uid}/lokro-installer.status"
 
 emit() {
     if [[ -w "$serial" ]]; then
@@ -26,8 +28,17 @@ for ((attempt = 1; attempt <= 600; attempt++)); do
         emit 'LOKRO_LIVE_READY'
         exit 0
     fi
+    if (( installer_ready == 0 )) && [[ -f "$installer_status" ]] && grep -q '^exited code=' "$installer_status"; then
+        status="$(tr '\n' ' ' < "$installer_status")"
+        emit "LOKRO_SMOKE_FAILED plasma_ready=${plasma_ready} installer_ready=0 installer_status=${status}"
+        exit 1
+    fi
     if (( attempt % 30 == 0 )); then
-        emit "LOKRO_SMOKE_WAITING attempt=${attempt} sddm=$(systemctl is-active sddm.service 2>/dev/null || true)"
+        status='missing'
+        if [[ -f "$installer_status" ]]; then
+            status="$(tr '\n' ' ' < "$installer_status")"
+        fi
+        emit "LOKRO_SMOKE_WAITING attempt=${attempt} sddm=$(systemctl is-active sddm.service 2>/dev/null || true) installer_status=${status}"
     fi
     sleep 1
 done

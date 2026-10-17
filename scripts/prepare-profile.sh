@@ -45,6 +45,7 @@ chmod 0755 "$PROFILE_DIR/airootfs/usr/local/sbin/lokro-create-live-user"
 chmod 0755 "$PROFILE_DIR/airootfs/usr/local/sbin/lokro-smoke-ready"
 chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lokro-live-installer"
 chmod 0440 "$PROFILE_DIR/airootfs/etc/sudoers.d/10-liveuser"
+chmod 0644 "$PROFILE_DIR/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"
 mkdir -p "$PROFILE_DIR/airootfs/etc/lokro" "$PROFILE_DIR/airootfs/etc/calamares/modules"
 printf '%s\n' "$variant" > "$PROFILE_DIR/airootfs/etc/lokro/build-variant"
 cp "${PROJECT_ROOT}/packages/lokro-installer-config/rootfs/etc/calamares/modules/packages-${variant}.conf" \

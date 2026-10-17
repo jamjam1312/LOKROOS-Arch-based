@@ -16,6 +16,7 @@ const required = [
   "archiso/airootfs/etc/plymouth/plymouthd.conf",
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
+  "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules",
   "vendor/ckbcomp/PKGBUILD",
   "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
@@ -141,7 +142,7 @@ const grubConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-con
 if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB is not configured to discover other operating systems");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
-for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer"]) {
+for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules"]) {
   if (!installerCleanup.includes(liveArtifact)) failures.push(`installer cleanup does not remove live artifact: ${liveArtifact}`);
 }
 if (!installerCleanup.includes("HOOKS=(base systemd plymouth autodetect")) failures.push("installed target does not receive a disk-root initramfs configuration");
@@ -203,8 +204,12 @@ if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.tes
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
 const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
-for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "sudo -E /usr/bin/calamares -d"]) {
+for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/pkexec /usr/bin/calamares -d", "lokro-installer.status", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
+}
+const liveInstallerPolicy = fs.readFileSync(path.join(root, "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"), "utf8");
+for (const policyInvariant of ["com.github.calamares.calamares.pkexec.run", 'subject.user === "liveuser"', "subject.local", "subject.active", "polkit.Result.YES"]) {
+  if (!liveInstallerPolicy.includes(policyInvariant)) failures.push(`live installer Polkit rule is missing invariant: ${policyInvariant}`);
 }
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
 if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
@@ -217,11 +222,11 @@ for (const displayInvariant of ["Session=plasma", "DisplayServer=x11"]) {
   if (!liveSddm.includes(displayInvariant)) failures.push(`live SDDM configuration is missing: ${displayInvariant}`);
 }
 const smokeScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-smoke-ready"), "utf8");
-for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
+for (const invariant of ["pgrep -u liveuser -x plasmashell", "pgrep -x calamares", "lokro-installer.status", "^exited code=", "installer_status=", "LOKRO_SMOKE_WATCHER_STARTED", "LOKRO_PLASMA_READY", "LOKRO_INSTALLER_READY", "LOKRO_LIVE_READY", "LOKRO_SMOKE_FAILED"]) {
   if (!smokeScript.includes(invariant)) failures.push(`smoke watcher is missing invariant: ${invariant}`);
 }
 const smokeBoot = fs.readFileSync(path.join(root, "scripts/smoke-boot.sh"), "utf8");
-for (const bootInvariant of ["-c /dev/kvm", "acceleration='kvm'", "tcg,thread=multi", "timeout 900s", "attempt < 900", "LOKRO_LIVE_READY"]) {
+for (const bootInvariant of ["-c /dev/kvm", "acceleration='kvm'", "tcg,thread=multi", "timeout 900s", "attempt < 900", "LOKRO_LIVE_READY", "grep -q 'LOKRO_SMOKE_FAILED'"]) {
   if (!smokeBoot.includes(bootInvariant)) failures.push(`VM smoke boot is missing acceleration/timeout invariant: ${bootInvariant}`);
 }
 for (const smokeArtifact of ["lokro-smoke-ready.service", "/usr/local/sbin/lokro-smoke-ready"]) {

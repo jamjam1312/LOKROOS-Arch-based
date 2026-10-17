@@ -59,6 +59,10 @@ for ((attempt = 0; attempt < 900; attempt++)); do
         log "Plasma live session and Calamares installer reached for ${firmware}"
         exit 0
     fi
+    if [[ -f "$serial_log" ]] && grep -q 'LOKRO_SMOKE_FAILED' "$serial_log"; then
+        tail -n 120 "$serial_log" 2>/dev/null || true
+        die "live-session smoke watcher reported failure for ${firmware}"
+    fi
     kill -0 "$qemu_pid" 2>/dev/null || break
     sleep 1
 done

@@ -1,0 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// The live session has no reusable administrator password. Permit only the
+// active, local live user to start Calamares through its upstream Polkit action.
+polkit.addRule(function(action, subject) {
+    if (action.id === "com.github.calamares.calamares.pkexec.run" &&
+        subject.user === "liveuser" &&
+        subject.local &&
+        subject.active) {
+        return polkit.Result.YES;
+    }
+});

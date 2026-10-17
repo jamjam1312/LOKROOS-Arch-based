@@ -16,6 +16,7 @@ rm -f /usr/local/sbin/lokro-create-live-user
 rm -f /usr/local/sbin/lokro-smoke-ready
 rm -f /usr/local/bin/lokro-live-installer
 rm -f /etc/xdg/autostart/lokro-live-installer.desktop
+rm -f /etc/polkit-1/rules.d/49-lokro-live-installer.rules
 rm -f /root/customize_airootfs.sh /root/.automated_script.sh
 rm -f /usr/local/bin/Installation_guide /etc/motd
 rm -f /etc/pacman.d/hooks/uncomment-mirrors.hook

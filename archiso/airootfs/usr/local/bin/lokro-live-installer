@@ -14,4 +14,16 @@ if pgrep -x calamares >/dev/null 2>&1; then
     exit 0
 fi
 
-exec /usr/bin/sudo -E /usr/bin/calamares -d
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+status_file="${runtime_dir}/lokro-installer.status"
+install -d -m 0700 "$runtime_dir"
+printf '%s\n' 'starting' > "$status_file"
+
+if /usr/bin/pkexec /usr/bin/calamares -d; then
+    printf '%s\n' 'exited code=0' > "$status_file"
+    exit 0
+else
+    exit_code=$?
+    printf 'exited code=%s\n' "$exit_code" > "$status_file"
+    exit "$exit_code"
+fi
