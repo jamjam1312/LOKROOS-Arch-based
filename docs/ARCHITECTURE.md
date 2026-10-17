@@ -41,3 +41,33 @@ Every service contains exactly these public fields:
 ```
 
 No authentication or SSO semantics are implied in v0.1.
+
+## Component interaction and interfaces
+
+- **Build-time:** `build-packages.sh` produces `out/repo/lokro.db` (`[lokro]`). `prepare-profile.sh` copies the
+  installed Archiso `releng` profile, overlays `archiso/airootfs/`, appends `archiso/packages/{common,variant}.x86_64`
+  to `packages.x86_64` (`sort -u`), injects `[lokro]` into `pacman.conf`, resolves the full set with
+  `pacman -Sp --print-format '%n %v'` into `out/resolved-packages-<variant>.txt`, and — for `offline` only —
+  pre-downloads the NVIDIA/gaming/Hyprland bundle into `airootfs/opt/lokro/repo` (deduped against the base
+  transaction, then indexed with `repo-add` as `[lokro-media]`). `mkarchiso` pacstraps the live root and bakes
+  the SquashFS; `checksums.sh` splits, hashes, and records manifests/licenses/provenance.
+- **Live vs. installed:** the live image keeps Archiso's generic initramfs hooks and live-only state
+  (`lokro-live-user.service`, `10-lokro-live.conf`, sudoers drop-in, smoke watcher, `/opt/lokro/repo`,
+  `archiso.conf`). Calamares `unpackfs` copies the embedded SquashFS, `packages`/`contextualprocess@browserCleanup`
+  adjust the target selection, and `shellprocess@cleanup` (`installer-cleanup`) removes live artifacts and writes a
+  normal disk-root `HOOKS=(base systemd plymouth autodetect microcode modconf kms keyboard sd-vconsole block
+  sd-encrypt filesystems fsck)` config before `initcpiocfg`/`initcpio`/`grubcfg`/`bootloader` run.
+- **Boot interfaces:** syslinux (`APPEND`), systemd-boot loader entries (`options`), and GRUB (`linux`) carry kernel
+  parameters; since alpha.11 only `APPEND`/`options` receive serial diagnostics (see `docs/KNOWN_ISSUES.md` KI-007
+  for the GRUB gap). SDDM greets on X11 while the Plasma session itself is Wayland.
+- **Update interface:** `LOKRO_UPDATE_CHANNEL.json` (root) must stay byte-identical with the packaged copy;
+  `lokro-update.timer` + `lokro-update` implement download-strict-validate-cache-confirm-apply with backups and
+  running-kernel module retention hooks.
+
+## Open decisions (ADRs, `docs/adr/`, since 2026-10-16)
+
+First records exist as proposals (none decided yet): `0001-mobile-shell-plasma-mobile.md` and
+`0002-shared-first-boot-wizard.md`. Still open candidates: Flathub pinning strategy, offline dedup
+method, serial-diagnostic scope for the GRUB `linux` directive, manifest generation (`pacman --root/--dbpath`
+semantics), and the 4 GiB size budget. Each ADR records problem, requirements, alternatives, decision, rationale,
+drawbacks, and impact, marked binding vs. proposal.

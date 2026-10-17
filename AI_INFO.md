@@ -76,3 +76,11 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 ## Status discipline
 
 Keep `docs/RELEASE_STATUS.md` honest. Separate “implemented”, “CI-verified” and “hardware-tested”. A generated ISO is not automatically safe for a real dual-boot machine. Real AMD/NVIDIA, suspend, multi-monitor, audio, Bluetooth, Steam, Minecraft and install-alongside tests remain human hardware acceptance work.
+
+## AI working rule (binding since 2026-10-15)
+
+Every AI (and every developer) keeps its own thoughts, ideas, solution approaches, and open questions in a **separate
+Markdown file** (e.g. `docs/AI_NOTES_<name>_<date>.md`) instead of leaving them only in chat. Include filename, date,
+and status (`IDEA`/`PLANNED`/…) and link the note from `IDEAS.md`. The full master-prompt text of the 2026-10-15
+session is archived as the source appendix of `IDEAS.md`. The authoritative agent contract lives in `AGENTS.md`;
+this file stays the concise machine-readable map.

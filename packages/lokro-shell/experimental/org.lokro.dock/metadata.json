@@ -1,0 +1,24 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "Lokrogaming@users.noreply.github.com",
+                "Name": "Lokro OS contributors"
+            }
+        ],
+        "Category": "Window Management",
+        "Description": "Centered glass task dock in the iOS-navbar style (work in progress, not yet shipped)",
+        "EnabledByDefault": false,
+        "Icon": "view-list-icons",
+        "Id": "org.lokro.dock",
+        "License": "GPL-3.0-or-later",
+        "Name": "LOKRO Dock",
+        "Version": "0.1.0",
+        "Website": "https://github.com/jamjam1312/LOKROOS-Arch-based"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.multitasking"
+    ]
+}
