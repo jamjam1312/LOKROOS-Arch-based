@@ -31,6 +31,11 @@ change can require a new login before every application sees it. The bundled
 `org.lokro.monochrome` pack references the LOKRO components already installed by
 `lokro-branding` and `lokro-shell`.
 
+The built-in `org.lokro.glass` pack adds an original high-contrast black glass
+color scheme and keeps the interactive Slashes wallpaper. Plasma's trusted
+widget style still controls button geometry; the pack deliberately contains no
+QML or executable theme code.
+
 ## Repository packs
 
 Reviewed built-in packs are stored under `design-packs/` in the source tree.

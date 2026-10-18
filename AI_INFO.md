@@ -4,8 +4,9 @@ This file is the machine-readable starting point for coding assistants and human
 
 ## Product contract
 
-- Product: experimental x86_64 desktop distribution. Current source and
-  tested/downloadable CI release are `0.1.0-alpha.21`.
+- Product: experimental x86_64 desktop distribution. Current source candidate
+  is `0.1.0-alpha.22`; the tested/downloadable CI release is
+  `0.1.0-alpha.21`.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -69,12 +70,17 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - **LOKRO Credits** exposes the protected project attribution in the welcome
   center, application menu and `/usr/share/doc/lokro-os/CREDITS.md`. The root
   and packaged copies must remain byte-identical.
-- **LOKRO Store** `v0.1.0-alpha.6` ships a validated offline catalog, repairs
+- **LOKRO Store** `v0.1.0-alpha.7` ships a validated offline catalog, repairs
   the user-scoped Flathub remote and installs exact Flatpak IDs without a
   shell. ArtCraft Launcher 0.3.2 uses its official, versioned x86_64 Flatpak
-  bundle with an exact SHA-256 check. Reviewed `.lokrodesign` archives are also
-  downloaded only from immutable URLs and verified before the safe importer is
-  invoked.
+  bundle with an exact SHA-256 check. All 13 ArtCraft Crafting Apps are also
+  independently selectable through exact `ai.storyteller.*` IDs, immutable
+  upstream bundles and published checksums. Reviewed `.lokrodesign` archives
+  are downloaded only from immutable URLs and verified before the safe
+  importer is invoked.
+- **LOKRO Settings** is a glass-styled visual landing page for the
+  existing trusted Plasma settings modules; it does not replace KDE's settings
+  backends.
 
 ## Status discipline
 

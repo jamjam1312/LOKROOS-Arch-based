@@ -10,6 +10,8 @@ const required = [
   "VERSION", "Makefile", "CONTRIBUTORS.md", "CREDITS.md", "AI_INFO.md", "AGENTS.md", ".github/CODEOWNERS", "desktop/README.md", "server/README.md",
   "design-packs/README.md", "design-packs/design-pack.schema.json",
   "design-packs/org.lokro.monochrome/design.json", "docs/DESIGN_PACKS.md",
+  "design-packs/org.lokro.glass/design.json",
+  "design-packs/org.lokro.glass/payload/color-schemes/LokroGlass.colors",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
   "docs/RELEASE_STATUS.md", "docs/STANDALONE_INSTALL.md", "archiso/packages/common.x86_64",
   "archiso/packages/offline.x86_64", "archiso/packages/online.x86_64",
@@ -29,7 +31,10 @@ const required = [
   "packages/lokro-shell/rootfs/usr/share/lokro/services.schema.json",
   "packages/lokro-shell/rootfs/usr/share/lokro/welcome/main.qml",
   "packages/lokro-shell/rootfs/usr/share/lokro/welcome/WelcomeCard.qml",
+  "packages/lokro-shell/rootfs/usr/share/lokro/settings/main.qml",
+  "packages/lokro-shell/rootfs/usr/share/lokro/settings/SettingsCard.qml",
   "packages/lokro-shell/rootfs/usr/bin/lokro-welcome",
+  "packages/lokro-shell/rootfs/usr/bin/lokro-settings",
   "packages/lokro-shell/rootfs/usr/bin/lokro-action",
   "packages/lokro-shell/rootfs/usr/bin/lokro-search",
   "packages/lokro-shell/rootfs/usr/bin/lokro-update",
@@ -166,10 +171,13 @@ const designTool = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/
 for (const safetyInvariant of ["MAX_FILES", "MAX_FILE_SIZE", "MAX_TOTAL_SIZE", "path.is_symlink()", "stat.S_ISLNK", "executable files are not allowed", "only schemaVersion 1 is supported"]) {
   if (!designTool.includes(safetyInvariant)) failures.push(`design-pack importer is missing safety invariant: ${safetyInvariant}`);
 }
+if (!designTool.includes("install_assets(root, pack_id)")) failures.push("system design packs do not stage their safe assets before apply");
 const packageBuilder = fs.readFileSync(path.join(root, "scripts/build-packages.sh"), "utf8");
 if (!packageBuilder.includes('PROJECT_ROOT}/design-packs/.')) failures.push("lokro-shell package build does not stage repository design packs");
 const lokroAction = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/bin/lokro-action"), "utf8");
 const welcomeQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/welcome/main.qml"), "utf8");
+if (!lokroAction.includes("settings) launch lokro-settings")) failures.push("LOKRO action router does not open the settings landing page");
+if (!lokroAction.includes("system-settings) launch systemsettings")) failures.push("LOKRO settings cannot reach the full Plasma settings application");
 if (!lokroAction.includes("design-packs) launch lokro-design-pack-gui")) failures.push("LOKRO action router cannot open design packs");
 if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome center does not expose design packs");
 if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
@@ -177,8 +185,8 @@ if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome cent
 if (!lokroAction.includes("credits) launch lokro-credits")) failures.push("LOKRO action router cannot open project credits");
 if (!welcomeQml.includes('openAction("credits")')) failures.push("welcome center does not expose project credits");
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
-for (const storeInvariant of ["_upstream_version=0.1.0-alpha.6", "5819d364577a421c58c189a32b2523bf3bd422df3f31f93f4939106bc475c37c", "python-setuptools", "assets/icons/*.svg"]) {
-  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-6 invariant: ${storeInvariant}`);
+for (const storeInvariant of ["_upstream_version=0.1.0-alpha.7", "3eb047948fbe24d379a3098a2337f91359afff3ae42ef3883f6236099ae5f632", "python-setuptools", "assets/icons/*.svg"]) {
+  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-7 invariant: ${storeInvariant}`);
 }
 
 const hubQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/contents/ui/main.qml"), "utf8");

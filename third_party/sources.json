@@ -64,9 +64,9 @@
     },
     {
       "name": "LOKRO Store",
-      "version": "0.1.0-alpha.6",
-      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.6",
-      "sha256": "5819d364577a421c58c189a32b2523bf3bd422df3f31f93f4939106bc475c37c",
+      "version": "0.1.0-alpha.7",
+      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.7",
+      "sha256": "3eb047948fbe24d379a3098a2337f91359afff3ae42ef3883f6236099ae5f632",
       "license": "CC0-1.0; bundled third-party icons retain their documented upstream licenses",
       "usage": "checksum-pinned offline catalog and Qt UI built by packages/lokro-store/PKGBUILD"
     },
@@ -77,6 +77,110 @@
       "sha256": "67d135d290117b345b9a6ae3cab4391587cae3fa178a8abfcc2cd8e3f2d35d92",
       "license": "MIT OR Apache-2.0; upstream branding remains subject to its separate trademark terms",
       "usage": "optional user-requested Store download; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "PhotoCraft",
+      "version": "0.7.0",
+      "source": "https://github.com/storytold/photocraft/releases/download/v0.7.0/photocraft-0.7.0-linux-x86_64.flatpak",
+      "sha256": "ee3bddfeb94c533d3ecf046812bbb873fd11c50d99bc35e4a05776d98ed51455",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "VectorCraft",
+      "version": "0.9.0",
+      "source": "https://github.com/storytold/vectorcraft/releases/download/v0.9.0/vectorcraft-0.9.0-linux-x86_64.flatpak",
+      "sha256": "aada5fc40b9ed61a92f0346098e4be2e2ef4fbbe9fab37da65638999c9d6c890",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "FilmCraft",
+      "version": "0.6.0",
+      "source": "https://github.com/storytold/filmcraft/releases/download/v0.6.0/filmcraft-0.6.0-linux-x86_64.flatpak",
+      "sha256": "ed7a995c34624021eb79eb549615c1e4aec176b83902f77dbb4931029d1c21e6",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "LightCraft",
+      "version": "0.6.0",
+      "source": "https://github.com/storytold/lightcraft/releases/download/v0.6.0/lightcraft-0.6.0-linux-x86_64.flatpak",
+      "sha256": "a2f7351b48348121fae6112e258c234adefe4ba8b0a6e9a6d762660bb682e333",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "PdfCraft",
+      "version": "0.6.0",
+      "source": "https://github.com/storytold/pdfcraft/releases/download/v0.6.0/pdfcraft-0.6.0-linux-x86_64.flatpak",
+      "sha256": "26302f40c87a00254294d94a34db04fe88cb4f5bd373097d666bdb188e4e0ff4",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "EffectCraft",
+      "version": "0.8.0",
+      "source": "https://github.com/storytold/effectcraft/releases/download/v0.8.0/effectcraft-0.8.0-linux-x86_64.flatpak",
+      "sha256": "43a13ad7739b56b9fe6cfb1b72af929b853dc9fffe3b95d973efc3f70f8d1ee8",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "DesignCraft",
+      "version": "0.6.0",
+      "source": "https://github.com/storytold/designcraft/releases/download/v0.6.0/designcraft-0.6.0-linux-x86_64.flatpak",
+      "sha256": "a3440ebb90a5cc84829ccca933c452d804b65529f1bae42810b3f1ab29440728",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "FigCraft",
+      "version": "0.5.1",
+      "source": "https://github.com/storytold/figcraft/releases/download/v0.5.1/figcraft-0.5.1-linux-x86_64.flatpak",
+      "sha256": "79b0d186c2be9a5a114d8d72e81739a5057df055a2fc8eabd8b44a421c8d8e8d",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "WordCraft",
+      "version": "0.5.0",
+      "source": "https://github.com/storytold/wordcraft/releases/download/v0.5.0/wordcraft-0.5.0-linux-x86_64.flatpak",
+      "sha256": "20f9310f5af1e192968d8d6f2d95545bca11fe0f4c339fe96f96defe67825035",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "SoundCraft",
+      "version": "0.5.0",
+      "source": "https://github.com/storytold/soundcraft/releases/download/v0.5.0/soundcraft-0.5.0-linux-x86_64.flatpak",
+      "sha256": "135fe3be7b9015b919b84c9ece3e20e50f1185b8a23f013eb710715a3474e945",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "DeckCraft",
+      "version": "0.5.0",
+      "source": "https://github.com/storytold/deckcraft/releases/download/v0.5.0/deckcraft-0.5.0-linux-x86_64.flatpak",
+      "sha256": "da48fe65bc8257d5e0ae43300c7d5de186dc8b1d35a3362d8337a103a4e31412",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "CADCraft",
+      "version": "0.5.0",
+      "source": "https://github.com/storytold/cadcraft/releases/download/v0.5.0/cadcraft-0.5.0-linux-x86_64.flatpak",
+      "sha256": "d137e227a1dc385b387387f000d3e7f4a8f03ef924baada4e96a3e20a641d389",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
+    },
+    {
+      "name": "GridCraft",
+      "version": "0.5.0",
+      "source": "https://github.com/storytold/gridcraft/releases/download/v0.5.0/gridcraft-0.5.0-linux-x86_64.flatpak",
+      "sha256": "938b16cf1068a97d46c93185edadb402d33a5053f13b339d520c78e7433242a6",
+      "license": "Apache-2.0",
+      "usage": "optional individual ArtCraft app; checksum verified before user-scoped Flatpak installation and not embedded in the ISO"
     },
     {
       "name": "7-Zip",

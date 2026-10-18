@@ -331,6 +331,10 @@ def apply_pack(pack_id: str) -> dict:
     if pack_id not in packs:
         raise PackError(f"design pack is not installed: {pack_id}")
     manifest, root, _origin = packs[pack_id]
+    # System packs keep payloads inside /usr/share/lokro. Stage their ordinary
+    # color/wallpaper assets into the user's standard KDE data locations just
+    # before applying, using the same bounded copy path as user-installed packs.
+    install_assets(root, pack_id)
     plasma = manifest["plasma"]
     errors: list[str] = []
     if "lookAndFeel" in plasma:

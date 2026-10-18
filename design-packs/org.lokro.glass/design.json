@@ -1,0 +1,17 @@
+{
+  "$schema": "../design-pack.schema.json",
+  "schemaVersion": 1,
+  "id": "org.lokro.glass",
+  "name": "LOKRO Glass",
+  "version": "1.0.0",
+  "author": "Jamie Milo Cürten and LOKRO OS contributors",
+  "license": "CC-BY-SA-4.0",
+  "description": "Original black glass color treatment with bright focus borders, subtle cool highlights and the interactive LOKRO Slashes wallpaper. No website assets or source code are included.",
+  "plasma": {
+    "lookAndFeel": "org.lokro.dark",
+    "colorScheme": "LokroGlass",
+    "cursorTheme": "breeze_cursors",
+    "cursorSize": 24,
+    "wallpaperPlugin": "org.lokro.slashes"
+  }
+}

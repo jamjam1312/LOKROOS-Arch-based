@@ -21,7 +21,8 @@ case "$action" in
     taskmanager) launch plasma-systemmonitor ;;
     files) launch dolphin ;;
     terminal) launch konsole ;;
-    settings) launch systemsettings ;;
+    settings) launch lokro-settings ;;
+    system-settings) launch systemsettings ;;
     users) launch systemsettings kcm_users ;;
     appearance) launch systemsettings kcm_lookandfeel ;;
     design-packs) launch lokro-design-pack-gui ;;

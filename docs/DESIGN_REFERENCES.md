@@ -12,3 +12,12 @@ text readability or accessibility.
 
 This alpha-15 milestone deliberately fixes installer, Store and Plasma runtime
 bugs first. It does not copy or derive boot artwork from the supplied images.
+
+On 18 October 2026 the public pages at `https://lokro.dev/de/` and the source
+repository at `https://github.com/Lokrogaming/lokrogaming.github.io` were
+reviewed for the requested glass-style direction. The repository did not
+declare a license at review time. `org.lokro.glass` therefore uses original
+LOKRO OS configuration and artwork only: no website images, CSS, JavaScript or
+HTML are redistributed. Its translucent black surfaces, bright focus lines and
+cool neutral palette are general visual characteristics rather than copied
+assets.

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-shell
 pkgver=0.1.0
-pkgrel=9
+pkgrel=10
 pkgdesc='LOKRO OS desktop integration, graphical tools, search, updates and widgets'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Arch-based'
@@ -15,6 +15,7 @@ package() {
   cp -a "$srcdir/../rootfs/." "$pkgdir/"
   chmod 0755 "$pkgdir/usr/bin/lokro-services-merge" \
     "$pkgdir/usr/bin/lokro-welcome" \
+    "$pkgdir/usr/bin/lokro-settings" \
     "$pkgdir/usr/bin/lokro-action" \
     "$pkgdir/usr/bin/lokro-update" \
     "$pkgdir/usr/bin/lokro-update-gui" \

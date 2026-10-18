@@ -1,11 +1,36 @@
-# LOKRO OS release status (alpha.21)
+# LOKRO OS release status (alpha.22 source / alpha.21 release)
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Alpha.21 source and CI release
+## Alpha.22 source candidate — not yet released
 
-The current source and latest downloadable CI release are
-`0.1.0-alpha.21`. It keeps the hardware-test and credit changes and replaces
+The current source candidate is `0.1.0-alpha.22`. The latest downloadable and
+CI-smoke-tested release remains `0.1.0-alpha.21` until the complete alpha.22
+package, ISO, size, BIOS and UEFI workflow succeeds.
+
+- LOKRO Store `v0.1.0-alpha.7` adds all 13 ArtCraft Crafting Apps as separate
+  experimental choices. Every x86_64 Flatpak uses the exact upstream
+  application ID, immutable versioned URL and published SHA-256; the launcher
+  remains an optional separate entry.
+- The Store receives a restrained translucent glass treatment while preserving
+  the existing shell-free installer boundary.
+- LOKRO Settings becomes a dedicated glass-styled landing page for appearance,
+  cursor, network, Bluetooth, users, shortcuts, power and the complete Plasma
+  settings application.
+- The original `org.lokro.glass` design pack adds a black glass color scheme,
+  bright focus lines and the existing Slashes wallpaper. The reviewed LOKRO
+  website declares no repository license, so no website asset or source code
+  is copied.
+
+These alpha.22 points describe source implementation only. They have passed
+the repository's Windows-safe static and design-pack tests, but not yet the
+Arch package build, ISO build, QML lint, BIOS/UEFI smoke boot or physical
+hardware testing.
+
+## Alpha.21 CI release
+
+The latest downloadable CI release is `0.1.0-alpha.21`. It keeps the
+hardware-test and credit changes and replaces
 the unobserved desktop autostart path reported by alpha.17's automated BIOS
 test:
 
@@ -56,7 +81,7 @@ QEMU; it does not verify a completed installation to disk or physical hardware.
 - Fully embedded Arch base, kernel and firmware; no pre-installed operating system is required.
 - UEFI and legacy BIOS boot configuration; GPT/ext4 default, manual partitioning and optional LUKS encryption.
 - Pacman base-system management plus Flatpak, Flathub setup and KDE Discover.
-- Pinned LOKRO Store `v0.1.0-alpha.6` with an offline catalog, search, categories, repaired user-scoped Flathub installation, a checksum-pinned ArtCraft Flatpak bundle and a checksum-pinned declarative LOKRO design pack. Catalog data still cannot provide shell commands.
+- Pinned LOKRO Store `v0.1.0-alpha.7` in the alpha.22 source with an offline catalog, search, categories, repaired user-scoped Flathub installation, checksum-pinned ArtCraft bundles and a checksum-pinned declarative LOKRO design pack. Catalog data still cannot provide shell commands. The published alpha.21 ISO contains Store alpha.6.
 - NetworkManager, Wi-Fi database and iwd tooling, LAN support through the Linux kernel, Bluetooth, USB utilities, Thunderbolt tooling and current Arch firmware packages.
 - Mesa/OpenGL, AMD/Intel/Nouveau Vulkan and video acceleration. The offline installer can optionally install `nvidia-open`, `nvidia-utils` and `lib32-nvidia-utils` for supported Turing-or-newer NVIDIA hardware.
 - PipeWire audio, power management, ZRAM, KDE settings, theming and desktop widgets.
