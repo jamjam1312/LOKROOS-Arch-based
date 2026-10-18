@@ -1,12 +1,11 @@
-# LOKRO OS release status (alpha.22 source / alpha.21 release)
+# LOKRO OS release status (alpha.22)
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Alpha.22 source candidate — not yet released
+## Alpha.22 source and CI release
 
-The current source candidate is `0.1.0-alpha.22`. The latest downloadable and
-CI-smoke-tested release remains `0.1.0-alpha.21` until the complete alpha.22
-package, ISO, size, BIOS and UEFI workflow succeeds.
+The current source and latest downloadable CI release are
+`0.1.0-alpha.22`.
 
 - LOKRO Store `v0.1.0-alpha.7` adds all 13 ArtCraft Crafting Apps as separate
   experimental choices. Every x86_64 Flatpak uses the exact upstream
@@ -22,10 +21,12 @@ package, ISO, size, BIOS and UEFI workflow succeeds.
   website declares no repository license, so no website asset or source code
   is copied.
 
-These alpha.22 points describe source implementation only. They have passed
-the repository's Windows-safe static and design-pack tests, but not yet the
-Arch package build, ISO build, QML lint, BIOS/UEFI smoke boot or physical
-hardware testing.
+The alpha.22 GitHub workflow built the Arch packages, a 3,687,088,128-byte
+offline ISO and a 2,660,270,080-byte online ISO, enforced the 4 GiB limit, and
+passed both BIOS and UEFI live-Plasma smoke boots with Calamares observed
+running. It published both images as checksummed multipart prerelease assets
+on 18 October 2026. This verifies the live boot and installer launch in QEMU;
+it does not verify a completed installation to disk or physical hardware.
 
 ## Alpha.21 CI release
 
@@ -81,7 +82,7 @@ QEMU; it does not verify a completed installation to disk or physical hardware.
 - Fully embedded Arch base, kernel and firmware; no pre-installed operating system is required.
 - UEFI and legacy BIOS boot configuration; GPT/ext4 default, manual partitioning and optional LUKS encryption.
 - Pacman base-system management plus Flatpak, Flathub setup and KDE Discover.
-- Pinned LOKRO Store `v0.1.0-alpha.7` in the alpha.22 source with an offline catalog, search, categories, repaired user-scoped Flathub installation, checksum-pinned ArtCraft bundles and a checksum-pinned declarative LOKRO design pack. Catalog data still cannot provide shell commands. The published alpha.21 ISO contains Store alpha.6.
+- Pinned LOKRO Store `v0.1.0-alpha.7` with an offline catalog, search, categories, repaired user-scoped Flathub installation, checksum-pinned ArtCraft bundles and a checksum-pinned declarative LOKRO design pack. Catalog data still cannot provide shell commands.
 - NetworkManager, Wi-Fi database and iwd tooling, LAN support through the Linux kernel, Bluetooth, USB utilities, Thunderbolt tooling and current Arch firmware packages.
 - Mesa/OpenGL, AMD/Intel/Nouveau Vulkan and video acceleration. The offline installer can optionally install `nvidia-open`, `nvidia-utils` and `lib32-nvidia-utils` for supported Turing-or-newer NVIDIA hardware.
 - PipeWire audio, power management, ZRAM, KDE settings, theming and desktop widgets.
