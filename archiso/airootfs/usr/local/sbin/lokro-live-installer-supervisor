@@ -36,7 +36,7 @@ for ((attempt = 1; attempt <= 300; attempt++)); do
         printf '%s\n' 'launching-user-process' > "$supervisor_status"
         emit 'LOKRO_INSTALLER_DIRECT_LAUNCH'
         if "${user_connection[@]}" "${desktop_environment[@]}" \
-            /usr/local/bin/lokro-live-installer; then
+            /usr/bin/bash /usr/local/bin/lokro-live-installer; then
             printf '%s\n' 'user-process-exited code=0' > "$supervisor_status"
             exit 0
         else

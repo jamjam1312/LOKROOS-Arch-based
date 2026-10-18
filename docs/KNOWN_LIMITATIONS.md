@@ -1,4 +1,4 @@
-# Known limitations — 0.1.0-alpha.20
+# Known limitations — 0.1.0-alpha.21
 
 - This is an alpha for test machines. Secure Boot and guaranteed dual-boot are not supported.
 - LUKS1 encryption is available but remains experimental until BIOS and UEFI installs have completed the full reboot test. LUKS2/Argon2 is intentionally deferred because stock GRUB compatibility needs more integration work.
