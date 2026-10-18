@@ -16,7 +16,6 @@ const required = [
   "archiso/airootfs/etc/plymouth/plymouthd.conf",
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
-  "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules",
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
   "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
   "vendor/ckbcomp/PKGBUILD",
@@ -211,12 +210,8 @@ if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.tes
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
 const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
-for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/pkexec /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "rejected live-media-not-mounted", "exited code=%s"]) {
+for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "rejected live-media-not-mounted", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
-}
-const liveInstallerPolicy = fs.readFileSync(path.join(root, "archiso/airootfs/etc/polkit-1/rules.d/49-lokro-live-installer.rules"), "utf8");
-for (const policyInvariant of ["com.github.calamares.calamares.pkexec.run", 'subject.user === "liveuser"', "polkit.Result.YES", "removed from the installed target"]) {
-  if (!liveInstallerPolicy.includes(policyInvariant)) failures.push(`live installer Polkit rule is missing invariant: ${policyInvariant}`);
 }
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
 if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
