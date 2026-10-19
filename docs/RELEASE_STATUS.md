@@ -1,8 +1,8 @@
-# LOKRO OS release status (alpha.23 candidate)
+# LOKRO OS release status (alpha.23)
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Unreleased source changes after Alpha.22
+## Alpha.23 source and CI release
 
 - The exact hardware-reported installer failure—`lokro-live-installer` missing
   executable permissions—is fixed both in Git's file mode and by an explicit
@@ -34,15 +34,14 @@ This file separates implemented source from tested release claims. An item being
 The complete Alpha.23 candidate workflow run `39293180171` built a
 3,693,772,800-byte offline ISO and a 2,667,675,648-byte online ISO, enforced the
 4 GiB limit and passed both BIOS and UEFI live-Plasma-plus-Calamares smoke
-boots. It uploaded checksums, manifests, provenance and build logs but did not
-publish a release because branch builds are intentionally non-publishing. This
-still does not prove a completed Calamares installation, a booted installed
-disk or operation on physical hardware.
+boots. The tag workflow reproduced those results and published the checksummed
+multipart prerelease, manifests, provenance and build metadata on 19 October
+2026. This still does not prove a completed Calamares installation, a booted
+installed disk or operation on physical hardware.
 
 ## Alpha.22 source and CI release
 
-The current source and latest downloadable CI release are
-`0.1.0-alpha.22`.
+The previous downloadable CI release was `0.1.0-alpha.22`.
 
 - LOKRO Store `v0.1.0-alpha.7` adds all 13 ArtCraft Crafting Apps as separate
   experimental choices. Every x86_64 Flatpak uses the exact upstream
@@ -164,7 +163,7 @@ The alpha.5 CI attempt successfully produced both hybrid ISO files, including a 
 - A custom package server, custom desktop environment, LibreOffice fork or bundled AI model.
 - General-purpose live kernel replacement. The running kernel remains active until reboot; only its matching modules are retained safely.
 
-Alpha.22 is the latest downloadable build after successful package/ISO builds,
+Alpha.23 is the latest downloadable build after successful package/ISO builds,
 size checks and BIOS/UEFI live-Plasma-plus-Calamares smoke boots. Every alpha
 remains experimental: Calamares installed-disk, real-hardware, gaming and
 install-alongside acceptance still require human testing before any
