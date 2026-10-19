@@ -17,6 +17,10 @@ reject() {
     exit 1
 }
 
+start_calamares() {
+    /usr/bin/sudo -E /usr/bin/calamares -d
+}
+
 if [[ "$(id -un)" != liveuser ]]; then
     reject 'user-is-not-liveuser' 'Der Installer muss aus der LOKRO-Live-Sitzung gestartet werden.'
 fi
@@ -62,7 +66,7 @@ printf '%s\n' \
     "$(lsblk -dn -o NAME,SIZE,TYPE,TRAN 2>/dev/null || true)" \
     > "${runtime_dir}/lokro-installer-diagnostics.txt"
 
-if /usr/bin/sudo -E /usr/bin/calamares -d > "$calamares_log" 2>&1; then
+if start_calamares > "$calamares_log" 2>&1; then
     printf '%s\n' 'exited code=0' > "$status_file"
     exit 0
 else
