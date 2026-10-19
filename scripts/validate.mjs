@@ -221,6 +221,9 @@ const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/loca
 for (const invariant of ["/run/archiso/bootmnt", "airootfs.sfs", "unsquashfs -s", "lokro-installer-diagnostics.txt", "lokro-calamares-debug.log", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "live-media-not-mounted", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
 }
+if (!prepareProfile.includes('chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lokro-live-installer"')) {
+  failures.push("prepared ISO does not make the graphical live installer executable");
+}
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
 if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
   failures.push("live installer does not auto-start through the guarded launcher in Plasma");
