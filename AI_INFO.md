@@ -4,8 +4,8 @@ This file is the machine-readable starting point for coding assistants and human
 
 ## Product contract
 
-- Product: experimental x86_64 desktop distribution. Current source and latest
-  downloadable CI prerelease are `0.1.0-alpha.23`.
+- Product: experimental x86_64 desktop distribution. The latest downloadable
+  CI prerelease is `0.1.0-alpha.23`; changes after that tag are unreleased source.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -27,6 +27,7 @@ This file is the machine-readable starting point for coding assistants and human
 | `vendor/` | Pinned source recipes required to build software unavailable as an official Arch binary. |
 | `scripts/` | Validation, package/repository construction, Archiso builds, metadata and VM smoke tests. |
 | `docs/` | Architecture, hardware, gaming, dual-boot, update, test and release truth. |
+| `website/` | Buildless GitHub Pages landing page for `os.lokro.dev`; never copied into an ISO. |
 
 ## Build graph
 

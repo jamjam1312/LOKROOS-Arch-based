@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="LOKRO OS ist eine experimentelle, Arch-basierte Desktop-Distribution mit KDE Plasma, Pacman, Flatpak und einem klaren Schwarz-Weiß-Design.">
+  <title>LOKRO OS — Arch, neu zusammengesetzt</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <header class="site-header" data-nav>
+    <a class="brand" href="#top" aria-label="LOKRO OS Startseite">
+      <span class="brand-mark" aria-hidden="true">L</span>
+      <span>LOKRO <b>OS</b></span>
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <a href="#system">System</a>
+      <a href="#status">Status</a>
+      <a href="#team">Team</a>
+    </nav>
+    <a class="button button-small chamfer-10" href="#download">Download</a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <canvas id="signal-field" aria-hidden="true"></canvas>
+
+      <div class="hero-copy">
+        <div class="release-pill chamfer-10">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span data-release-label>ALPHA 23 · EXPERIMENTELL</span>
+        </div>
+        <h1 id="hero-title"><span>LOKRO</span><br>OPERATING SYSTEM</h1>
+        <p class="hero-lead">Arch Linux als eigenständiger Desktop: schnell, veränderbar und mit einer klaren Schwarz‑Weiß‑Identität.</p>
+        <div class="hero-actions">
+          <a class="button button-primary chamfer-18" href="#download">ISO auswählen <span aria-hidden="true">↘</span></a>
+          <a class="button button-ghost chamfer-18" href="#system">System ansehen</a>
+        </div>
+        <p class="interaction-hint"><span aria-hidden="true">&gt;_</span> Bewege den Zeiger durch das ASCII‑Raster. Klicken schreibt ein kurzes Signal.</p>
+      </div>
+
+      <div class="hero-index" aria-hidden="true">
+        <span>01</span>
+        <i></i>
+        <span>23</span>
+      </div>
+
+      <div class="hero-meta" aria-label="Kurzstatus">
+        <div><span>BASE</span><strong>ARCH / x86_64</strong></div>
+        <div><span>DESKTOP</span><strong>PLASMA 6 + HYPRLAND</strong></div>
+        <div><span>BUILD</span><strong>ALPHA / TESTGERÄTE</strong></div>
+      </div>
+    </section>
+
+    <section class="manifesto section-shell" aria-labelledby="manifesto-title">
+      <p class="section-kicker">01 / DIE IDEE</p>
+      <div class="manifesto-grid">
+        <h2 id="manifesto-title">Kein Desktop-Fork.<br><em>Ein verbundenes System.</em></h2>
+        <div>
+          <p>LOKRO OS kombiniert bewährte Open‑Source‑Komponenten zu einem installierbaren Desktop. Pacman verwaltet das Basissystem, Flatpak die Desktop‑Apps, KDE Plasma die Oberfläche.</p>
+          <p>Eigener Code konzentriert sich auf Installation, sichere Updates, Suche, Design‑Packs, LOKRO Store und die gemeinsame visuelle Sprache.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="system section-shell" id="system" aria-labelledby="system-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">02 / SYSTEM PREVIEW</p>
+          <h2 id="system-title">Ein Desktop, mehrere Stimmungen.</h2>
+        </div>
+        <div class="theme-switcher" role="group" aria-label="Vorschau-Design wählen">
+          <button type="button" class="is-active" data-preview-theme="mono">Mono</button>
+          <button type="button" data-preview-theme="eclipse">Eclipse</button>
+          <button type="button" data-preview-theme="lunar">Lunar</button>
+        </div>
+      </div>
+
+      <div class="desktop-frame chamfer-28" data-desktop-theme="mono">
+        <div class="desktop-noise" aria-hidden="true"></div>
+        <div class="desktop-topbar">
+          <div class="desktop-logo">LOKRO</div>
+          <div>AKTIVITÄTEN</div>
+          <div class="desktop-clock">19:24&nbsp;&nbsp; DE</div>
+        </div>
+        <div class="window window-main chamfer-18">
+          <div class="window-bar">
+            <span>LOKRO SETTINGS</span>
+            <div><i></i><i></i><i></i></div>
+          </div>
+          <div class="window-content">
+            <aside>
+              <strong>System</strong>
+              <span class="selected">Erscheinungsbild</span>
+              <span>Netzwerk</span>
+              <span>Benutzer</span>
+              <span>Shortcuts</span>
+            </aside>
+            <div class="settings-stage">
+              <p class="micro-label">DESIGN PACK / <span data-theme-name>MONO</span></p>
+              <h3>Klare Flächen.<br>Kurze Wege.</h3>
+              <div class="settings-cards">
+                <article class="chamfer-10"><span>CURSOR</span><b>LokroMono</b></article>
+                <article class="chamfer-10"><span>AKZENT</span><b>Signal White</b></article>
+                <article class="chamfer-10"><span>BEWEGUNG</span><b>Reduziert</b></article>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="window window-side chamfer-18" aria-hidden="true">
+          <div class="system-ring"><span>38%</span></div>
+          <small>RAM / 6.1 GB</small>
+          <b>LOKRO TASK MANAGER</b>
+        </div>
+        <div class="desktop-dock chamfer-18" aria-label="Beispielhafte Taskleiste">
+          <i title="Start">L</i><i title="Dateien">□</i><i title="Browser">◉</i><i title="Terminal">›_</i><i title="Store">◇</i>
+        </div>
+      </div>
+      <p class="preview-note">Interaktive Illustration — keine Aufnahme eines vollständig hardwaregetesteten Releases.</p>
+    </section>
+
+    <section class="feature-band" aria-label="Systemmerkmale">
+      <div class="section-shell feature-grid">
+        <article>
+          <span class="feature-number">01</span>
+          <h3>Arch im Kern</h3>
+          <p>Eigenständig installierbares x86_64‑System mit Linux‑Kernel, Firmware, GRUB und Calamares.</p>
+        </article>
+        <article>
+          <span class="feature-number">02</span>
+          <h3>Zwei App-Welten</h3>
+          <p>Pacman für das System. Flatpak und Discover für Apps — ohne vorinstallierten AUR‑Helfer.</p>
+        </article>
+        <article>
+          <span class="feature-number">03</span>
+          <h3>Gaming vorbereitet</h3>
+          <p>Optionale Pakete für Steam, Prism Launcher, Java, GameMode, Gamescope und MangoHud.</p>
+        </article>
+        <article>
+          <span class="feature-number">04</span>
+          <h3>Offen gebaut</h3>
+          <p>Quellcode, Build‑Metadaten, Prüfsummen und bekannte Einschränkungen liegen öffentlich bei.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="download section-shell" id="download" aria-labelledby="download-title">
+      <div class="section-heading download-heading">
+        <div>
+          <p class="section-kicker">03 / DOWNLOAD</p>
+          <h2 id="download-title">Wähle dein Abbild.</h2>
+        </div>
+        <p>Beide Varianten installieren ein vollständiges Arch‑basiertes System. GitHub stellt große ISO‑Dateien als nummerierte Teile bereit.</p>
+      </div>
+
+      <div class="download-grid">
+        <article class="download-card chamfer-28 featured-card">
+          <div class="card-tag">EMPFOHLEN FÜR DEN ERSTEN TEST</div>
+          <div class="download-card-head">
+            <span>OFFLINE</span><b>3.44 GiB</b>
+          </div>
+          <h3>Alles Wichtige auf dem Stick.</h3>
+          <p>Basissystem, Plasma und Kernprogramme sind im Abbild enthalten. Internet wird erst für Updates und zusätzliche Apps gebraucht.</p>
+          <ul>
+            <li>Firefox und LibreOffice enthalten</li>
+            <li>Gaming-Bundle offline auswählbar</li>
+            <li>Ideal für langsame oder fehlende Verbindung</li>
+          </ul>
+          <a class="button button-primary chamfer-18 release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.23">Offline herunterladen <span aria-hidden="true">↗</span></a>
+        </article>
+
+        <article class="download-card chamfer-28">
+          <div class="card-tag">KLEINERER DOWNLOAD</div>
+          <div class="download-card-head">
+            <span>ONLINE</span><b>2.48 GiB</b>
+          </div>
+          <h3>Schlanker starten.</h3>
+          <p>Das installierbare Grundsystem bleibt enthalten. Zusätzliche Programme werden bei bestehender Verbindung nachgeladen.</p>
+          <ul>
+            <li>Kleineres Abbild für USB‑Sticks</li>
+            <li>Aktive Internetverbindung empfohlen</li>
+            <li>Gleicher Alpha‑Status wie Offline</li>
+          </ul>
+          <a class="button button-ghost chamfer-18 release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.23">Online herunterladen <span aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+
+      <div class="download-note chamfer-18">
+        <span aria-hidden="true">!</span>
+        <p><strong>Alpha-Hinweis:</strong> Die Abbilder bestanden automatisierte BIOS-/UEFI‑Live‑Boot‑Tests. Eine vollständige Installation auf echter Hardware, Dual‑Boot und alle Grafiktreiber sind noch nicht abschließend geprüft. Sichere deine Daten.</p>
+        <a href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.23/REASSEMBLE.md">Zusammensetzen →</a>
+      </div>
+    </section>
+
+    <section class="status" id="status" aria-labelledby="status-title">
+      <div class="section-shell">
+        <p class="section-kicker">04 / RELEASE STATUS</p>
+        <h2 id="status-title">Transparenz vor Versprechen.</h2>
+        <div class="status-grid">
+          <article class="chamfer-18 status-ready">
+            <span>IMPLEMENTIERT</span>
+            <strong>Quellcode</strong>
+            <p>Archiso, Plasma 6, Calamares, GRUB, Pacman, Flatpak, Store, Design‑Packs und sichere Updates.</p>
+          </article>
+          <article class="chamfer-18 status-ci">
+            <span>CI-VERIFIZIERT</span>
+            <strong>Live-Boot</strong>
+            <p>Offline- und Online-Build, Größenlimit sowie BIOS- und UEFI‑Start bis Plasma plus Calamares.</p>
+          </article>
+          <article class="chamfer-18 status-open">
+            <span>NOCH OFFEN</span>
+            <strong>Echte Hardware</strong>
+            <p>Installierter Disk‑Boot, Dual‑Boot, AMD/NVIDIA, Suspend, Audio, Bluetooth, Steam und Minecraft.</p>
+          </article>
+        </div>
+        <a class="text-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/blob/main/docs/RELEASE_STATUS.md">Vollständigen Prüfstatus auf GitHub lesen ↗</a>
+      </div>
+    </section>
+
+    <section class="team section-shell" id="team" aria-labelledby="team-title">
+      <p class="section-kicker">05 / MENSCH + MASCHINE</p>
+      <div class="team-layout">
+        <div>
+          <h2 id="team-title">Gemeinsam angefangen.<br>Offen weitergebaut.</h2>
+          <p>Die technische Grundlage von LOKRO OS wurde von Jamie Milo Cürten gemeinsam mit LOKROGAMER entwickelt — mit Unterstützung von ChatGPT / OpenAI Codex. OpenCode ist für eine spätere Entwicklungsphase geplant, wird aktuell aber nicht als Mitentwickler angegeben.</p>
+        </div>
+        <div class="credits-list">
+          <article class="chamfer-18">
+            <span>CO-INITIATOR / DEVELOPMENT</span>
+            <strong>Jamie Milo Cürten</strong>
+            <p>Konzept, Anforderungen, Hardwaretests und technische Grundlage mit KI‑Unterstützung.</p>
+          </article>
+          <article class="chamfer-18">
+            <span>CO-INITIATOR / DESIGN</span>
+            <strong>LOKROGAMER / Erik</strong>
+            <p>LOKRO‑Netzwerk, Markenrichtung und die Chamfer‑Formensprache.</p>
+          </article>
+          <article class="chamfer-18">
+            <span>AI DEVELOPMENT SUPPORT</span>
+            <strong>ChatGPT / OpenAI Codex</strong>
+            <p>Planung, Recherche, Implementierung, Validierung und Dokumentation unter menschlicher Leitung.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <canvas id="footer-field" aria-hidden="true"></canvas>
+      <div class="section-shell final-cta-inner">
+        <span>BEYOND LIMITS / STAY LIMITLESS</span>
+        <h2>Bereit, Alpha zu testen?</h2>
+        <div>
+          <a class="button button-primary chamfer-18" href="#download">Zum Download</a>
+          <a class="button button-ghost chamfer-18" href="https://github.com/jamjam1312/LOKROOS-Arch-based">Quellcode auf GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand"><span class="brand-mark">L</span><span>LOKRO <b>OS</b></span></div>
+    <p>Experimentelle Arch‑basierte Distribution · GPL‑3.0‑or‑later / CC BY‑SA 4.0</p>
+    <div><a href="https://lokro.dev/de/">LOKRO Netzwerk</a><a href="https://github.com/jamjam1312/LOKROOS-Arch-based">GitHub</a></div>
+  </footer>
+</body>
+</html>

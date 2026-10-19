@@ -7,6 +7,10 @@ widgetStyle=Breeze
 [kdeglobals][Icons]
 Theme=breeze-dark
 
+[kcminputrc][Mouse]
+cursorTheme=LokroMono
+cursorSize=24
+
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.breeze
 theme=Breeze
