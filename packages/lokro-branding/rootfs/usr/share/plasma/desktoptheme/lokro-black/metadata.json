@@ -1,0 +1,13 @@
+{
+  "KPlugin": {
+    "Authors": [{"Name": "LOKRO OS contributors"}],
+    "Description": "True-black Plasma surfaces with crisp monochrome LOKRO edges",
+    "Id": "lokro-black",
+    "Category": "",
+    "EnabledByDefault": true,
+    "License": "GPL-3.0-or-later",
+    "Name": "LOKRO Black",
+    "Version": "0.1.0"
+  },
+  "X-Plasma-API": "5.0"
+}

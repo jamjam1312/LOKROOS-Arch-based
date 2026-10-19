@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#020202"/>
+  <g fill="#f5f5f5" opacity=".18">
+    <circle cx="150" cy="125" r="3"/><circle cx="195" cy="165" r="2"/><circle cx="250" cy="110" r="4"/>
+    <circle cx="1665" cy="820" r="3"/><circle cx="1720" cy="865" r="2"/><circle cx="1780" cy="790" r="4"/>
+  </g>
+  <g transform="translate(723 390)">
+    <path d="M0 0v208h166l31-48H61V0z" fill="#f7f7f7"/>
+    <path d="M220 0h73L207 92l-41 43V62z" fill="#8b8b8b"/>
+    <text x="330" y="142" fill="#f7f7f7" font-family="DejaVu Sans,sans-serif" font-size="92" font-weight="700" letter-spacing="9">LOKRO</text>
+    <text x="333" y="196" fill="#9b9b9b" font-family="DejaVu Sans,sans-serif" font-size="20" letter-spacing="10">OPERATING SYSTEM</text>
+  </g>
+  <path d="M96 96h70M96 96v70M1824 984h-70M1824 984v-70" fill="none" stroke="#777" stroke-width="3"/>
+</svg>

@@ -3,11 +3,11 @@
   "KPlugin": {
     "Authors": [{"Name": "Lokro OS contributors"}],
     "Category": "Global Themes",
-    "Description": "Dark Lokro OS appearance based on Breeze",
+    "Description": "Black and white LOKRO OS appearance based on Breeze",
     "Id": "org.lokro.dark",
     "License": "GPL-3.0-or-later",
-    "Name": "Lokro Dark",
-    "Version": "0.1.0"
+    "Name": "LOKRO Black",
+    "Version": "0.2.0"
   },
   "X-Plasma-API-Minimum-Version": "6.0"
 }

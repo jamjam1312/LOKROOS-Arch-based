@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
-stamp="${XDG_CONFIG_HOME:-$HOME/.config}/lokro/first-login-v4"
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/lokro"
+stamp="$config_dir/first-login-v5"
+previous_stamp="$config_dir/first-login-v4"
 [[ -e "$stamp" ]] && exit 0
 mkdir -p "$(dirname "$stamp")"
 
-if command -v plasma-apply-lookandfeel >/dev/null 2>&1; then
+fresh_layout=true
+[[ -e "$previous_stamp" ]] && fresh_layout=false
+
+if [[ "$fresh_layout" == true ]] && command -v plasma-apply-lookandfeel >/dev/null 2>&1; then
     plasma-apply-lookandfeel --apply org.lokro.dark >/dev/null 2>&1 || true
 fi
 if command -v plasma-apply-colorscheme >/dev/null 2>&1; then
@@ -14,6 +19,7 @@ fi
 if command -v kwriteconfig6 >/dev/null 2>&1; then
     kwriteconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage org.lokro.dark >/dev/null 2>&1 || true
     kwriteconfig6 --file kdeglobals --group Icons --key Theme breeze-dark >/dev/null 2>&1 || true
+    kwriteconfig6 --file plasmarc --group Theme --key name lokro-black >/dev/null 2>&1 || true
     kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme LokroMono >/dev/null 2>&1 || true
     kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 24 >/dev/null 2>&1 || true
 fi
@@ -28,8 +34,23 @@ if command -v xdg-mime >/dev/null 2>&1; then
     done
 fi
 
-script='var ds = desktops(); for (var i = 0; i < ds.length; i++) { ds[i].wallpaperPlugin = "org.lokro.slashes"; ds[i].currentConfigGroup = ["Wallpaper", "org.lokro.slashes", "General"]; ds[i].writeConfig("accentColor", "#f4f4f5"); if (i === 0) { var w = ds[i].addWidget("org.lokro.hub"); w.geometry = "40,40,360,320"; var m = ds[i].addWidget("org.kde.plasma.systemmonitor.memory"); m.geometry = "420,40,300,180"; } } var ps = panels(); if (ps.length > 0) { ps[0].addWidget("org.lokro.search"); }'
+layout_applied=true
 if command -v qdbus6 >/dev/null 2>&1; then
-    qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$script" >/dev/null 2>&1 || true
+    if [[ "$fresh_layout" == true ]]; then
+        script="$(cat /usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js)"
+    else
+        script='var ds = desktops(); for (var i = 0; i < ds.length; i++) { ds[i].wallpaperPlugin = "org.lokro.slashes"; ds[i].currentConfigGroup = ["Wallpaper", "org.lokro.slashes", "General"]; ds[i].writeConfig("accentColor", "#f4f4f5"); }'
+    fi
+    layout_applied=false
+    for _attempt in {1..10}; do
+        if qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "$script" >/dev/null 2>&1; then
+            layout_applied=true
+            break
+        fi
+        sleep 1
+    done
+elif [[ "$fresh_layout" == true ]]; then
+    layout_applied=false
 fi
+[[ "$layout_applied" == true ]] || exit 0
 touch "$stamp"

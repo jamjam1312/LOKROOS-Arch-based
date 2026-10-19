@@ -22,7 +22,13 @@ const required = [
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
   "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
   "vendor/ckbcomp/PKGBUILD",
-  "packages/lokro-branding/PKGBUILD", "packages/lokro-branding/rootfs/etc/xdg/kcminputrc", "packages/lokro-shell/PKGBUILD",
+  "packages/lokro-branding/PKGBUILD", "packages/lokro-branding/rootfs/etc/xdg/kcminputrc", "packages/lokro-branding/rootfs/etc/xdg/plasmarc",
+  "packages/lokro-branding/rootfs/usr/share/icons/hicolor/scalable/apps/lokro-os.svg",
+  "packages/lokro-branding/rootfs/usr/share/plasma/desktoptheme/lokro-black/metadata.json",
+  "packages/lokro-branding/rootfs/usr/share/plasma/desktoptheme/lokro-black/plasmarc",
+  "packages/lokro-branding/rootfs/usr/share/plasma/desktoptheme/lokro-black/widgets/panel-background.svg",
+  "packages/lokro-branding/rootfs/usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js",
+  "packages/lokro-branding/grub-background.svg", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
   "packages/lokro-store/PKGBUILD",
   "website/index.html", "website/styles.css", "website/app.js", "website/CNAME",
@@ -154,6 +160,7 @@ for (const adminInvariant of ["sudoersGroup: wheel", "sudoersConfigureWithGroup:
 
 const grubConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/etc/calamares/modules/grubcfg.conf"), "utf8");
 if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB is not configured to discover other operating systems");
+if (!grubConfig.includes('GRUB_BACKGROUND: "/usr/share/backgrounds/lokro/lokro-grub.png"')) failures.push("installed GRUB does not select the LOKRO background");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
 for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service", "lokro-live-installer-supervisor.service", "/usr/local/sbin/lokro-live-installer-supervisor"]) {
@@ -172,7 +179,13 @@ for (const themeInvariant of [
   "--key Theme breeze-dark",
   "--key cursorTheme LokroMono",
   "plasma-apply-cursortheme LokroMono",
-  "first-login-v4"
+  "--file plasmarc --group Theme --key name lokro-black",
+  "first-login-v5",
+  "previous_stamp=\"$config_dir/first-login-v4\"",
+  "fresh_layout=true",
+  "for _attempt in {1..10}",
+  "[[ \"$layout_applied\" == true ]] || exit 0",
+  "/usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js"
 ]) {
   if (!firstLogin.includes(themeInvariant)) failures.push(`first login does not enforce the LOKRO default: ${themeInvariant}`);
 }
@@ -184,6 +197,14 @@ const systemCursor = fs.readFileSync(path.join(root, "packages/lokro-branding/ro
 if (!systemCursor.includes("cursorTheme=LokroMono") || !systemCursor.includes("cursorSize=24")) {
   failures.push("system cursor defaults do not select LokroMono at size 24");
 }
+const plasmaDefaults = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/etc/xdg/plasmarc"), "utf8");
+if (!plasmaDefaults.includes("name=lokro-black")) failures.push("system Plasma defaults do not select the LOKRO Black desktop theme");
+const plasmaLayout = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js"), "utf8");
+for (const layoutInvariant of ["oldPanels[p].remove()", "org.kde.plasma.kickoff", "lokro-os", "org.lokro.search", "org.kde.plasma.icontasks", "org.kde.plasma.systemtray", "org.kde.plasma.digitalclock"]) {
+  if (!plasmaLayout.includes(layoutInvariant)) failures.push(`LOKRO fresh-user panel layout is missing: ${layoutInvariant}`);
+}
+const plymouthScript = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/usr/share/plymouth/themes/lokro/lokro.script"), "utf8");
+if (!plymouthScript.includes("Window.SetBackgroundTopColor(0.005, 0.005, 0.005)")) failures.push("Plymouth does not use the black LOKRO startup background");
 const pagesCname = fs.readFileSync(path.join(root, "website/CNAME"), "utf8").trim();
 if (pagesCname !== "os.lokro.dev") failures.push(`unexpected GitHub Pages domain: ${pagesCname}`);
 const websiteScript = fs.readFileSync(path.join(root, "website/app.js"), "utf8");
