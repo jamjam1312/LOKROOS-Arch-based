@@ -5,9 +5,12 @@ Item {
     property real pointerX: width * 0.5
     property real pointerY: height * 0.5
     property real phase: 0
-    property double lastInteraction: 0
+    // Start with a short visible motion preview, then reduce work until the
+    // pointer moves again. This makes the animation discoverable without
+    // keeping the GPU busy on an unattended desktop.
+    property double lastInteraction: Date.now()
     readonly property bool softwareRendering: GraphicsInfo.api === GraphicsInfo.Software
-    readonly property bool activeMotion: !softwareRendering && Date.now() - lastInteraction < 2200
+    readonly property bool activeMotion: !softwareRendering && Date.now() - lastInteraction < 6500
 
     Rectangle {
         anchors.fill: parent
@@ -39,13 +42,21 @@ Item {
                     var pdx = gx - pointerX
                     var pdy = gy - pointerY
                     var proximity = Math.max(0, 1 - Math.sqrt(pdx * pdx + pdy * pdy) / 190)
-                    ctx.globalAlpha = 0.12 + proximity * 0.48
+                    var cloud = Math.max(0, Math.sin(gx * 0.008 + gy * 0.011 + phase) * 0.5 + 0.5)
+                    ctx.globalAlpha = 0.06 + cloud * 0.13 + proximity * 0.48
                     ctx.beginPath()
-                    ctx.arc(gx, gy, 1.2 + proximity * 2.2, 0, Math.PI * 2)
+                    ctx.arc(gx, gy, 1.0 + cloud * 1.2 + proximity * 2.2, 0, Math.PI * 2)
                     ctx.fill()
                 }
             }
             ctx.globalAlpha = 1
+            ctx.strokeStyle = "rgba(255,255,255,0.14)"
+            ctx.lineWidth = 1.4
+            for (var ring = 0; ring < 5; ring++) {
+                ctx.beginPath()
+                ctx.arc(width * 0.86, height * 0.90, Math.min(width, height) * (0.32 + ring * 0.055), Math.PI * 1.04, Math.PI * 1.72)
+                ctx.stroke()
+            }
             var spacing = Math.max(110, width / 18)
             var influence = Math.max(220, Math.min(width, height) * 0.28)
             for (var x = -spacing; x < width + spacing; x += spacing) {
@@ -87,16 +98,19 @@ Item {
     }
 
     Timer {
-        interval: root.activeMotion ? 33 : 1000
+        interval: root.activeMotion ? 40 : 1400
         running: root.visible
         repeat: true
         onTriggered: {
-            if (root.activeMotion) root.phase += 0.035
+            if (root.activeMotion) root.phase += 0.032
             canvas.requestPaint()
         }
     }
 
     onWidthChanged: canvas.requestPaint()
     onHeightChanged: canvas.requestPaint()
-    Component.onCompleted: canvas.requestPaint()
+    Component.onCompleted: {
+        root.lastInteraction = Date.now()
+        canvas.requestPaint()
+    }
 }

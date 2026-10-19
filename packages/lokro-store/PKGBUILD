@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-store
-pkgver=0.1.0.alpha7
-_upstream_version=0.1.0-alpha.7
+pkgver=0.1.0.alpha8
+_upstream_version=0.1.0-alpha.8
 pkgrel=1
 pkgdesc='Validated application and design catalog for LOKRO OS'
 arch=('any')
@@ -11,7 +11,7 @@ depends=('python' 'pyside6' 'flatpak')
 optdepends=('lokro-shell: validate and install LOKRO design packs')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 source=("$pkgname-$_upstream_version.tar.gz::https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v$_upstream_version")
-sha256sums=('3eb047948fbe24d379a3098a2337f91359afff3ae42ef3883f6236099ae5f632')
+sha256sums=('89058a0db9184d5fc993a843a427c9b48bd351aee7f13d4ca7996b4725863572')
 
 build() {
   cd "LOKROOS-Appstore-githubconnection-$_upstream_version"

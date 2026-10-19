@@ -290,7 +290,7 @@ ApplicationWindow {
                     secondaryText: qsTr("Open Source")
                     onPrimary: root.openAction("credits")
                     onSecondary: Qt.openUrlExternally("https://github.com/jamjam1312/LOKROOS-Arch-based")
-                    footer: qsTr("LOKKROGAMER · Jamie Milo Cürten · OpenAI Codex · Upstream-Projekte")
+                    footer: qsTr("LOKROGAMER · Jamie Milo Cürten · OpenAI Codex · Upstream-Projekte")
                 }
             }
 

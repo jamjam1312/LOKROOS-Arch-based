@@ -64,9 +64,9 @@
     },
     {
       "name": "LOKRO Store",
-      "version": "0.1.0-alpha.7",
-      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.7",
-      "sha256": "3eb047948fbe24d379a3098a2337f91359afff3ae42ef3883f6236099ae5f632",
+      "version": "0.1.0-alpha.8",
+      "source": "https://codeload.github.com/jamjam1312/LOKROOS-Appstore-githubconnection/tar.gz/refs/tags/v0.1.0-alpha.8",
+      "sha256": "89058a0db9184d5fc993a843a427c9b48bd351aee7f13d4ca7996b4725863572",
       "license": "CC0-1.0; bundled third-party icons retain their documented upstream licenses",
       "usage": "checksum-pinned offline catalog and Qt UI built by packages/lokro-store/PKGBUILD"
     },

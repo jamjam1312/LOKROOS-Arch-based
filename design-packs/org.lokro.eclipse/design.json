@@ -1,0 +1,17 @@
+{
+  "$schema": "../design-pack.schema.json",
+  "schemaVersion": 1,
+  "id": "org.lokro.eclipse",
+  "name": "LOKRO Eclipse",
+  "version": "1.0.0",
+  "author": "Jamie Milo Cürten with OpenAI Codex",
+  "license": "CC-BY-SA-4.0",
+  "description": "A dark black-and-white halftone atmosphere with the LOKRO Mono cursor.",
+  "plasma": {
+    "lookAndFeel": "org.lokro.dark",
+    "colorScheme": "LokroDark",
+    "cursorTheme": "LokroMono",
+    "cursorSize": 24,
+    "wallpaper": "payload/wallpapers/lokro-eclipse.png"
+  }
+}

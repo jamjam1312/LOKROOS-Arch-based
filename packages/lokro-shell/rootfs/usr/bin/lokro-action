@@ -10,6 +10,18 @@ launch() {
     "$@" >/dev/null 2>&1 &
 }
 
+apply_design() {
+    local pack_id="$1"
+    (
+        local output
+        if output="$(lokro-design-pack apply "$pack_id" 2>&1)"; then
+            kdialog --title 'LOKRO Design' --msgbox "$output" >/dev/null 2>&1 || true
+        else
+            kdialog --title 'LOKRO Design' --error "$output" >/dev/null 2>&1 || true
+        fi
+    ) &
+}
+
 case "$action" in
     search)
         if [[ "${XDG_CURRENT_DESKTOP:-}" == *Hyprland* ]] && command -v wofi >/dev/null 2>&1; then
@@ -26,6 +38,9 @@ case "$action" in
     users) launch systemsettings kcm_users ;;
     appearance) launch systemsettings kcm_lookandfeel ;;
     design-packs) launch lokro-design-pack-gui ;;
+    design-animated) apply_design org.lokro.monochrome ;;
+    design-eclipse) apply_design org.lokro.eclipse ;;
+    design-lunar) apply_design org.lokro.lunar ;;
     credits) launch lokro-credits ;;
     app-store) launch lokro-store ;;
     wallpaper)

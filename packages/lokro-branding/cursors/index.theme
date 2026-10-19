@@ -1,0 +1,4 @@
+[Icon Theme]
+Name=LOKRO Mono
+Comment=High-contrast monochrome LOKRO pointer set
+Inherits=breeze_cursors

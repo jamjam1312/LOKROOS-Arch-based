@@ -1,6 +1,6 @@
 # Lokro OS
 
-Lokro OS is an experimental, Arch-based x86_64 desktop distribution built around KDE Plasma 6, Wayland, Pacman and Flatpak. Version `0.1.0-alpha.14` is the latest tested download and is intended for virtual machines and test hardware, not production systems.
+Lokro OS is an experimental, Arch-based x86_64 desktop distribution built around KDE Plasma 6, Wayland, Pacman and Flatpak. Version `0.1.0-alpha.22` is the latest tested download and is intended for virtual machines and test hardware, not production systems.
 
 Official repository: [jamjam1312/LOKROOS-Arch-based](https://github.com/jamjam1312/LOKROOS-Arch-based). This is openly AI-assisted integration work for the LOKRO community, not a claim that upstream components were authored here.
 

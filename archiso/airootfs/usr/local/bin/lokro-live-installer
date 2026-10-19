@@ -6,18 +6,39 @@ runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 status_file="${runtime_dir}/lokro-installer.status"
 install -d -m 0700 "$runtime_dir"
 
-if [[ "$(id -un)" != liveuser ]]; then
-    printf '%s\n' 'rejected user-is-not-liveuser' > "$status_file"
+reject() {
+    local reason="$1" message="$2"
+    printf 'rejected %s\n' "$reason" > "$status_file"
+    printf '%s\n' "$message" > "${runtime_dir}/lokro-installer-diagnostics.txt"
+    if command -v kdialog >/dev/null 2>&1; then
+        kdialog --title 'LOKRO OS Installer – Vorprüfung' --sorry \
+            "$message\n\nDiagnose: ${runtime_dir}/lokro-installer-diagnostics.txt" >/dev/null 2>&1 || true
+    fi
     exit 1
+}
+
+if [[ "$(id -un)" != liveuser ]]; then
+    reject 'user-is-not-liveuser' 'Der Installer muss aus der LOKRO-Live-Sitzung gestartet werden.'
 fi
 
 if [[ ! -e /run/archiso/bootmnt ]]; then
-    printf '%s\n' 'rejected live-media-not-mounted' > "$status_file"
-    if command -v kdialog >/dev/null 2>&1; then
-        kdialog --title 'LOKRO OS Installer' --sorry \
-            'Der Installer ist nur im gestarteten LOKRO-Live-System verfügbar.' >/dev/null 2>&1 || true
-    fi
-    exit 1
+    reject 'live-media-not-mounted' 'Das LOKRO-Live-Medium ist nicht unter /run/archiso/bootmnt eingebunden. Starte die ISO neu und prüfe den USB-Stick bzw. Ventoy.'
+fi
+
+root_image='/run/archiso/bootmnt/arch/x86_64/airootfs.sfs'
+[[ -r "$root_image" ]] || reject 'root-image-missing' \
+    'Das eingebettete Arch-System (airootfs.sfs) fehlt oder ist nicht lesbar. Die Installation würde unvollständig werden.'
+
+missing_tools=()
+for tool in calamares rsync unsquashfs lsblk; do
+    command -v "$tool" >/dev/null 2>&1 || missing_tools+=("$tool")
+done
+(( ${#missing_tools[@]} == 0 )) || reject 'runtime-tool-missing' \
+    "Der ISO fehlen benötigte Installer-Werkzeuge: ${missing_tools[*]}"
+
+if ! unsquashfs -s "$root_image" >/dev/null 2>&1; then
+    reject 'root-image-invalid' \
+        'Das eingebettete Arch-System kann nicht gelesen werden. Schreibe die ISO erneut auf den USB-Stick oder prüfe ihre SHA-256-Prüfsumme.'
 fi
 
 if pgrep -x calamares >/dev/null 2>&1; then
@@ -31,12 +52,26 @@ if ! flock -n 9; then
 fi
 
 printf '%s\n' 'starting' > "$status_file"
+calamares_log="${runtime_dir}/lokro-calamares-debug.log"
+printf '%s\n' \
+    'LOKRO installer preflight: OK' \
+    "root image: $root_image" \
+    "root image bytes: $(stat -c %s "$root_image")" \
+    "boot mode: $([[ -d /sys/firmware/efi ]] && printf UEFI || printf BIOS)" \
+    "disks:" \
+    "$(lsblk -dn -o NAME,SIZE,TYPE,TRAN 2>/dev/null || true)" \
+    > "${runtime_dir}/lokro-installer-diagnostics.txt"
 
-if /usr/bin/sudo -E /usr/bin/calamares -d; then
+if /usr/bin/sudo -E /usr/bin/calamares -d > "$calamares_log" 2>&1; then
     printf '%s\n' 'exited code=0' > "$status_file"
     exit 0
 else
     exit_code=$?
     printf 'exited code=%s\n' "$exit_code" > "$status_file"
+    if command -v kdialog >/dev/null 2>&1; then
+        kdialog --title 'LOKRO OS Installer' --error \
+            "Die Installation wurde mit Fehlercode ${exit_code} beendet. Das Diagnoseprotokoll liegt unter:\n${calamares_log}" \
+            >/dev/null 2>&1 || true
+    fi
     exit "$exit_code"
 fi

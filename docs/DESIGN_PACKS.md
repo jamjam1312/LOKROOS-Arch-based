@@ -32,9 +32,16 @@ change can require a new login before every application sees it. The bundled
 `lokro-branding` and `lokro-shell`.
 
 The built-in `org.lokro.glass` pack adds an original high-contrast black glass
-color scheme and keeps the interactive Slashes wallpaper. Plasma's trusted
-widget style still controls button geometry; the pack deliberately contains no
-QML or executable theme code.
+color scheme and keeps the interactive Slashes wallpaper. `org.lokro.eclipse`
+and `org.lokro.lunar` provide original dark and light halftone wallpapers.
+All bundled packs can select the compiled `LokroMono` cursor supplied by the
+trusted `lokro-branding` package. Plasma's trusted widget style still controls
+button geometry; design-pack payloads deliberately contain no QML, cursor
+binaries or executable theme code.
+
+The importer keeps a declared KDE color-scheme filename intact. This matters
+because Plasma resolves schemes by basename; prefixing `LokroGlass.colors`
+while requesting `LokroGlass` caused earlier packs to install but not apply.
 
 ## Repository packs
 

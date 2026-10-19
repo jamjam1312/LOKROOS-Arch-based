@@ -17,6 +17,8 @@ ROOT = Path(__file__).resolve().parent.parent
 TOOL = ROOT / "packages/lokro-shell/rootfs/usr/bin/lokro-design-pack"
 EXAMPLE = ROOT / "design-packs/org.lokro.monochrome"
 GLASS = ROOT / "design-packs/org.lokro.glass"
+ECLIPSE = ROOT / "design-packs/org.lokro.eclipse"
+LUNAR = ROOT / "design-packs/org.lokro.lunar"
 
 
 def run(arguments: list[str], environment: dict[str, str], expected: int = 0) -> subprocess.CompletedProcess[str]:
@@ -48,9 +50,11 @@ def main() -> int:
         run(["install", str(EXAMPLE)], environment)
         run(["validate", str(GLASS)], environment)
         run(["install", str(GLASS)], environment)
-        installed_glass = temporary / "data" / "color-schemes" / "org.lokro.glass-LokroGlass.colors"
+        run(["validate", str(ECLIPSE)], environment)
+        run(["validate", str(LUNAR)], environment)
+        installed_glass = temporary / "data" / "color-schemes" / "LokroGlass.colors"
         if not installed_glass.is_file():
-            raise RuntimeError("glass pack did not stage its KDE color scheme")
+            raise RuntimeError("glass pack did not stage its KDE color scheme under the declared basename")
         listed = json.loads(run(["list", "--json"], environment).stdout)
         matching = [pack for pack in listed if pack["id"] == "org.lokro.monochrome"]
         if len(matching) != 1 or matching[0]["origin"] != "user":

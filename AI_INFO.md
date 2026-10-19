@@ -69,7 +69,7 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - **LOKRO Credits** exposes the protected project attribution in the welcome
   center, application menu and `/usr/share/doc/lokro-os/CREDITS.md`. The root
   and packaged copies must remain byte-identical.
-- **LOKRO Store** `v0.1.0-alpha.7` ships a validated offline catalog, repairs
+- **LOKRO Store** `v0.1.0-alpha.8` ships a validated offline catalog, repairs
   the user-scoped Flathub remote and installs exact Flatpak IDs without a
   shell. ArtCraft Launcher 0.3.2 uses its official, versioned x86_64 Flatpak
   bundle with an exact SHA-256 check. All 13 ArtCraft Crafting Apps are also
@@ -77,6 +77,10 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
   upstream bundles and published checksums. Reviewed `.lokrodesign` archives
   are downloaded only from immutable URLs and verified before the safe
   importer is invoked.
+- **LOKRO appearance packs** include the interactive Monochrome wallpaper plus
+  original Eclipse (dark) and Lunar (light) halftone wallpapers. The trusted
+  `lokro-branding` package provides the compiled `LokroMono` cursor theme;
+  downloaded packs still cannot supply executable cursor or QML code.
 - **LOKRO Settings** is a glass-styled visual landing page for the
   existing trusted Plasma settings modules; it does not replace KDE's settings
   backends.

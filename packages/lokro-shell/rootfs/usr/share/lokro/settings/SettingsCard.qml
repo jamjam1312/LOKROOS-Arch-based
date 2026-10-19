@@ -14,13 +14,15 @@ Rectangle {
 
     implicitWidth: 280
     implicitHeight: 142
-    radius: 18
-    color: pointer.containsMouse ? "#e6292d35" : "#b81a1d23"
+    radius: 16
+    color: pointer.containsMouse ? "#f0202020" : "#d20b0b0b"
     border.width: 1
-    border.color: pointer.containsMouse ? "#e6ffffff" : "#55777f8b"
+    border.color: pointer.containsMouse ? "#ffffff" : "#526f6f6f"
+    scale: pointer.containsMouse ? 1.018 : 1.0
 
     Behavior on color { ColorAnimation { duration: 120 } }
     Behavior on border.color { ColorAnimation { duration: 120 } }
+    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
 
     Rectangle {
         anchors.left: parent.left
@@ -28,7 +30,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.margins: 1
         height: 1
-        color: "#80ffffff"
+        color: pointer.containsMouse ? "#ffffff" : "#70ffffff"
     }
 
     ColumnLayout {
@@ -47,7 +49,7 @@ Rectangle {
             Item { Layout.fillWidth: true }
             Label {
                 text: "↗"
-                color: pointer.containsMouse ? "#ffffff" : "#8f98a6"
+                color: pointer.containsMouse ? "#ffffff" : "#7a7a7a"
                 font.pixelSize: 17
             }
         }
@@ -62,7 +64,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: card.detail
-            color: "#aeb6c2"
+            color: "#b6b6b6"
             font.pixelSize: 12
             wrapMode: Text.WordWrap
         }

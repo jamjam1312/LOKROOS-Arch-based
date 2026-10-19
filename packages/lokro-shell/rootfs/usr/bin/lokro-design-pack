@@ -247,14 +247,21 @@ def resolve_source(source: Path, temporary: Path) -> Path:
     return safe_extract_archive(source, temporary)
 
 
-def install_assets(installed: Path, pack_id: str) -> None:
+def install_assets(installed: Path, manifest: dict) -> None:
+    pack_id = manifest["id"]
     colors = installed / "payload" / "color-schemes"
     if colors.is_dir():
         destination = data_home() / "color-schemes"
         destination.mkdir(parents=True, exist_ok=True)
+        declared_scheme = manifest["plasma"].get("colorScheme")
         for source in colors.rglob("*.colors"):
             relative_name = "-".join(source.relative_to(colors).parts)
-            shutil.copy2(source, destination / f"{pack_id}-{relative_name}")
+            # KDE resolves a color scheme by the file's basename. A previous
+            # implementation prefixed every file with the pack id, then asked
+            # Plasma to apply the unprefixed name. That made otherwise valid
+            # downloaded packs appear to install but fail while applying.
+            filename = source.name if source.stem == declared_scheme else f"{pack_id}-{relative_name}"
+            shutil.copy2(source, destination / filename)
     wallpapers = installed / "payload" / "wallpapers"
     if wallpapers.is_dir():
         destination = data_home() / "wallpapers" / pack_id
@@ -291,7 +298,7 @@ def install_pack(source: Path) -> dict:
             shutil.rmtree(backup, ignore_errors=True)
         finally:
             shutil.rmtree(staging, ignore_errors=True)
-        install_assets(destination, manifest["id"])
+        install_assets(destination, manifest)
         return manifest
 
 
@@ -334,7 +341,7 @@ def apply_pack(pack_id: str) -> dict:
     # System packs keep payloads inside /usr/share/lokro. Stage their ordinary
     # color/wallpaper assets into the user's standard KDE data locations just
     # before applying, using the same bounded copy path as user-installed packs.
-    install_assets(root, pack_id)
+    install_assets(root, manifest)
     plasma = manifest["plasma"]
     errors: list[str] = []
     if "lookAndFeel" in plasma:
@@ -346,6 +353,9 @@ def apply_pack(pack_id: str) -> dict:
             ["kwriteconfig6", "--file", "kcminputrc", "--group", "Mouse", "--key", "cursorTheme", plasma["cursorTheme"]],
             errors,
         )
+        cursor_tool = shutil.which("plasma-apply-cursortheme")
+        if cursor_tool is not None:
+            run_component([cursor_tool, plasma["cursorTheme"]], errors)
     if "cursorSize" in plasma:
         run_component(
             ["kwriteconfig6", "--file", "kcminputrc", "--group", "Mouse", "--key", "cursorSize", str(plasma["cursorSize"])],

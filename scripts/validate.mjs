@@ -171,7 +171,7 @@ const designTool = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/
 for (const safetyInvariant of ["MAX_FILES", "MAX_FILE_SIZE", "MAX_TOTAL_SIZE", "path.is_symlink()", "stat.S_ISLNK", "executable files are not allowed", "only schemaVersion 1 is supported"]) {
   if (!designTool.includes(safetyInvariant)) failures.push(`design-pack importer is missing safety invariant: ${safetyInvariant}`);
 }
-if (!designTool.includes("install_assets(root, pack_id)")) failures.push("system design packs do not stage their safe assets before apply");
+if (!designTool.includes("install_assets(root, manifest)")) failures.push("system design packs do not stage their safe assets before apply");
 const packageBuilder = fs.readFileSync(path.join(root, "scripts/build-packages.sh"), "utf8");
 if (!packageBuilder.includes('PROJECT_ROOT}/design-packs/.')) failures.push("lokro-shell package build does not stage repository design packs");
 const lokroAction = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/bin/lokro-action"), "utf8");
@@ -185,8 +185,8 @@ if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome cent
 if (!lokroAction.includes("credits) launch lokro-credits")) failures.push("LOKRO action router cannot open project credits");
 if (!welcomeQml.includes('openAction("credits")')) failures.push("welcome center does not expose project credits");
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
-for (const storeInvariant of ["_upstream_version=0.1.0-alpha.7", "3eb047948fbe24d379a3098a2337f91359afff3ae42ef3883f6236099ae5f632", "python-setuptools", "assets/icons/*.svg"]) {
-  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-7 invariant: ${storeInvariant}`);
+for (const storeInvariant of ["_upstream_version=0.1.0-alpha.8", "89058a0db9184d5fc993a843a427c9b48bd351aee7f13d4ca7996b4725863572", "python-setuptools", "assets/icons/*.svg"]) {
+  if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-8 invariant: ${storeInvariant}`);
 }
 
 const hubQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/contents/ui/main.qml"), "utf8");
@@ -218,7 +218,7 @@ if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.tes
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
 const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
-for (const invariant of ["/run/archiso/bootmnt", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "rejected live-media-not-mounted", "exited code=%s"]) {
+for (const invariant of ["/run/archiso/bootmnt", "airootfs.sfs", "unsquashfs -s", "lokro-installer-diagnostics.txt", "lokro-calamares-debug.log", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "live-media-not-mounted", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
 }
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
@@ -300,7 +300,7 @@ const protectedCreditStatement = "hat LOKRO OS mitinitiiert und mitentwickelt un
 const rootCreditsText = fs.readFileSync(path.join(root, "CREDITS.md"), "utf8");
 const packagedCreditsText = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/doc/lokro-os/CREDITS.md"), "utf8");
 if (rootCreditsText !== packagedCreditsText) failures.push("packaged credits differ from root CREDITS.md");
-for (const creditInvariant of [protectedCredit, protectedCreditStatement, "LOKKROGAMER", "ChatGPT / OpenAI Codex"]) {
+for (const creditInvariant of [protectedCredit, protectedCreditStatement, "LOKROGAMER", "ChatGPT / OpenAI Codex"]) {
   if (!rootCreditsText.includes(creditInvariant)) failures.push(`protected credits are missing invariant: ${creditInvariant}`);
 }
 const codeowners = fs.readFileSync(path.join(root, ".github/CODEOWNERS"), "utf8");

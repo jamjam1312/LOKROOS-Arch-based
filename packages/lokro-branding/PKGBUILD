@@ -1,16 +1,48 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-branding
 pkgver=0.1.0
-pkgrel=3
+pkgrel=4
 pkgdesc='Lokro OS desktop, boot and session branding'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Arch-based'
 license=('GPL-3.0-or-later' 'CC-BY-SA-4.0')
 depends=('breeze' 'plasma-workspace' 'plymouth')
+makedepends=('librsvg' 'xorg-xcursorgen')
 source=()
 sha256sums=()
+
+build() {
+  local theme="$srcdir/LokroMono-build"
+  rm -rf "$theme"
+  mkdir -p "$theme/cursors" "$theme/images"
+  for cursor in arrow hand text; do
+    : > "$theme/$cursor.cursor"
+    for size in 24 32 48 64; do
+      rsvg-convert -w "$size" -h "$size" \
+        -o "$theme/images/$cursor-$size.png" "$srcdir/../cursors/$cursor.svg"
+      case "$cursor" in
+        arrow) printf '%s %s %s %s\n' "$size" 2 2 "$theme/images/$cursor-$size.png" >> "$theme/$cursor.cursor" ;;
+        hand) printf '%s %s %s %s\n' "$size" "$((size / 3))" 2 "$theme/images/$cursor-$size.png" >> "$theme/$cursor.cursor" ;;
+        text) printf '%s %s %s %s\n' "$size" "$((size / 2))" "$((size / 2))" "$theme/images/$cursor-$size.png" >> "$theme/$cursor.cursor" ;;
+      esac
+    done
+  done
+  xcursorgen "$theme/arrow.cursor" "$theme/cursors/left_ptr"
+  xcursorgen "$theme/hand.cursor" "$theme/cursors/hand2"
+  xcursorgen "$theme/text.cursor" "$theme/cursors/xterm"
+}
 
 package() {
   cp -a "$srcdir/../rootfs/." "$pkgdir/"
   chmod 0755 "$pkgdir/usr/bin/lokro-first-login"
+  local theme="$pkgdir/usr/share/icons/LokroMono"
+  install -Dm644 "$srcdir/../cursors/index.theme" "$theme/index.theme"
+  install -Dm644 "$srcdir/LokroMono-build/cursors/left_ptr" "$theme/cursors/left_ptr"
+  install -Dm644 "$srcdir/LokroMono-build/cursors/hand2" "$theme/cursors/hand2"
+  install -Dm644 "$srcdir/LokroMono-build/cursors/xterm" "$theme/cursors/xterm"
+  ln -s left_ptr "$theme/cursors/default"
+  ln -s left_ptr "$theme/cursors/arrow"
+  ln -s hand2 "$theme/cursors/pointer"
+  ln -s hand2 "$theme/cursors/hand1"
+  ln -s xterm "$theme/cursors/text"
 }
