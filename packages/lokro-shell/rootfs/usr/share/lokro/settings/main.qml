@@ -2,6 +2,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtCore
 
 ApplicationWindow {
     id: root
@@ -14,6 +15,13 @@ ApplicationWindow {
     color: "#050505"
 
     function openAction(name) { Qt.openUrlExternally("lokro-action:" + name) }
+
+    Settings {
+        id: styleSettings
+        location: StandardPaths.writableLocation(StandardPaths.ConfigLocation) + "/lokro/settings.ini"
+        category: "Style"
+        property bool chamferEnabled: true
+    }
 
     background: Rectangle {
         color: "#050505"
@@ -67,11 +75,18 @@ ApplicationWindow {
             width: parent.width
             spacing: 18
 
-            Rectangle {
+            Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 172
-                color: "#e3090909"
-                border.color: "#70ffffff"
+
+                ChamferSurface {
+                    anchors.fill: parent
+                    chamfered: styleSettings.chamferEnabled
+                    cutSize: 28
+                    normalRadius: 0
+                    fillColor: "#e3090909"
+                    strokeColor: "#70ffffff"
+                }
 
                 RowLayout {
                     anchors.fill: parent
@@ -90,11 +105,29 @@ ApplicationWindow {
                     ColumnLayout {
                         Label { text: qsTr("DESIGN DIREKT ANWENDEN"); color: "#9d9d9d"; font.pixelSize: 10; font.letterSpacing: 1 }
                         RowLayout {
-                            Button { text: qsTr("Animiert"); onClicked: root.openAction("design-animated") }
-                            Button { text: qsTr("Eclipse"); onClicked: root.openAction("design-eclipse") }
-                            Button { text: qsTr("Lunar"); onClicked: root.openAction("design-lunar") }
+                            ChamferButton { chamfered: styleSettings.chamferEnabled; text: qsTr("Animiert"); onClicked: root.openAction("design-animated") }
+                            ChamferButton { chamfered: styleSettings.chamferEnabled; text: qsTr("Eclipse"); onClicked: root.openAction("design-eclipse") }
+                            ChamferButton { chamfered: styleSettings.chamferEnabled; text: qsTr("Lunar"); onClicked: root.openAction("design-lunar") }
                         }
-                        Button { Layout.fillWidth: true; text: qsTr("Alle Design-Packs …"); highlighted: true; onClicked: root.openAction("design-packs") }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            ChamferButton {
+                                Layout.fillWidth: true
+                                chamfered: styleSettings.chamferEnabled
+                                text: styleSettings.chamferEnabled ? qsTr("Chamfer: An") : qsTr("Chamfer: Aus")
+                                onClicked: {
+                                    styleSettings.chamferEnabled = !styleSettings.chamferEnabled
+                                    styleSettings.sync()
+                                }
+                            }
+                            ChamferButton {
+                                Layout.fillWidth: true
+                                chamfered: styleSettings.chamferEnabled
+                                text: qsTr("Alle Packs …")
+                                highlighted: true
+                                onClicked: root.openAction("design-packs")
+                            }
+                        }
                     }
                 }
             }
@@ -107,15 +140,15 @@ ApplicationWindow {
                 columnSpacing: 16
                 rowSpacing: 16
 
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Aussehen"); detail: qsTr("Farben, Fensterstil und globale Designs"); glyph: "◩"; actionName: "appearance"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Hintergrund & Widgets"); detail: qsTr("Desktop, Animation und Plasma-Widgets anpassen"); glyph: "✦"; actionName: "wallpaper"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Mauszeiger"); detail: qsTr("LOKRO Mono, weitere Cursor und Zeigergröße"); glyph: "↖"; actionName: "cursor"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Netzwerk"); detail: qsTr("WLAN, LAN, VPN und Verbindungen verwalten"); glyph: "⌁"; actionName: "network"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Bluetooth"); detail: qsTr("Mäuse, Tastaturen, Audio und Geräte koppeln"); glyph: "ᛒ"; actionName: "bluetooth"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Benutzer"); detail: qsTr("Lokale Konten und Administratoren verwalten"); glyph: "◎"; actionName: "users"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Tastenkürzel"); detail: qsTr("Globale und anwendungsspezifische Shortcuts"); glyph: "⌘"; actionName: "shortcuts"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Energie"); detail: qsTr("Energiesparen, Bildschirm und Ruhezustand"); glyph: "◒"; actionName: "power"; onActivated: name => root.openAction(name) }
-                SettingsCard { Layout.fillWidth: true; title: qsTr("Alle Plasma-Module"); detail: qsTr("Vollständige KDE-Systemeinstellungen öffnen"); glyph: "+"; actionName: "system-settings"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Aussehen"); detail: qsTr("Farben, Fensterstil und globale Designs"); glyph: "◩"; actionName: "appearance"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Hintergrund & Widgets"); detail: qsTr("Desktop, Animation und Plasma-Widgets anpassen"); glyph: "✦"; actionName: "wallpaper"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Mauszeiger"); detail: qsTr("LOKRO Mono, weitere Cursor und Zeigergröße"); glyph: "↖"; actionName: "cursor"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Netzwerk"); detail: qsTr("WLAN, LAN, VPN und Verbindungen verwalten"); glyph: "⌁"; actionName: "network"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Bluetooth"); detail: qsTr("Mäuse, Tastaturen, Audio und Geräte koppeln"); glyph: "ᛒ"; actionName: "bluetooth"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Benutzer"); detail: qsTr("Lokale Konten und Administratoren verwalten"); glyph: "◎"; actionName: "users"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Tastenkürzel"); detail: qsTr("Globale und anwendungsspezifische Shortcuts"); glyph: "⌘"; actionName: "shortcuts"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Energie"); detail: qsTr("Energiesparen, Bildschirm und Ruhezustand"); glyph: "◒"; actionName: "power"; onActivated: name => root.openAction(name) }
+                SettingsCard { chamfered: styleSettings.chamferEnabled; Layout.fillWidth: true; title: qsTr("Alle Plasma-Module"); detail: qsTr("Vollständige KDE-Systemeinstellungen öffnen"); glyph: "+"; actionName: "system-settings"; onActivated: name => root.openAction(name) }
             }
 
             Label {

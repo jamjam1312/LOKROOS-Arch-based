@@ -1,8 +1,18 @@
-# LOKRO OS release status (alpha.22)
+# LOKRO OS release status (alpha.23 candidate)
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
 ## Unreleased source changes after Alpha.22
+
+- The exact hardware-reported installer failure—`lokro-live-installer` missing
+  executable permissions—is fixed both in Git's file mode and by an explicit
+  `chmod 0755` during profile preparation. The full branch workflow built both
+  Alpha.22 images and reached Plasma with Calamares running in BIOS and UEFI;
+  this verifies the fix in the live image, not a completed disk installation.
+- `LOKRO Chamfer` adds native QML 10/18/28-pixel corner geometry based on the
+  measurements supplied by Erik / LOKROGAMER. The style is switchable and
+  persistent in LOKRO Settings and selectable through the safe declarative
+  design-pack format. No website code or artwork is copied.
 
 - The pinned LOKRO Store source is updated to checksum-verified
   `v0.1.0-alpha.8`, retaining its repaired user-scoped Flathub setup and adding
@@ -21,9 +31,11 @@ This file separates implemented source from tested release claims. An item being
 - Credit spelling is corrected from `LOKKROGAMER` to `LOKROGAMER`; Jamie Milo
   Cürten's protected co-initiator/co-developer attribution remains unchanged.
 
-These changes have not yet produced a new ISO in CI. They therefore do not
-prove a completed Calamares installation, a booted installed disk or operation
-on physical hardware.
+The earlier installer-permission candidate produced both ISOs and passed the
+BIOS/UEFI live-Plasma-plus-Calamares smoke checks in CI. The additional
+Alpha.23 chamfer changes still require a new package/ISO workflow. Neither run
+proves a completed Calamares installation, a booted installed disk or
+operation on physical hardware.
 
 ## Alpha.22 source and CI release
 

@@ -39,6 +39,14 @@ trusted `lokro-branding` package. Plasma's trusted widget style still controls
 button geometry; design-pack payloads deliberately contain no QML, cursor
 binaries or executable theme code.
 
+The built-in `org.lokro.chamfer` pack uses the optional, strictly enumerated
+`lokro.settingsStyle` field to enable native 10/18/28-pixel chamfer surfaces in
+LOKRO Settings. The same option can be toggled directly in that app and is
+stored in `~/.config/lokro/settings.ini`. This is trusted application code,
+not pack-supplied QML: downloaded packs may only choose `rounded` or `chamfer`.
+The geometry reimplements the corner measurements supplied by Erik /
+LOKROGAMER; no source or artwork from `lokro.dev` is copied.
+
 The importer keeps a declared KDE color-scheme filename intact. This matters
 because Plasma resolves schemes by basename; prefixing `LokroGlass.colors`
 while requesting `LokroGlass` caused earlier packs to install but not apply.

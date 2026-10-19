@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import configparser
 import json
 import os
 import re
@@ -45,6 +46,7 @@ ROOT_KEYS = {
     "license",
     "description",
     "plasma",
+    "lokro",
 }
 REQUIRED_ROOT_KEYS = {
     "schemaVersion",
@@ -64,6 +66,7 @@ PLASMA_KEYS = {
     "wallpaperPlugin",
     "wallpaper",
 }
+LOKRO_KEYS = {"settingsStyle"}
 
 
 class PackError(RuntimeError):
@@ -72,6 +75,10 @@ class PackError(RuntimeError):
 
 def data_home() -> Path:
     return Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share"))
+
+
+def config_home() -> Path:
+    return Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
 
 
 def user_pack_root() -> Path:
@@ -197,6 +204,15 @@ def load_manifest(root: Path) -> dict:
         target = root.joinpath(*relative.parts)
         if not target.is_file() or target.is_symlink():
             raise PackError(f"referenced wallpaper does not exist: {relative.as_posix()}")
+    lokro = manifest.get("lokro")
+    if lokro is not None:
+        if not isinstance(lokro, dict) or not lokro:
+            raise PackError("lokro must be a non-empty object when present")
+        unknown_lokro = lokro.keys() - LOKRO_KEYS
+        if unknown_lokro:
+            raise PackError(f"lokro has unknown keys: {', '.join(sorted(unknown_lokro))}")
+        if lokro.get("settingsStyle") not in {"rounded", "chamfer"}:
+            raise PackError("lokro.settingsStyle must be rounded or chamfer")
     return manifest
 
 
@@ -333,6 +349,34 @@ def run_component(command: list[str], errors: list[str]) -> None:
         errors.append(f"{' '.join(command)} failed{': ' + message if message else ''}")
 
 
+def apply_lokro_style(manifest: dict) -> None:
+    """Apply reviewed LOKRO-only appearance switches without executing pack code."""
+    style = manifest.get("lokro", {}).get("settingsStyle")
+    if style is None:
+        return
+    destination = config_home() / "lokro" / "settings.ini"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    config = configparser.ConfigParser()
+    config.optionxform = str
+    if destination.is_file():
+        try:
+            with destination.open("r", encoding="utf-8") as source:
+                config.read_file(source)
+        except (OSError, UnicodeError, configparser.Error) as error:
+            raise PackError(f"cannot read LOKRO settings: {error}") from error
+    if not config.has_section("Style"):
+        config.add_section("Style")
+    config.set("Style", "chamferEnabled", "true" if style == "chamfer" else "false")
+    temporary = destination.with_suffix(".ini.new")
+    try:
+        with temporary.open("w", encoding="utf-8", newline="\n") as output:
+            config.write(output, space_around_delimiters=False)
+        os.replace(temporary, destination)
+    except OSError as error:
+        temporary.unlink(missing_ok=True)
+        raise PackError(f"cannot write LOKRO settings: {error}") from error
+
+
 def apply_pack(pack_id: str) -> dict:
     packs = all_packs()
     if pack_id not in packs:
@@ -383,6 +427,7 @@ def apply_pack(pack_id: str) -> dict:
         )
     if errors:
         raise PackError("; ".join(errors))
+    apply_lokro_style(manifest)
     state = data_home() / "lokro" / "design-packs" / "applied.json"
     state.parent.mkdir(parents=True, exist_ok=True)
     state.write_text(json.dumps({"id": pack_id, "version": manifest["version"]}, indent=2) + "\n", encoding="utf-8")

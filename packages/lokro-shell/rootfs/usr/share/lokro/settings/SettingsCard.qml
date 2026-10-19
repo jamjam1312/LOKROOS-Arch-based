@@ -3,32 +3,42 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-Rectangle {
+Item {
     id: card
     required property string title
     required property string detail
     required property string glyph
     required property string actionName
+    property bool chamfered: true
 
     signal activated(string actionName)
 
     implicitWidth: 280
     implicitHeight: 142
-    radius: 16
-    color: pointer.containsMouse ? "#f0202020" : "#d20b0b0b"
-    border.width: 1
-    border.color: pointer.containsMouse ? "#ffffff" : "#526f6f6f"
     scale: pointer.containsMouse ? 1.018 : 1.0
 
-    Behavior on color { ColorAnimation { duration: 120 } }
-    Behavior on border.color { ColorAnimation { duration: 120 } }
     Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+
+    ChamferSurface {
+        id: surface
+        anchors.fill: parent
+        chamfered: card.chamfered
+        cutSize: 18
+        normalRadius: 16
+        fillColor: pointer.containsMouse ? "#f0202020" : "#d20b0b0b"
+        strokeColor: pointer.containsMouse ? "#ffffff" : "#526f6f6f"
+
+        Behavior on fillColor { ColorAnimation { duration: 120 } }
+        Behavior on strokeColor { ColorAnimation { duration: 120 } }
+    }
 
     Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.margins: 1
+        anchors.leftMargin: card.chamfered ? 20 : 1
+        anchors.rightMargin: card.chamfered ? 1 : 1
+        anchors.topMargin: 1
         height: 1
         color: pointer.containsMouse ? "#ffffff" : "#70ffffff"
     }

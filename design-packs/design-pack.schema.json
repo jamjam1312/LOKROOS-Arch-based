@@ -26,6 +26,14 @@
         "wallpaperPlugin": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128 },
         "wallpaper": { "type": "string", "pattern": "^payload/wallpapers/[A-Za-z0-9._/-]+$", "maxLength": 240 }
       }
+    },
+    "lokro": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "settingsStyle": { "enum": ["rounded", "chamfer"] }
+      }
     }
   }
 }

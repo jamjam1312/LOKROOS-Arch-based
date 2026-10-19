@@ -23,3 +23,8 @@ through **LOKRO Design Packs**. Installation is user-scoped under
 The normative manifest shape is in `design-pack.schema.json`. The runtime
 installer also enforces path, file-count, size, symlink and executable-file
 limits instead of trusting the extension.
+
+The optional `lokro.settingsStyle` field is a closed choice between `rounded`
+and `chamfer`. It only changes the trusted LOKRO Settings geometry; it cannot
+load pack-supplied QML or alter arbitrary application code. The reviewed
+`org.lokro.chamfer` example uses this switch.

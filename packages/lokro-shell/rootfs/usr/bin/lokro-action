@@ -41,6 +41,7 @@ case "$action" in
     design-animated) apply_design org.lokro.monochrome ;;
     design-eclipse) apply_design org.lokro.eclipse ;;
     design-lunar) apply_design org.lokro.lunar ;;
+    design-chamfer) apply_design org.lokro.chamfer ;;
     credits) launch lokro-credits ;;
     app-store) launch lokro-store ;;
     wallpaper)

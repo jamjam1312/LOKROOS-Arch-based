@@ -4,8 +4,9 @@ This file is the machine-readable starting point for coding assistants and human
 
 ## Product contract
 
-- Product: experimental x86_64 desktop distribution. Current source and
-  tested/downloadable CI release are `0.1.0-alpha.22`.
+- Product: experimental x86_64 desktop distribution. Current source candidate
+  is `0.1.0-alpha.23`; the latest downloadable CI release is
+  `0.1.0-alpha.22` until the candidate passes and is published.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -83,7 +84,8 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
   downloaded packs still cannot supply executable cursor or QML code.
 - **LOKRO Settings** is a glass-styled visual landing page for the
   existing trusted Plasma settings modules; it does not replace KDE's settings
-  backends.
+  backends. Its native chamfer geometry can be toggled and persisted without
+  loading HTML, JavaScript or executable design-pack content.
 
 ## Status discipline
 

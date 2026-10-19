@@ -1,0 +1,16 @@
+{
+  "$schema": "../design-pack.schema.json",
+  "schemaVersion": 1,
+  "id": "org.lokro.chamfer",
+  "name": "LOKRO Chamfer",
+  "version": "1.0.0",
+  "author": "Jamie Milo Cürten, Erik / LOKROGAMER and LOKRO OS contributors",
+  "license": "CC-BY-SA-4.0",
+  "description": "Turns on the native LOKRO 10/18/28-pixel chamfer geometry inspired by Erik's supplied corner specification. No website source, scripts or assets are included.",
+  "plasma": {
+    "lookAndFeel": "org.lokro.dark"
+  },
+  "lokro": {
+    "settingsStyle": "chamfer"
+  }
+}

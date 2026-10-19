@@ -12,6 +12,7 @@ const required = [
   "design-packs/org.lokro.monochrome/design.json", "docs/DESIGN_PACKS.md",
   "design-packs/org.lokro.glass/design.json",
   "design-packs/org.lokro.glass/payload/color-schemes/LokroGlass.colors",
+  "design-packs/org.lokro.chamfer/design.json",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
   "docs/RELEASE_STATUS.md", "docs/STANDALONE_INSTALL.md", "archiso/packages/common.x86_64",
   "archiso/packages/offline.x86_64", "archiso/packages/online.x86_64",
@@ -33,6 +34,8 @@ const required = [
   "packages/lokro-shell/rootfs/usr/share/lokro/welcome/WelcomeCard.qml",
   "packages/lokro-shell/rootfs/usr/share/lokro/settings/main.qml",
   "packages/lokro-shell/rootfs/usr/share/lokro/settings/SettingsCard.qml",
+  "packages/lokro-shell/rootfs/usr/share/lokro/settings/ChamferSurface.qml",
+  "packages/lokro-shell/rootfs/usr/share/lokro/settings/ChamferButton.qml",
   "packages/lokro-shell/rootfs/usr/bin/lokro-welcome",
   "packages/lokro-shell/rootfs/usr/bin/lokro-settings",
   "packages/lokro-shell/rootfs/usr/bin/lokro-action",
@@ -172,6 +175,19 @@ for (const safetyInvariant of ["MAX_FILES", "MAX_FILE_SIZE", "MAX_TOTAL_SIZE", "
   if (!designTool.includes(safetyInvariant)) failures.push(`design-pack importer is missing safety invariant: ${safetyInvariant}`);
 }
 if (!designTool.includes("install_assets(root, manifest)")) failures.push("system design packs do not stage their safe assets before apply");
+for (const styleInvariant of ["LOKRO_KEYS", "settingsStyle", "apply_lokro_style", "chamferEnabled"]) {
+  if (!designTool.includes(styleInvariant)) failures.push(`design-pack importer is missing trusted LOKRO style invariant: ${styleInvariant}`);
+}
+const chamferPack = JSON.parse(fs.readFileSync(path.join(root, "design-packs/org.lokro.chamfer/design.json"), "utf8"));
+if (chamferPack.lokro?.settingsStyle !== "chamfer") failures.push("LOKRO Chamfer pack does not enable the trusted chamfer setting");
+const settingsMain = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/settings/main.qml"), "utf8");
+const chamferSurface = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/settings/ChamferSurface.qml"), "utf8");
+for (const qmlInvariant of ["Settings {", "chamferEnabled", "StandardPaths.ConfigLocation", "ChamferButton"]) {
+  if (!settingsMain.includes(qmlInvariant)) failures.push(`LOKRO Settings is missing persistent chamfer invariant: ${qmlInvariant}`);
+}
+for (const cornerInvariant of ["property real cutSize: 18", "ctx.lineTo(width - inset, height - cut - inset)", "ctx.lineTo(inset, cut + inset)"]) {
+  if (!chamferSurface.includes(cornerInvariant)) failures.push(`native chamfer surface is missing geometry invariant: ${cornerInvariant}`);
+}
 const packageBuilder = fs.readFileSync(path.join(root, "scripts/build-packages.sh"), "utf8");
 if (!packageBuilder.includes('PROJECT_ROOT}/design-packs/.')) failures.push("lokro-shell package build does not stage repository design packs");
 const lokroAction = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/bin/lokro-action"), "utf8");

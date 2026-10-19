@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import os
+import runpy
 import shutil
 import subprocess
 import sys
@@ -19,6 +20,7 @@ EXAMPLE = ROOT / "design-packs/org.lokro.monochrome"
 GLASS = ROOT / "design-packs/org.lokro.glass"
 ECLIPSE = ROOT / "design-packs/org.lokro.eclipse"
 LUNAR = ROOT / "design-packs/org.lokro.lunar"
+CHAMFER = ROOT / "design-packs/org.lokro.chamfer"
 
 
 def run(arguments: list[str], environment: dict[str, str], expected: int = 0) -> subprocess.CompletedProcess[str]:
@@ -44,6 +46,7 @@ def main() -> int:
         environment = os.environ.copy()
         environment["HOME"] = str(temporary / "home")
         environment["XDG_DATA_HOME"] = str(temporary / "data")
+        environment["XDG_CONFIG_HOME"] = str(temporary / "config")
         environment["LOKRO_SYSTEM_DESIGN_PACKS"] = str(ROOT / "design-packs")
 
         run(["validate", str(EXAMPLE)], environment)
@@ -52,6 +55,21 @@ def main() -> int:
         run(["install", str(GLASS)], environment)
         run(["validate", str(ECLIPSE)], environment)
         run(["validate", str(LUNAR)], environment)
+        run(["validate", str(CHAMFER)], environment)
+        previous_config_home = os.environ.get("XDG_CONFIG_HOME")
+        os.environ["XDG_CONFIG_HOME"] = environment["XDG_CONFIG_HOME"]
+        try:
+            tool_namespace = runpy.run_path(str(TOOL))
+            chamfer_manifest = json.loads((CHAMFER / "design.json").read_text(encoding="utf-8"))
+            tool_namespace["apply_lokro_style"](chamfer_manifest)
+        finally:
+            if previous_config_home is None:
+                os.environ.pop("XDG_CONFIG_HOME", None)
+            else:
+                os.environ["XDG_CONFIG_HOME"] = previous_config_home
+        style_settings = temporary / "config" / "lokro" / "settings.ini"
+        if "chamferEnabled=true" not in style_settings.read_text(encoding="utf-8"):
+            raise RuntimeError("chamfer pack did not persist the trusted LOKRO style switch")
         installed_glass = temporary / "data" / "color-schemes" / "LokroGlass.colors"
         if not installed_glass.is_file():
             raise RuntimeError("glass pack did not stage its KDE color scheme under the declared basename")
