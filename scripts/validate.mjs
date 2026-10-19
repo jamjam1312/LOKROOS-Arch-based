@@ -22,9 +22,11 @@ const required = [
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
   "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
   "vendor/ckbcomp/PKGBUILD",
-  "packages/lokro-branding/PKGBUILD", "packages/lokro-shell/PKGBUILD",
+  "packages/lokro-branding/PKGBUILD", "packages/lokro-branding/rootfs/etc/xdg/kcminputrc", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
   "packages/lokro-store/PKGBUILD",
+  "website/index.html", "website/styles.css", "website/app.js", "website/CNAME",
+  ".github/workflows/pages.yml",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.search/metadata.json",
@@ -162,6 +164,40 @@ if (fs.existsSync(path.join(root, "packages/lokro-branding/rootfs/etc/mkinitcpio
 
 const version = fs.readFileSync(path.join(root, "VERSION"), "utf8").trim();
 if (!/^\d+\.\d+\.\d+-alpha\.\d+$/.test(version)) failures.push(`VERSION is not an alpha SemVer: ${version}`);
+
+const firstLogin = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/usr/bin/lokro-first-login"), "utf8");
+for (const themeInvariant of [
+  "plasma-apply-lookandfeel --apply org.lokro.dark",
+  "plasma-apply-colorscheme LokroDark",
+  "--key Theme breeze-dark",
+  "--key cursorTheme LokroMono",
+  "plasma-apply-cursortheme LokroMono",
+  "first-login-v4"
+]) {
+  if (!firstLogin.includes(themeInvariant)) failures.push(`first login does not enforce the LOKRO default: ${themeInvariant}`);
+}
+const systemKdeGlobals = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/etc/xdg/kdeglobals"), "utf8");
+if (!systemKdeGlobals.includes("LookAndFeelPackage=org.lokro.dark") || !systemKdeGlobals.includes("Theme=breeze-dark")) {
+  failures.push("system KDE defaults do not select the full LOKRO appearance");
+}
+const systemCursor = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/etc/xdg/kcminputrc"), "utf8");
+if (!systemCursor.includes("cursorTheme=LokroMono") || !systemCursor.includes("cursorSize=24")) {
+  failures.push("system cursor defaults do not select LokroMono at size 24");
+}
+const pagesCname = fs.readFileSync(path.join(root, "website/CNAME"), "utf8").trim();
+if (pagesCname !== "os.lokro.dev") failures.push(`unexpected GitHub Pages domain: ${pagesCname}`);
+const websiteScript = fs.readFileSync(path.join(root, "website/app.js"), "utf8");
+for (const websiteInvariant of [
+  "const glyphs = ['-', '\\\\', '|', '/']",
+  "window.addEventListener('pointermove'",
+  "window.addEventListener('pointerdown'",
+  "context.fillText(glyph, cell.x, cell.y)"
+]) {
+  if (!websiteScript.includes(websiteInvariant)) failures.push(`website terminal field invariant missing: ${websiteInvariant}`);
+}
+if (websiteScript.includes("context.arc(") || websiteScript.includes("context.ellipse(")) {
+  failures.push("website pointer field must remain text-only (no canvas circle primitives)");
+}
 
 const designSchema = JSON.parse(fs.readFileSync(path.join(root, "design-packs/design-pack.schema.json"), "utf8"));
 const designExample = JSON.parse(fs.readFileSync(path.join(root, "design-packs/org.lokro.monochrome/design.json"), "utf8"));

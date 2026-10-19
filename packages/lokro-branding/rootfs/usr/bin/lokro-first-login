@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
-stamp="${XDG_CONFIG_HOME:-$HOME/.config}/lokro/first-login-v3"
+stamp="${XDG_CONFIG_HOME:-$HOME/.config}/lokro/first-login-v4"
 [[ -e "$stamp" ]] && exit 0
 mkdir -p "$(dirname "$stamp")"
 
+if command -v plasma-apply-lookandfeel >/dev/null 2>&1; then
+    plasma-apply-lookandfeel --apply org.lokro.dark >/dev/null 2>&1 || true
+fi
 if command -v plasma-apply-colorscheme >/dev/null 2>&1; then
     plasma-apply-colorscheme LokroDark >/dev/null 2>&1 || true
+fi
+if command -v kwriteconfig6 >/dev/null 2>&1; then
+    kwriteconfig6 --file kdeglobals --group KDE --key LookAndFeelPackage org.lokro.dark >/dev/null 2>&1 || true
+    kwriteconfig6 --file kdeglobals --group Icons --key Theme breeze-dark >/dev/null 2>&1 || true
+    kwriteconfig6 --file kcminputrc --group Mouse --key cursorTheme LokroMono >/dev/null 2>&1 || true
+    kwriteconfig6 --file kcminputrc --group Mouse --key cursorSize 24 >/dev/null 2>&1 || true
+fi
+if command -v plasma-apply-cursortheme >/dev/null 2>&1; then
+    plasma-apply-cursortheme LokroMono >/dev/null 2>&1 || true
 fi
 if command -v xdg-mime >/dev/null 2>&1; then
     xdg-mime default lokro-action-handler.desktop x-scheme-handler/lokro-action >/dev/null 2>&1 || true

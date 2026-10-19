@@ -1,13 +1,25 @@
-# LOKRO OS release status (alpha.23)
+# LOKRO OS release status
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
+
+## Unreleased source changes after Alpha.23
+
+- The LOKRO landing page is implemented as an isolated, buildless GitHub Pages
+  site for `os.lokro.dev`. Its pointer-reactive background is a fixed terminal
+  glyph grid; interaction continues underneath the centered hero content and
+  clicks create a short text-only signal. The site is not part of either ISO.
+- The Plasma first-login migration now explicitly applies `org.lokro.dark`,
+  `LokroDark`, the Breeze Dark application icons and the `LokroMono` cursor.
+  This closes the gap where the files existed in Alpha.23 but Plasma could keep
+  parts of an older/default appearance. This correction is source-validated
+  only and is not retroactively present in the published Alpha.23 images.
 
 ## Alpha.23 source and CI release
 
 - The exact hardware-reported installer failure—`lokro-live-installer` missing
   executable permissions—is fixed both in Git's file mode and by an explicit
   `chmod 0755` during profile preparation. The full branch workflow built both
-  Alpha.22 images and reached Plasma with Calamares running in BIOS and UEFI;
+  Alpha.23 images and reached Plasma with Calamares running in BIOS and UEFI;
   this verifies the fix in the live image, not a completed disk installation.
 - `LOKRO Chamfer` adds native QML 10/18/28-pixel corner geometry based on the
   measurements supplied by Erik / LOKROGAMER. The style is switchable and
@@ -31,7 +43,7 @@ This file separates implemented source from tested release claims. An item being
 - Credit spelling is corrected from `LOKKROGAMER` to `LOKROGAMER`; Jamie Milo
   Cürten's protected co-initiator/co-developer attribution remains unchanged.
 
-The complete Alpha.23 candidate workflow run `39293180171` built a
+The Alpha.23 workflow run `39293180171` built a
 3,693,772,800-byte offline ISO and a 2,667,675,648-byte online ISO, enforced the
 4 GiB limit and passed both BIOS and UEFI live-Plasma-plus-Calamares smoke
 boots. The tag workflow reproduced those results and published the checksummed
@@ -66,7 +78,7 @@ it does not verify a completed installation to disk or physical hardware.
 
 ## Alpha.21 CI release
 
-The latest downloadable CI release is `0.1.0-alpha.21`. It keeps the
+Alpha.21 was the latest downloadable CI release at that stage. It keeps the
 hardware-test and credit changes and replaces
 the unobserved desktop autostart path reported by alpha.17's automated BIOS
 test:
