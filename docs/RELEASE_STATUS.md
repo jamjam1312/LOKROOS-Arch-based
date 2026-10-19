@@ -31,11 +31,13 @@ This file separates implemented source from tested release claims. An item being
 - Credit spelling is corrected from `LOKKROGAMER` to `LOKROGAMER`; Jamie Milo
   Cürten's protected co-initiator/co-developer attribution remains unchanged.
 
-The earlier installer-permission candidate produced both ISOs and passed the
-BIOS/UEFI live-Plasma-plus-Calamares smoke checks in CI. The additional
-Alpha.23 chamfer changes still require a new package/ISO workflow. Neither run
-proves a completed Calamares installation, a booted installed disk or
-operation on physical hardware.
+The complete Alpha.23 candidate workflow run `39293180171` built a
+3,693,772,800-byte offline ISO and a 2,667,675,648-byte online ISO, enforced the
+4 GiB limit and passed both BIOS and UEFI live-Plasma-plus-Calamares smoke
+boots. It uploaded checksums, manifests, provenance and build logs but did not
+publish a release because branch builds are intentionally non-publishing. This
+still does not prove a completed Calamares installation, a booted installed
+disk or operation on physical hardware.
 
 ## Alpha.22 source and CI release
 
