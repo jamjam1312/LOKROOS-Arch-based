@@ -32,3 +32,9 @@ the document is hidden.
 `.github/workflows/pages.yml` deploys this directory independently from the ISO
 build. The intended custom domain is `os.lokro.dev`; `website/CNAME` declares
 it for GitHub Pages. DNS must point `os.lokro.dev` to `jamjam1312.github.io`.
+
+`impressum.html` and `datenschutz.html` are linked from every website footer.
+The imprint intentionally refuses to publish a school address and visibly marks
+the still-missing legal name and service address of the responsible provider.
+Those two placeholders must be replaced with verified details before anyone
+claims that the imprint is legally complete.

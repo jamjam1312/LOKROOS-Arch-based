@@ -4,6 +4,11 @@ This file separates implemented source from tested release claims. An item being
 
 ## Unreleased source changes after Alpha.24
 
+- The public website now links dedicated imprint and privacy pages. The privacy
+  notice describes GitHub Pages/API requests, local-only ISO assembly, email
+  contact and the absence of project analytics. The imprint remains explicitly
+  marked incomplete until the responsible provider supplies a verified full
+  legal name and service address; no school address is published.
 - The GitHub Pages download workbench links the numbered release parts directly
   from the site. Compatible Chromium browsers can then stream the locally
   selected parts into a user-selected ISO without buffering the complete
