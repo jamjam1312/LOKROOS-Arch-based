@@ -1,4 +1,4 @@
-import { Sha256, buildVariant, commandFor, formatBytes, matchFilesForVariant, parseChecksums } from './download-core.mjs';
+import { Sha256, buildVariant, commandFor, formatBytes, matchFilesForVariant, parseChecksums } from './download-core.mjs?v=alpha24-workbench-1';
 
 (() => {
   'use strict';
