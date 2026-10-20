@@ -1,0 +1,20 @@
+{
+  "$schema": "../design-pack.schema.json",
+  "schemaVersion": 1,
+  "id": "org.lokro.blood",
+  "name": "LOKRO Blood",
+  "version": "1.0.0",
+  "author": "Jamie Milo Cürten with OpenAI Codex",
+  "license": "CC-BY-SA-4.0",
+  "description": "A sharp black, white and signal-red LOKRO appearance with original poster artwork.",
+  "plasma": {
+    "lookAndFeel": "org.lokro.dark",
+    "colorScheme": "LokroBlood",
+    "cursorTheme": "LokroMono",
+    "cursorSize": 24,
+    "wallpaper": "payload/wallpapers/lokro-blood.png"
+  },
+  "lokro": {
+    "settingsStyle": "chamfer"
+  }
+}

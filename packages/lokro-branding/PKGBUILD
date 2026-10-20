@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-branding
 pkgver=0.1.0
-pkgrel=6
+pkgrel=7
 pkgdesc='Lokro OS desktop, boot and session branding'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Arch-based'

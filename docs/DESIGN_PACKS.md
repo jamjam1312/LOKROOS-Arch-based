@@ -34,6 +34,9 @@ change can require a new login before every application sees it. The bundled
 The built-in `org.lokro.glass` pack adds an original high-contrast black glass
 color scheme and keeps the interactive Slashes wallpaper. `org.lokro.eclipse`
 and `org.lokro.lunar` provide original dark and light halftone wallpapers.
+`org.lokro.blood` adds an optional sharp black, white and signal-red color
+scheme plus original project-owned PNG wallpaper artwork. It is never selected
+automatically; `LOKRO Black` stays the fresh-install default.
 All bundled packs can select the compiled `LokroMono` cursor supplied by the
 trusted `lokro-branding` package. Plasma's trusted widget style still controls
 button geometry; design-pack payloads deliberately contain no QML, cursor

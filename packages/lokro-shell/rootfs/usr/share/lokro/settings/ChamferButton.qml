@@ -7,18 +7,19 @@ Button {
 
     property bool chamfered: true
     property real chamferSize: 10
+    property real densityScale: 1.0
 
-    implicitWidth: Math.max(104, contentItem.implicitWidth + leftPadding + rightPadding)
-    implicitHeight: 38
-    leftPadding: 16
-    rightPadding: 16
-    topPadding: 8
-    bottomPadding: 8
+    implicitWidth: Math.max(92 * densityScale, contentItem.implicitWidth + leftPadding + rightPadding)
+    implicitHeight: 38 * densityScale
+    leftPadding: 16 * densityScale
+    rightPadding: 16 * densityScale
+    topPadding: 8 * densityScale
+    bottomPadding: 8 * densityScale
 
     contentItem: Label {
         text: control.text
         color: control.enabled ? "#ffffff" : "#777777"
-        font.pixelSize: 12
+        font.pixelSize: 12 * control.densityScale
         font.bold: control.highlighted
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -27,7 +28,7 @@ Button {
 
     background: ChamferSurface {
         chamfered: control.chamfered
-        cutSize: control.chamferSize
+        cutSize: control.chamferSize * control.densityScale
         normalRadius: 7
         fillColor: control.down ? "#ff3a3a3a"
                                 : control.highlighted ? "#f02c2c2c"

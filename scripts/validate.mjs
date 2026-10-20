@@ -13,10 +13,14 @@ const required = [
   "design-packs/org.lokro.glass/design.json",
   "design-packs/org.lokro.glass/payload/color-schemes/LokroGlass.colors",
   "design-packs/org.lokro.chamfer/design.json",
+  "design-packs/org.lokro.blood/design.json",
+  "design-packs/org.lokro.blood/payload/color-schemes/LokroBlood.colors",
+  "design-packs/org.lokro.blood/payload/wallpapers/lokro-blood.png",
   "LOKRO_UPDATE_CHANNEL.json", "schemas/update-channel.schema.json", "docs/UPDATES.md",
   "docs/RELEASE_STATUS.md", "docs/STANDALONE_INSTALL.md", "archiso/packages/common.x86_64",
   "archiso/packages/offline.x86_64", "archiso/packages/online.x86_64",
   "archiso/airootfs/etc/plymouth/plymouthd.conf",
+  "packages/lokro-branding/rootfs/usr/share/plymouth/themes/lokro/logo.svg",
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
@@ -30,9 +34,10 @@ const required = [
   "packages/lokro-branding/rootfs/usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js",
   "packages/lokro-branding/grub-background.svg", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
-  "packages/lokro-store/PKGBUILD",
+  "packages/lokro-store/PKGBUILD", "packages/lokro-store/rootfs/usr/bin/lokro-store-flatpak",
   "website/index.html", "website/impressum.html", "website/datenschutz.html", "website/styles.css", "website/app.js", "website/download-core.mjs", "website/CNAME",
   "scripts/test-website-download.mjs",
+  "scripts/test-store-flatpak.sh",
   ".github/workflows/pages.yml",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/metadata.json",
@@ -181,8 +186,10 @@ for (const themeInvariant of [
   "--key cursorTheme LokroMono",
   "plasma-apply-cursortheme LokroMono",
   "--file plasmarc --group Theme --key name lokro-black",
-  "first-login-v5",
-  "previous_stamp=\"$config_dir/first-login-v4\"",
+  "first-login-v6",
+  "previous_stamp_v5=\"$config_dir/first-login-v5\"",
+  "previous_stamp_v4=\"$config_dir/first-login-v4\"",
+  "org.kde.plasma.systemmonitor.memory",
   "fresh_layout=true",
   "for _attempt in {1..10}",
   "[[ \"$layout_applied\" == true ]] || exit 0",
@@ -204,8 +211,13 @@ const plasmaLayout = fs.readFileSync(path.join(root, "packages/lokro-branding/ro
 for (const layoutInvariant of ["oldPanels[p].remove()", "org.kde.plasma.kickoff", "lokro-os", "org.lokro.search", "org.kde.plasma.icontasks", "org.kde.plasma.systemtray", "org.kde.plasma.digitalclock"]) {
   if (!plasmaLayout.includes(layoutInvariant)) failures.push(`LOKRO fresh-user panel layout is missing: ${layoutInvariant}`);
 }
+if (plasmaLayout.includes("org.kde.plasma.systemmonitor.memory")) failures.push("LOKRO fresh-user desktop still adds the removed floating RAM widget");
+if (!plasmaLayout.includes('panel.height = 52')) failures.push("LOKRO fresh-user taskbar does not use the revised 52-pixel layout");
+const waybarConfig = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/etc/skel/.config/waybar/config.jsonc"), "utf8");
+if (/\"memory\"/.test(waybarConfig)) failures.push("optional Hyprland bar still exposes the removed RAM indicator");
 const plymouthScript = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/usr/share/plymouth/themes/lokro/lokro.script"), "utf8");
 if (!plymouthScript.includes("Window.SetBackgroundTopColor(0.005, 0.005, 0.005)")) failures.push("Plymouth does not use the black LOKRO startup background");
+if (!plymouthScript.includes('Image("logo.svg")')) failures.push("Plymouth does not display the LOKRO startup mark");
 const pagesCname = fs.readFileSync(path.join(root, "website/CNAME"), "utf8").trim();
 if (pagesCname !== "os.lokro.dev") failures.push(`unexpected GitHub Pages domain: ${pagesCname}`);
 const websiteScript = fs.readFileSync(path.join(root, "website/app.js"), "utf8");
@@ -263,10 +275,15 @@ for (const styleInvariant of ["LOKRO_KEYS", "settingsStyle", "apply_lokro_style"
 }
 const chamferPack = JSON.parse(fs.readFileSync(path.join(root, "design-packs/org.lokro.chamfer/design.json"), "utf8"));
 if (chamferPack.lokro?.settingsStyle !== "chamfer") failures.push("LOKRO Chamfer pack does not enable the trusted chamfer setting");
+const bloodPack = JSON.parse(fs.readFileSync(path.join(root, "design-packs/org.lokro.blood/design.json"), "utf8"));
+if (bloodPack.plasma?.colorScheme !== "LokroBlood" || bloodPack.plasma?.wallpaper !== "payload/wallpapers/lokro-blood.png") failures.push("LOKRO Blood pack does not declare its reviewed color scheme and wallpaper");
 const settingsMain = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/settings/main.qml"), "utf8");
 const chamferSurface = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/lokro/settings/ChamferSurface.qml"), "utf8");
 for (const qmlInvariant of ["Settings {", "chamferEnabled", "StandardPaths.ConfigLocation", "ChamferButton"]) {
   if (!settingsMain.includes(qmlInvariant)) failures.push(`LOKRO Settings is missing persistent chamfer invariant: ${qmlInvariant}`);
+}
+for (const sizeInvariant of ["controlSize", "compact", "standard", "large", "densityScale", 'openAction("design-blood")']) {
+  if (!settingsMain.includes(sizeInvariant)) failures.push(`LOKRO Settings is missing size/Blood control invariant: ${sizeInvariant}`);
 }
 for (const cornerInvariant of ["property real cutSize: 18", "ctx.lineTo(width - inset, height - cut - inset)", "ctx.lineTo(inset, cut + inset)"]) {
   if (!chamferSurface.includes(cornerInvariant)) failures.push(`native chamfer surface is missing geometry invariant: ${cornerInvariant}`);
@@ -278,6 +295,7 @@ const welcomeQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/
 if (!lokroAction.includes("settings) launch lokro-settings")) failures.push("LOKRO action router does not open the settings landing page");
 if (!lokroAction.includes("system-settings) launch systemsettings")) failures.push("LOKRO settings cannot reach the full Plasma settings application");
 if (!lokroAction.includes("design-packs) launch lokro-design-pack-gui")) failures.push("LOKRO action router cannot open design packs");
+if (!lokroAction.includes("design-blood) apply_design org.lokro.blood")) failures.push("LOKRO action router cannot apply the Blood design pack");
 if (!welcomeQml.includes('openAction("design-packs")')) failures.push("welcome center does not expose design packs");
 if (!lokroAction.includes("app-store) launch lokro-store")) failures.push("LOKRO action router cannot open the app store");
 if (!welcomeQml.includes('openAction("app-store")')) failures.push("welcome center does not expose the app store");
@@ -286,6 +304,13 @@ if (!welcomeQml.includes('openAction("credits")')) failures.push("welcome center
 const storePackage = fs.readFileSync(path.join(root, "packages/lokro-store/PKGBUILD"), "utf8");
 for (const storeInvariant of ["_upstream_version=0.1.0-alpha.8", "89058a0db9184d5fc993a843a427c9b48bd351aee7f13d4ca7996b4725863572", "python-setuptools", "assets/icons/*.svg"]) {
   if (!storePackage.includes(storeInvariant)) failures.push(`LOKRO Store package is missing pinned alpha-8 invariant: ${storeInvariant}`);
+}
+for (const wrapperInvariant of ["lokro-store-flatpak-internal", "rootfs/usr/bin/lokro-store-flatpak"]) {
+  if (!storePackage.includes(wrapperInvariant)) failures.push(`LOKRO Store package is missing Flatpak wrapper invariant: ${wrapperInvariant}`);
+}
+const storeFlatpak = fs.readFileSync(path.join(root, "packages/lokro-store/rootfs/usr/bin/lokro-store-flatpak"), "utf8");
+for (const flatpakInvariant of ["remote-modify --user --enable", "remote-add --user --if-not-exists --from", "remote-ls --user --app flathub", "/usr/share/lokro/flathub.flatpakrepo", "lokro-store-flatpak-internal", "Prüfe Internet, Datum und Uhrzeit"]) {
+  if (!storeFlatpak.includes(flatpakInvariant)) failures.push(`LOKRO Store Flatpak wrapper is missing repair invariant: ${flatpakInvariant}`);
 }
 
 const hubQml = fs.readFileSync(path.join(root, "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/contents/ui/main.qml"), "utf8");
@@ -324,8 +349,14 @@ if (!prepareProfile.includes('chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lo
   failures.push("prepared ISO does not make the graphical live installer executable");
 }
 const liveInstallerAutostart = fs.readFileSync(path.join(root, "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop"), "utf8");
-if (!liveInstallerAutostart.includes("Exec=/usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
+if (!liveInstallerAutostart.includes("Exec=/usr/bin/bash /usr/local/bin/lokro-live-installer") || !liveInstallerAutostart.includes("OnlyShowIn=KDE;")) {
   failures.push("live installer does not auto-start through the guarded launcher in Plasma");
+}
+const installerDesktop = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/share/applications/lokro-install.desktop"), "utf8");
+if (!installerDesktop.includes("Exec=/usr/bin/bash /usr/local/bin/lokro-live-installer")) failures.push("installed live shortcut does not use the mode-bit-resilient Bash launcher");
+const partitionConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/etc/calamares/modules/partition.conf"), "utf8");
+for (const partitionInvariant of ["allowManualPartitioning: true", "initialPartitioningChoice: manual", "initialSwapChoice: none"]) {
+  if (!partitionConfig.includes(partitionInvariant)) failures.push(`Calamares partition page is missing safe explicit-selection invariant: ${partitionInvariant}`);
 }
 const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-create-live-user"), "utf8");
 if (!liveUserScript.includes("/home/liveuser/Desktop/Install-LOKRO-OS.desktop")) failures.push("live desktop is missing a visible installer shortcut");

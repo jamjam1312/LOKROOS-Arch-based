@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Repair and verify the user-scoped Flathub remote before delegating to the
+# checksum-aware helper shipped by the pinned LOKRO Store source archive.
+set -u -o pipefail
+
+flatpak_bin="${LOKRO_FLATPAK_BIN:-/usr/bin/flatpak}"
+internal_helper="${LOKRO_STORE_FLATPAK_INTERNAL:-/usr/lib/lokro/lokro-store-flatpak-internal}"
+descriptor="${LOKRO_FLATHUB_DESCRIPTOR:-/usr/share/lokro/flathub.flatpakrepo}"
+flathub_url='https://dl.flathub.org/repo/'
+
+fail() {
+    printf 'lokro-store-flatpak: %s\n' "$1" >&2
+    exit 2
+}
+
+ensure_flathub() {
+    local remotes source
+    [[ -x "$flatpak_bin" ]] || fail 'Flatpak ist nicht installiert.'
+
+    remotes="$($flatpak_bin remotes --user --columns=name 2>/dev/null || true)"
+    if grep -Fxq 'flathub' <<< "$remotes"; then
+        "$flatpak_bin" remote-modify --user --enable --url="$flathub_url" flathub \
+            >/dev/null 2>&1 || fail 'Die vorhandene Flathub-Konfiguration konnte nicht repariert werden.'
+    else
+        if [[ -r "$descriptor" ]]; then
+            source="$descriptor"
+        else
+            source='https://dl.flathub.org/repo/flathub.flatpakrepo'
+        fi
+        "$flatpak_bin" remote-add --user --if-not-exists --from flathub "$source" \
+            >/dev/null 2>&1 || fail 'Flathub konnte für diesen Benutzer nicht eingerichtet werden.'
+    fi
+
+    if ! "$flatpak_bin" remote-ls --user --app flathub >/dev/null 2>&1; then
+        fail 'Flathub ist eingerichtet, aber der App-Katalog ist nicht erreichbar. Prüfe Internet, Datum und Uhrzeit und versuche es erneut.'
+    fi
+}
+
+[[ -x "$internal_helper" ]] || fail 'Der interne, geprüfte Store-Helfer fehlt.'
+
+case "${1:-}" in
+    install|update|update-all)
+        ensure_flathub
+        ;;
+    install-bundle)
+        # Versionierte Einzel-Bundles werden vom internen Helfer heruntergeladen
+        # und vor der Installation gegen ihre feste SHA-256 geprüft.
+        ;;
+    *)
+        fail 'Ungültiger Installationsauftrag.'
+        ;;
+esac
+
+exec "$internal_helper" "$@"

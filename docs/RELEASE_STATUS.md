@@ -4,6 +4,34 @@ This file separates implemented source from tested release claims. An item being
 
 ## Unreleased source changes after Alpha.24
 
+- The current Alpha.25 source candidate starts the live installer through an
+  explicit Bash interpreter from autostart, the desktop shortcut and LOKRO
+  actions. This is a second defence against the photographed mode-bit failure;
+  the generated profile still sets the file executable as before.
+- Calamares still performs no unattended installation or automatic disk
+  selection. Its complete locale, keyboard, partition, user, application and
+  summary sequence now opens on the explicit manual disk/partition view so the
+  target device, mount points and pending changes are visible before the user
+  confirms them.
+- The Store package now wraps its pinned upstream helper with a tested
+  user-scoped Flathub repair and reachability check. A missing remote is added
+  from the ISO's pinned descriptor, an existing remote is enabled and pointed
+  at the official URL, and network/clock failures produce an actionable German
+  message before any requested app installation is delegated.
+- The fresh Plasma layout and optional Hyprland bar no longer add a RAM
+  indicator. A v6 first-login migration removes the old floating Plasma RAM
+  widget without replacing a user's customized panel. The new fresh-user
+  bottom taskbar is 52 pixels high; LOKRO Settings persists compact, standard
+  or large controls.
+- `LOKRO Black` remains the automatic default and the existing monochrome
+  Plymouth mark remains the boot logo. The optional declarative `LOKRO Blood`
+  pack adds an original PNG wallpaper and a black/white/signal-red KDE color
+  scheme without copying the supplied reference character, lettering or logo.
+
+These Alpha.25 changes are implemented in source but are not yet CI/VM or
+real-hardware verified. The most recent downloadable tested images remain
+Alpha.24 until both ISO builds and all BIOS/UEFI gates succeed.
+
 - The public website now links dedicated imprint and privacy pages. The privacy
   notice describes GitHub Pages/API requests, local-only ISO assembly, email
   contact and the absence of project analytics. The imprint remains explicitly

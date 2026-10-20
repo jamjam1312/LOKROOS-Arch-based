@@ -5,7 +5,7 @@
   "spacing": 6,
   "modules-left": ["hyprland/workspaces", "custom/search", "hyprland/window"],
   "modules-center": ["clock"],
-  "modules-right": ["pulseaudio", "network", "memory", "cpu", "tray", "custom/power"],
+  "modules-right": ["pulseaudio", "network", "cpu", "tray", "custom/power"],
   "custom/search": {
     "format": "  Search",
     "tooltip": "Apps, files and commands",
@@ -19,10 +19,6 @@
   "clock": {
     "format": "{:%H:%M}",
     "format-alt": "{:%A, %d. %B %Y}"
-  },
-  "memory": {
-    "format": "RAM {percentage}%",
-    "on-click": "plasma-systemmonitor"
   },
   "cpu": {
     "format": "CPU {usage}%",

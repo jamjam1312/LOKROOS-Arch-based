@@ -2,7 +2,7 @@
 pkgname=lokro-store
 pkgver=0.1.0.alpha8
 _upstream_version=0.1.0-alpha.8
-pkgrel=1
+pkgrel=2
 pkgdesc='Validated application and design catalog for LOKRO OS'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Appstore-githubconnection'
@@ -21,6 +21,11 @@ build() {
 package() {
   cd "LOKROOS-Appstore-githubconnection-$_upstream_version"
   python -m installer --destdir="$pkgdir" dist/*.whl
+  install -d "$pkgdir/usr/lib/lokro"
+  mv "$pkgdir/usr/bin/lokro-store-flatpak" \
+    "$pkgdir/usr/lib/lokro/lokro-store-flatpak-internal"
+  install -Dm755 "$srcdir/../rootfs/usr/bin/lokro-store-flatpak" \
+    "$pkgdir/usr/bin/lokro-store-flatpak"
   install -Dm644 catalog/v1/catalog.json "$pkgdir/usr/share/lokro-store/catalog/v1/catalog.json"
   install -Dm644 catalog/v1/catalog.schema.json "$pkgdir/usr/share/lokro-store/catalog/v1/catalog.schema.json"
   install -Dm644 packaging/linux/org.lokro.Store.desktop "$pkgdir/usr/share/applications/org.lokro.Store.desktop"

@@ -21,6 +21,7 @@ GLASS = ROOT / "design-packs/org.lokro.glass"
 ECLIPSE = ROOT / "design-packs/org.lokro.eclipse"
 LUNAR = ROOT / "design-packs/org.lokro.lunar"
 CHAMFER = ROOT / "design-packs/org.lokro.chamfer"
+BLOOD = ROOT / "design-packs/org.lokro.blood"
 
 
 def run(arguments: list[str], environment: dict[str, str], expected: int = 0) -> subprocess.CompletedProcess[str]:
@@ -56,6 +57,8 @@ def main() -> int:
         run(["validate", str(ECLIPSE)], environment)
         run(["validate", str(LUNAR)], environment)
         run(["validate", str(CHAMFER)], environment)
+        run(["validate", str(BLOOD)], environment)
+        run(["install", str(BLOOD)], environment)
         previous_config_home = os.environ.get("XDG_CONFIG_HOME")
         os.environ["XDG_CONFIG_HOME"] = environment["XDG_CONFIG_HOME"]
         try:
@@ -73,6 +76,10 @@ def main() -> int:
         installed_glass = temporary / "data" / "color-schemes" / "LokroGlass.colors"
         if not installed_glass.is_file():
             raise RuntimeError("glass pack did not stage its KDE color scheme under the declared basename")
+        installed_blood_wallpaper = temporary / "data" / "wallpapers" / "org.lokro.blood" / "lokro-blood.png"
+        installed_blood_colors = temporary / "data" / "color-schemes" / "LokroBlood.colors"
+        if not installed_blood_wallpaper.is_file() or not installed_blood_colors.is_file():
+            raise RuntimeError("blood pack did not stage its wallpaper and KDE color scheme")
         listed = json.loads(run(["list", "--json"], environment).stdout)
         matching = [pack for pack in listed if pack["id"] == "org.lokro.monochrome"]
         if len(matching) != 1 or matching[0]["origin"] != "user":
