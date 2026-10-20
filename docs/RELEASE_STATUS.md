@@ -2,7 +2,7 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Alpha.24 source candidate (unreleased)
+## Alpha.24 source and CI release
 
 - `LOKRO Black` is now the system Plasma style and the automatic default for
   fresh users. It combines a true-black grayscale color scheme, black Plasma
@@ -12,9 +12,7 @@ This file separates implemented source from tested release claims. An item being
   clock and show-desktop control. The first-login v5 migration deliberately
   keeps an existing user's customized panel while applying the new colors.
 - Plymouth uses a new monochrome LOKRO startup mark on a black background, and
-  installed GRUB receives a generated 1920x1080 LOKRO background. These are
-  implemented and source-validated only until the Alpha.24 Arch CI build and
-  BIOS/UEFI smoke boots complete.
+  installed GRUB receives a generated 1920x1080 LOKRO background.
 
 - The LOKRO landing page is implemented as an isolated, buildless GitHub Pages
   site for `os.lokro.dev`. Its pointer-reactive background is a fixed terminal
@@ -23,8 +21,16 @@ This file separates implemented source from tested release claims. An item being
 - The Plasma first-login migration now explicitly applies `org.lokro.dark`,
   `LokroDark`, the Breeze Dark application icons and the `LokroMono` cursor.
   This closes the gap where the files existed in Alpha.23 but Plasma could keep
-  parts of an older/default appearance. This correction is source-validated
-  only and is not retroactively present in the published Alpha.23 images.
+  parts of an older/default appearance. This correction is present in Alpha.24
+  and is not retroactively present in the published Alpha.23 images.
+
+The Alpha.24 workflow run `39382231383` built a 3,693,772,800-byte offline ISO
+and a 2,667,675,648-byte online ISO, enforced the 4 GiB limit and passed both
+BIOS and UEFI live-Plasma-plus-Calamares smoke boots. The tag workflow
+published the checksummed multipart prerelease, manifests, provenance and
+build metadata on 20 October 2026. This still does not prove a completed
+Calamares installation, a booted installed disk or operation on physical
+hardware.
 
 ## Alpha.23 source and CI release
 
@@ -187,7 +193,7 @@ The alpha.5 CI attempt successfully produced both hybrid ISO files, including a 
 - A custom package server, custom desktop environment, LibreOffice fork or bundled AI model.
 - General-purpose live kernel replacement. The running kernel remains active until reboot; only its matching modules are retained safely.
 
-Alpha.23 is the latest downloadable build after successful package/ISO builds,
+Alpha.24 is the latest downloadable build after successful package/ISO builds,
 size checks and BIOS/UEFI live-Plasma-plus-Calamares smoke boots. Every alpha
 remains experimental: Calamares installed-disk, real-hardware, gaming and
 install-alongside acceptance still require human testing before any

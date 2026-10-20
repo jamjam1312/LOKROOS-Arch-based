@@ -150,7 +150,7 @@
   createField(document.querySelector('#footer-field'), { cellWidth: 24, cellHeight: 28 });
 
   async function refreshRelease() {
-    const fallback = 'v0.1.0-alpha.23';
+    const fallback = 'v0.1.0-alpha.24';
     try {
       const response = await fetch('https://api.github.com/repos/jamjam1312/LOKROOS-Arch-based/releases?per_page=10', {
         headers: { Accept: 'application/vnd.github+json' }
