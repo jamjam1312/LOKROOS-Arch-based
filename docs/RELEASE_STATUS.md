@@ -2,6 +2,19 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
+## Unreleased source changes after Alpha.24
+
+- The GitHub Pages download workbench links the numbered release parts directly
+  from the site. Compatible Chromium browsers can then stream the locally
+  selected parts into a user-selected ISO without buffering the complete
+  multi-gigabyte image in memory or uploading it. It validates every part and
+  the complete ISO with incremental SHA-256 before closing the output file.
+- Direct part links and generated Windows PowerShell, Linux Bash and macOS
+  shell scripts remain available when the browser file API is unavailable.
+  The pure download core has automated SHA-256,
+  checksum-parser and release-model tests; an actual multi-gigabyte browser
+  download still requires human acceptance after deployment.
+
 ## Alpha.24 source and CI release
 
 - `LOKRO Black` is now the system Plasma style and the automatic default for

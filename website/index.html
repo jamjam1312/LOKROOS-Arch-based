@@ -7,7 +7,8 @@
   <meta name="description" content="LOKRO OS ist eine experimentelle, Arch-basierte Desktop-Distribution mit KDE Plasma, Pacman, Flatpak und einem klaren Schwarz-Weiß-Design.">
   <title>LOKRO OS — Arch, neu zusammengesetzt</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="app.js" defer></script>
+  <link rel="modulepreload" href="download-core.mjs">
+  <script type="module" src="app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -32,7 +33,7 @@
       <div class="hero-copy">
         <div class="release-pill chamfer-10">
           <span class="pulse-dot" aria-hidden="true"></span>
-          <span data-release-label>ALPHA 23 · EXPERIMENTELL</span>
+          <span data-release-label>ALPHA 24 · EXPERIMENTELL</span>
         </div>
         <h1 id="hero-title"><span>LOKRO</span><br>OPERATING SYSTEM</h1>
         <p class="hero-lead">Arch Linux als eigenständiger Desktop: schnell, veränderbar und mit einer klaren Schwarz‑Weiß‑Identität.</p>
@@ -161,7 +162,7 @@
         <article class="download-card chamfer-28 featured-card">
           <div class="card-tag">EMPFOHLEN FÜR DEN ERSTEN TEST</div>
           <div class="download-card-head">
-            <span>OFFLINE</span><b>3.44 GiB</b>
+            <span>OFFLINE</span><b data-variant-size="offline">3.44 GiB</b>
           </div>
           <h3>Alles Wichtige auf dem Stick.</h3>
           <p>Basissystem, Plasma und Kernprogramme sind im Abbild enthalten. Internet wird erst für Updates und zusätzliche Apps gebraucht.</p>
@@ -170,13 +171,14 @@
             <li>Gaming-Bundle offline auswählbar</li>
             <li>Ideal für langsame oder fehlende Verbindung</li>
           </ul>
-          <a class="button button-primary chamfer-18 release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.24">Offline herunterladen <span aria-hidden="true">↗</span></a>
+          <button class="button button-primary chamfer-18" type="button" data-browser-prepare="offline" disabled>Auf der Website vorbereiten <span aria-hidden="true">↓</span></button>
+          <a class="card-secondary-link release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.24">Release auf GitHub ↗</a>
         </article>
 
         <article class="download-card chamfer-28">
           <div class="card-tag">KLEINERER DOWNLOAD</div>
           <div class="download-card-head">
-            <span>ONLINE</span><b>2.48 GiB</b>
+            <span>ONLINE</span><b data-variant-size="online">2.48 GiB</b>
           </div>
           <h3>Schlanker starten.</h3>
           <p>Das installierbare Grundsystem bleibt enthalten. Zusätzliche Programme werden bei bestehender Verbindung nachgeladen.</p>
@@ -185,7 +187,8 @@
             <li>Aktive Internetverbindung empfohlen</li>
             <li>Gleicher Alpha‑Status wie Offline</li>
           </ul>
-          <a class="button button-ghost chamfer-18 release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.24">Online herunterladen <span aria-hidden="true">↗</span></a>
+          <button class="button button-ghost chamfer-18" type="button" data-browser-prepare="online" disabled>Auf der Website vorbereiten <span aria-hidden="true">↓</span></button>
+          <a class="card-secondary-link release-link" href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/tag/v0.1.0-alpha.24">Release auf GitHub ↗</a>
         </article>
       </div>
 
@@ -194,6 +197,66 @@
         <p><strong>Alpha-Hinweis:</strong> Die Abbilder bestanden automatisierte BIOS-/UEFI‑Live‑Boot‑Tests. Eine vollständige Installation auf echter Hardware, Dual‑Boot und alle Grafiktreiber sind noch nicht abschließend geprüft. Sichere deine Daten.</p>
         <a href="https://github.com/jamjam1312/LOKROOS-Arch-based/releases/download/v0.1.0-alpha.24/REASSEMBLE.md">Zusammensetzen →</a>
       </div>
+
+      <section class="download-workbench chamfer-28" aria-labelledby="download-workbench-title">
+        <div class="workbench-heading">
+          <div>
+            <p class="section-kicker">DOWNLOAD WORKBENCH</p>
+            <h3 id="download-workbench-title">Ohne Umweg zur fertigen ISO.</h3>
+          </div>
+          <span class="support-badge" data-browser-support>Browser wird geprüft …</span>
+        </div>
+
+        <div class="assembler-panel" aria-describedby="assembler-privacy">
+          <div class="assembler-copy">
+            <strong>Lokal im Browser zusammensetzen</strong>
+            <p>Lade beide Teile über die Links dieser Seite herunter, wähle sie anschließend gemeinsam aus und speichere die geprüfte ISO. Die Dateien verlassen dein Gerät dabei nicht.</p>
+          </div>
+          <div class="assembler-actions">
+            <label class="button button-primary chamfer-18 file-picker-button" data-file-picker-label>
+              ISO-Teile auswählen
+              <input type="file" multiple data-assembler-files aria-label="Heruntergeladene ISO-Teile auswählen">
+            </label>
+            <button class="button button-ghost chamfer-18" type="button" data-assemble-selected disabled>Ausgewählte Teile verbinden</button>
+            <button class="button button-ghost chamfer-18 assembler-cancel" type="button" data-assembler-cancel hidden>Abbrechen</button>
+          </div>
+          <div class="assembler-progress" data-assembler-progress hidden>
+            <progress max="100" value="0" aria-label="Downloadfortschritt"></progress>
+            <span data-assembler-percent>0%</span>
+          </div>
+          <p class="assembler-status" data-assembler-status role="status" aria-live="polite">Bereit. Für das speichersparende Schreiben großer Dateien wird ein Chromium-basierter Browser auf einer HTTPS-Seite benötigt.</p>
+          <p class="assembler-privacy" id="assembler-privacy">Die Datei bleibt auf deinem Gerät. Schließe den Tab nicht während des Vorgangs. Die Website kontrolliert jeden Teil und anschließend die komplette ISO mit SHA‑256.</p>
+        </div>
+
+        <div class="manual-downloads">
+          <div class="manual-heading">
+            <div>
+              <strong>Universeller Download</strong>
+              <p>Variante wählen, beide Teile direkt von dieser Seite laden und oben verbinden – oder für Firefox, Safari und die Kommandozeile das fertige Skript verwenden.</p>
+            </div>
+            <div class="segmented-control" role="group" aria-label="ISO-Variante auswählen">
+              <button type="button" class="is-active" data-download-variant="offline">Offline</button>
+              <button type="button" data-download-variant="online">Online</button>
+            </div>
+          </div>
+
+          <div class="part-links" data-part-links aria-label="Direkte ISO-Teil-Downloads"></div>
+
+          <div class="script-tabs" role="tablist" aria-label="Betriebssystem auswählen">
+            <button type="button" class="is-active" role="tab" aria-selected="true" data-script-os="windows">Windows</button>
+            <button type="button" role="tab" aria-selected="false" data-script-os="linux">Linux</button>
+            <button type="button" role="tab" aria-selected="false" data-script-os="macos">macOS</button>
+          </div>
+          <div class="script-box">
+            <pre tabindex="0"><code data-download-script>Release-Daten werden geladen …</code></pre>
+            <div class="script-actions">
+              <button class="button button-small chamfer-10" type="button" data-copy-script disabled>Befehl kopieren</button>
+              <button class="button button-small chamfer-10" type="button" data-save-script disabled>Skript speichern</button>
+            </div>
+          </div>
+          <p class="hash-line">Erwartete fertige SHA‑256: <code data-iso-hash>—</code></p>
+        </div>
+      </section>
     </section>
 
     <section class="status" id="status" aria-labelledby="status-title">
