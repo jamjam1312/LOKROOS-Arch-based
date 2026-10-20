@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 pkgname=lokro-branding
 pkgver=0.1.0
-pkgrel=5
+pkgrel=6
 pkgdesc='Lokro OS desktop, boot and session branding'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Arch-based'
@@ -35,6 +35,10 @@ build() {
 package() {
   cp -a "$srcdir/../rootfs/." "$pkgdir/"
   chmod 0755 "$pkgdir/usr/bin/lokro-first-login"
+  install -d "$pkgdir/usr/share/backgrounds/lokro"
+  rsvg-convert -w 1920 -h 1080 \
+    -o "$pkgdir/usr/share/backgrounds/lokro/lokro-grub.png" \
+    "$srcdir/../grub-background.svg"
   local theme="$pkgdir/usr/share/icons/LokroMono"
   install -Dm644 "$srcdir/../cursors/index.theme" "$theme/index.theme"
   install -Dm644 "$srcdir/LokroMono-build/cursors/left_ptr" "$theme/cursors/left_ptr"

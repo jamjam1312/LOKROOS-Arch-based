@@ -5,7 +5,8 @@ This file is the machine-readable starting point for coding assistants and human
 ## Product contract
 
 - Product: experimental x86_64 desktop distribution. The latest downloadable
-  CI prerelease is `0.1.0-alpha.23`; changes after that tag are unreleased source.
+  CI prerelease is `0.1.0-alpha.23`; the repository currently prepares the
+  unreleased `0.1.0-alpha.24` source candidate.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -63,7 +64,7 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
 - Plasma System Monitor is exposed as **LOKRO Task Manager** for processes, CPU, RAM, storage and network.
 - Dolphin and Baloo provide filename-first indexed search in the home directory. Hidden folders, caches and build trees are excluded.
 - The taskbar search opens KRunner on Plasma and Wofi on Hyprland. Its context menu exposes settings, task manager, updates and power actions.
-- Plasma provides configurable panels, widgets, themes, cursor size, shortcuts and `Meta+T` tiling. Hyprland is selected independently on the SDDM login screen.
+- Plasma provides configurable panels, widgets, themes, cursor size, shortcuts and `Meta+T` tiling. Fresh Alpha.24 users receive the `LOKRO Black` Plasma style, LOKRO launcher and bottom-panel layout by default; upgrades preserve an existing customized panel. Hyprland is selected independently on the SDDM login screen.
 - `lokro-design-pack` validates and installs user-scoped color/wallpaper packs without executing pack content; repository packs are staged into `lokro-shell` at build time.
 - **LOKRO Link Installer** installs GPG-verifiable Arch package links, Flatpak refs/bundles and user-scoped AppImages. It never executes downloaded scripts.
 - **LOKRO Media** is a branded launcher around the official VLC package and owns the common audio/video associations.

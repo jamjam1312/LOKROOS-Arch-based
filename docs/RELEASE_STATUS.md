@@ -2,7 +2,19 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Unreleased source changes after Alpha.23
+## Alpha.24 source candidate (unreleased)
+
+- `LOKRO Black` is now the system Plasma style and the automatic default for
+  fresh users. It combines a true-black grayscale color scheme, black Plasma
+  surfaces, Breeze Dark application icons and the compiled `LokroMono` cursor.
+- Fresh installations receive a deterministic 48-pixel bottom panel with the
+  LOKRO launcher icon, LOKRO search, task switcher, workspaces, system tray,
+  clock and show-desktop control. The first-login v5 migration deliberately
+  keeps an existing user's customized panel while applying the new colors.
+- Plymouth uses a new monochrome LOKRO startup mark on a black background, and
+  installed GRUB receives a generated 1920x1080 LOKRO background. These are
+  implemented and source-validated only until the Alpha.24 Arch CI build and
+  BIOS/UEFI smoke boots complete.
 
 - The LOKRO landing page is implemented as an isolated, buildless GitHub Pages
   site for `os.lokro.dev`. Its pointer-reactive background is a fixed terminal
