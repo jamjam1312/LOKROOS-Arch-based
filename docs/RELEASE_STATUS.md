@@ -28,9 +28,12 @@ This file separates implemented source from tested release claims. An item being
   pack adds an original PNG wallpaper and a black/white/signal-red KDE color
   scheme without copying the supplied reference character, lettering or logo.
 
-These Alpha.25 changes are implemented in source but are not yet CI/VM or
-real-hardware verified. The most recent downloadable tested images remain
-Alpha.24 until both ISO builds and all BIOS/UEFI gates succeed.
+The Alpha.25 branch workflow run `39482325370` built both offline and online
+images, enforced the 4 GiB limit, and passed the BIOS and UEFI
+live-Plasma-plus-Calamares smoke boots. It does not prove a completed Calamares
+installation, a booted installed disk or operation on physical hardware. The
+most recent downloadable release remains Alpha.24 until the tag workflow
+repeats these gates and publishes the Alpha.25 assets.
 
 - The public website now links dedicated imprint and privacy pages. The privacy
   notice describes GitHub Pages/API requests, local-only ISO assembly, email
