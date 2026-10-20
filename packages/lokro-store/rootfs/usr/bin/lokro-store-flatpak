@@ -18,7 +18,7 @@ ensure_flathub() {
     local remotes source
     [[ -x "$flatpak_bin" ]] || fail 'Flatpak ist nicht installiert.'
 
-    remotes="$($flatpak_bin remotes --user --columns=name 2>/dev/null || true)"
+    remotes="$("$flatpak_bin" remotes --user --columns=name 2>/dev/null || true)"
     if grep -Fxq 'flathub' <<< "$remotes"; then
         "$flatpak_bin" remote-modify --user --enable --url="$flathub_url" flathub \
             >/dev/null 2>&1 || fail 'Die vorhandene Flathub-Konfiguration konnte nicht repariert werden.'
