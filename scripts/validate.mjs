@@ -31,7 +31,7 @@ const required = [
   "packages/lokro-branding/grub-background.svg", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
   "packages/lokro-store/PKGBUILD",
-  "website/index.html", "website/styles.css", "website/app.js", "website/download-core.mjs", "website/CNAME",
+  "website/index.html", "website/impressum.html", "website/datenschutz.html", "website/styles.css", "website/app.js", "website/download-core.mjs", "website/CNAME",
   "scripts/test-website-download.mjs",
   ".github/workflows/pages.yml",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
@@ -230,6 +230,20 @@ for (const coreInvariant of ["export class Sha256", "export function parseChecks
 const websiteHtml = fs.readFileSync(path.join(root, "website/index.html"), "utf8");
 for (const htmlInvariant of ["download-core.mjs", "data-browser-prepare", "data-assembler-files", "data-assemble-selected", "data-download-variant", "data-download-script", "data-iso-hash"]) {
   if (!websiteHtml.includes(htmlInvariant)) failures.push(`website download UI invariant missing: ${htmlInvariant}`);
+}
+for (const legalLink of ["impressum.html", "datenschutz.html"]) {
+  if (!websiteHtml.includes(`href="${legalLink}"`)) failures.push(`website footer is missing legal link: ${legalLink}`);
+}
+const imprintHtml = fs.readFileSync(path.join(root, "website/impressum.html"), "utf8");
+const privacyHtml = fs.readFileSync(path.join(root, "website/datenschutz.html"), "utf8");
+for (const [name, source] of [["imprint", imprintHtml], ["privacy", privacyHtml]]) {
+  if (!source.includes("support@lokro.dev")) failures.push(`${name} page is missing the project contact email`);
+  if (!source.includes('href="impressum.html"') || !source.includes('href="datenschutz.html"')) failures.push(`${name} page does not cross-link both legal pages`);
+}
+if (!imprintHtml.includes("NOCH NICHT VOLLSTÄNDIG") || !imprintHtml.includes("Ladungsfähige Anschrift fehlt")) failures.push("imprint must visibly disclose its missing mandatory provider details");
+if (imprintHtml.includes("Gymnasium")) failures.push("imprint must not publish a school address");
+for (const privacyInvariant of ["GitHub Pages", "GitHub API", "lokal", "keine eigene Webanalyse", "Art. 6 Abs. 1 lit. f DSGVO"]) {
+  if (!privacyHtml.includes(privacyInvariant)) failures.push(`privacy notice invariant missing: ${privacyInvariant}`);
 }
 
 const designSchema = JSON.parse(fs.readFileSync(path.join(root, "design-packs/design-pack.schema.json"), "utf8"));
