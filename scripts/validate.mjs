@@ -31,7 +31,8 @@ const required = [
   "packages/lokro-branding/grub-background.svg", "packages/lokro-shell/PKGBUILD",
   "packages/lokro-installer-config/PKGBUILD", "packages/lokro-ai-setup/PKGBUILD",
   "packages/lokro-store/PKGBUILD",
-  "website/index.html", "website/styles.css", "website/app.js", "website/CNAME",
+  "website/index.html", "website/styles.css", "website/app.js", "website/download-core.mjs", "website/CNAME",
+  "scripts/test-website-download.mjs",
   ".github/workflows/pages.yml",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/metadata.json",
@@ -218,6 +219,17 @@ for (const websiteInvariant of [
 }
 if (websiteScript.includes("context.arc(") || websiteScript.includes("context.ellipse(")) {
   failures.push("website pointer field must remain text-only (no canvas circle primitives)");
+}
+for (const downloadInvariant of ["showSaveFilePicker", "handle.createWritable()", "file.stream().getReader()", "new Sha256()", "actualPartHash !== part.sha256", "actualIsoHash !== variant.sha256", "data-browser-prepare", "data-assembler-files"]) {
+  if (!websiteScript.includes(downloadInvariant)) failures.push(`website browser assembler invariant missing: ${downloadInvariant}`);
+}
+const downloadCore = fs.readFileSync(path.join(root, "website/download-core.mjs"), "utf8");
+for (const coreInvariant of ["export class Sha256", "export function parseChecksums", "export function buildVariant", "export function matchFilesForVariant", "export function commandFor", "Missing final SHA-256"]) {
+  if (!downloadCore.includes(coreInvariant)) failures.push(`website download core invariant missing: ${coreInvariant}`);
+}
+const websiteHtml = fs.readFileSync(path.join(root, "website/index.html"), "utf8");
+for (const htmlInvariant of ["download-core.mjs", "data-browser-prepare", "data-assembler-files", "data-assemble-selected", "data-download-variant", "data-download-script", "data-iso-hash"]) {
+  if (!websiteHtml.includes(htmlInvariant)) failures.push(`website download UI invariant missing: ${htmlInvariant}`);
 }
 
 const designSchema = JSON.parse(fs.readFileSync(path.join(root, "design-packs/design-pack.schema.json"), "utf8"));

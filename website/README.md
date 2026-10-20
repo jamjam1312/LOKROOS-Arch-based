@@ -6,8 +6,17 @@ input. The ISO workflows do not copy this directory.
 
 The site is buildless HTML, CSS and JavaScript. It uses no third-party runtime
 dependency, font CDN, tracking script or cookie. Release buttons resolve the
-newest non-draft GitHub release in the browser and retain Alpha 23 as an offline
+newest non-draft GitHub release in the browser and retain Alpha 24 as a pinned
 fallback.
+
+The workbench exposes the numbered release assets as direct links on the site.
+On Chromium-based browsers in a secure context, users can select both downloaded
+parts and stream them locally into a user-selected ISO file. It computes
+incremental SHA-256 for every part and the complete image without buffering the
+multi-gigabyte ISO in memory or uploading it. This two-step flow avoids relying
+on CORS support from GitHub's release-asset host. Firefox, Safari and
+command-line users receive the same direct links plus generated Windows, Linux
+and macOS scripts. Failed or aborted writes are never presented as completed.
 
 ## Local preview
 

@@ -46,6 +46,7 @@ button { font: inherit; }
 .button { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 1rem; padding: .8rem 1.15rem; border: 1px solid var(--line); background: transparent; color: var(--ink); font: 700 .72rem var(--mono); letter-spacing: .08em; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: transform .2s ease, background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease; }
 .button:hover, .button:focus-visible { transform: translateY(-2px); border-color: var(--ink); outline: none; }
 .button:active { transform: translateY(0); }
+.button:disabled { cursor: not-allowed; opacity: .42; transform: none; box-shadow: none; }
 .button-primary { background: var(--ink); color: var(--black); border-color: var(--ink); }
 .button-primary:hover, .button-primary:focus-visible { box-shadow: 0 0 0 1px var(--ink), 0 18px 50px rgba(255,255,255,.13); }
 .button-ghost { background: rgba(255,255,255,.025); backdrop-filter: blur(10px); }
@@ -147,10 +148,52 @@ button { font: inherit; }
 .download-card li { padding: .55rem 0; border-bottom: 1px solid var(--line-soft); }
 .download-card li::before { content: "/"; margin-right: .6rem; color: var(--ink); font-family: var(--mono); }
 .download-card .button { margin-top: auto; align-self: stretch; }
+.card-secondary-link { align-self: center; margin-top: .9rem; color: var(--muted); font: .6rem var(--mono); text-underline-offset: .28rem; }
+.card-secondary-link:hover, .card-secondary-link:focus-visible { color: var(--ink); }
 .download-note { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem 1.2rem; border: 1px solid rgba(255,204,102,.25); background: rgba(255,204,102,.055); }
 .download-note > span { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--warn); color: var(--warn); font: 700 .8rem var(--mono); }
 .download-note p { margin: 0; color: var(--muted); font-size: .78rem; }
 .download-note a { white-space: nowrap; color: var(--ink); font: .65rem var(--mono); text-decoration: none; }
+
+.download-workbench { margin-top: 1rem; padding: clamp(1.4rem, 4vw, 3rem); border: 1px solid var(--line); background: radial-gradient(circle at 94% 0, rgba(255,255,255,.08), transparent 26%), #090909; }
+.workbench-heading { display: flex; justify-content: space-between; align-items: start; gap: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line-soft); }
+.workbench-heading .section-kicker { margin-bottom: .7rem; }
+.workbench-heading h3 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.2rem); line-height: .95; letter-spacing: -.055em; }
+.support-badge { flex: 0 0 auto; padding: .55rem .7rem; border: 1px solid rgba(255,204,102,.35); color: var(--warn); font: .57rem var(--mono); letter-spacing: .08em; }
+.support-badge.is-supported { border-color: rgba(215,255,118,.34); color: var(--good); }
+.assembler-panel { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 3rem; padding: 2rem 0; border-bottom: 1px solid var(--line-soft); }
+.assembler-copy strong, .manual-heading strong { display: block; font-size: 1.25rem; }
+.assembler-copy p, .manual-heading p { max-width: 690px; margin: .55rem 0 0; color: var(--muted); font-size: .87rem; }
+.assembler-actions { display: flex; flex-wrap: wrap; justify-content: end; align-self: center; gap: .55rem; }
+.assembler-actions .button { min-height: 42px; font-size: .62rem; }
+.file-picker-button { cursor: pointer; }
+.file-picker-button input { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+.file-picker-button.is-disabled { cursor: not-allowed; opacity: .45; }
+.assembler-progress { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; }
+.assembler-progress[hidden] { display: none; }
+.assembler-progress progress { width: 100%; height: 7px; border: 0; appearance: none; background: #222; }
+.assembler-progress progress::-webkit-progress-bar { background: #222; }
+.assembler-progress progress::-webkit-progress-value { background: var(--ink); }
+.assembler-progress progress::-moz-progress-bar { background: var(--ink); }
+.assembler-progress span { color: var(--muted); font: .58rem var(--mono); }
+.assembler-status { grid-column: 1 / -1; margin: 0; color: var(--ink); font: .68rem var(--mono); }
+.assembler-privacy { grid-column: 1 / -1; margin: -.7rem 0 0; color: var(--dim); font-size: .72rem; }
+.manual-downloads { padding-top: 2rem; }
+.manual-heading { display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+.segmented-control, .script-tabs { display: inline-flex; gap: .3rem; padding: .3rem; border: 1px solid var(--line-soft); background: #050505; }
+.segmented-control button, .script-tabs button { border: 0; padding: .6rem .85rem; background: transparent; color: var(--dim); font: .61rem var(--mono); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.segmented-control button:hover, .segmented-control button:focus-visible, .script-tabs button:hover, .script-tabs button:focus-visible { color: var(--ink); outline: 1px solid var(--line); }
+.segmented-control button.is-active, .script-tabs button.is-active { background: var(--ink); color: var(--black); }
+.part-links { display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.5rem 0; }
+.part-links a { padding: .7rem .85rem; border: 1px solid var(--line); color: var(--muted); font: .62rem var(--mono); text-decoration: none; }
+.part-links a:hover, .part-links a:focus-visible { border-color: var(--ink); color: var(--ink); outline: none; }
+.script-tabs { margin-bottom: .5rem; }
+.script-box { position: relative; border: 1px solid var(--line); background: #030303; }
+.script-box pre { min-height: 260px; max-height: 430px; margin: 0; padding: 1.3rem; overflow: auto; color: #d6d6d1; font: .72rem/1.7 var(--mono); white-space: pre; }
+.script-actions { display: flex; justify-content: end; gap: .5rem; padding: .7rem; border-top: 1px solid var(--line-soft); }
+.script-actions .button { min-height: 36px; font-size: .56rem; }
+.hash-line { margin: 1rem 0 0; color: var(--dim); font: .6rem var(--mono); overflow-wrap: anywhere; }
+.hash-line code { color: var(--ink); }
 
 .status { padding-block: clamp(6rem, 11vw, 10rem); border-block: 1px solid var(--line-soft); background: #080808; }
 .status h2 { max-width: 760px; }
@@ -238,6 +281,18 @@ footer > div:last-child a:hover { color: var(--ink); }
   .download-card { min-height: 540px; }
   .download-note { grid-template-columns: auto 1fr; }
   .download-note a { grid-column: 2; }
+  .workbench-heading, .manual-heading { align-items: stretch; flex-direction: column; }
+  .support-badge { align-self: start; }
+  .assembler-panel { grid-template-columns: 1fr; }
+  .assembler-actions { justify-content: stretch; }
+  .assembler-actions .button { width: 100%; }
+  .assembler-progress, .assembler-status, .assembler-privacy { grid-column: 1; }
+  .segmented-control { width: 100%; }
+  .segmented-control button { flex: 1; }
+  .script-tabs { width: 100%; }
+  .script-tabs button { flex: 1; }
+  .script-box pre { min-height: 320px; font-size: .64rem; }
+  .script-actions { align-items: stretch; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {
