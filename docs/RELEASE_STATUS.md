@@ -4,6 +4,37 @@ This file separates implemented source from tested release claims. An item being
 
 ## Unreleased source changes after Alpha.24
 
+- The current Alpha.25 source candidate starts the live installer through an
+  explicit Bash interpreter from autostart, the desktop shortcut and LOKRO
+  actions. This is a second defence against the photographed mode-bit failure;
+  the generated profile still sets the file executable as before.
+- Calamares still performs no unattended installation or automatic disk
+  selection. Its complete locale, keyboard, partition, user, application and
+  summary sequence now opens on the explicit manual disk/partition view so the
+  target device, mount points and pending changes are visible before the user
+  confirms them.
+- The Store package now wraps its pinned upstream helper with a tested
+  user-scoped Flathub repair and reachability check. A missing remote is added
+  from the ISO's pinned descriptor, an existing remote is enabled and pointed
+  at the official URL, and network/clock failures produce an actionable German
+  message before any requested app installation is delegated.
+- The fresh Plasma layout and optional Hyprland bar no longer add a RAM
+  indicator. A v6 first-login migration removes the old floating Plasma RAM
+  widget without replacing a user's customized panel. The new fresh-user
+  bottom taskbar is 52 pixels high; LOKRO Settings persists compact, standard
+  or large controls.
+- `LOKRO Black` remains the automatic default and the existing monochrome
+  Plymouth mark remains the boot logo. The optional declarative `LOKRO Blood`
+  pack adds an original PNG wallpaper and a black/white/signal-red KDE color
+  scheme without copying the supplied reference character, lettering or logo.
+
+The Alpha.25 branch workflow run `39482325370` built both offline and online
+images, enforced the 4 GiB limit, and passed the BIOS and UEFI
+live-Plasma-plus-Calamares smoke boots. It does not prove a completed Calamares
+installation, a booted installed disk or operation on physical hardware. The
+most recent downloadable release remains Alpha.24 until the tag workflow
+repeats these gates and publishes the Alpha.25 assets.
+
 - The public website now links dedicated imprint and privacy pages. The privacy
   notice describes GitHub Pages/API requests, local-only ISO assembly, email
   contact and the absence of project analytics. The imprint remains explicitly

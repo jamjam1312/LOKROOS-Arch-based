@@ -7,7 +7,7 @@ for (var p = oldPanels.length - 1; p >= 0; --p) {
 
 var panel = new Panel;
 panel.location = "bottom";
-panel.height = 48;
+panel.height = 52;
 panel.alignment = "center";
 panel.lengthMode = "fill";
 panel.hiding = "none";
@@ -32,7 +32,5 @@ for (var i = 0; i < screens.length; ++i) {
     if (i === 0) {
         var hub = desktop.addWidget("org.lokro.hub");
         hub.geometry = "40,40,360,320";
-        var memory = desktop.addWidget("org.kde.plasma.systemmonitor.memory");
-        memory.geometry = "420,40,300,180";
     }
 }

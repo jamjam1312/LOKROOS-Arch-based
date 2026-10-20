@@ -28,3 +28,7 @@ The optional `lokro.settingsStyle` field is a closed choice between `rounded`
 and `chamfer`. It only changes the trusted LOKRO Settings geometry; it cannot
 load pack-supplied QML or alter arbitrary application code. The reviewed
 `org.lokro.chamfer` example uses this switch.
+
+`org.lokro.blood` is an optional reviewed black, white and signal-red pack. It
+ships original PNG wallpaper artwork and a declarative KDE color scheme; the
+standard installation remains the monochrome `LOKRO Black` appearance.

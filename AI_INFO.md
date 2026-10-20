@@ -5,7 +5,8 @@ This file is the machine-readable starting point for coding assistants and human
 ## Product contract
 
 - Product: experimental x86_64 desktop distribution. The latest downloadable
-  CI prerelease is `0.1.0-alpha.24`.
+  CI prerelease is `0.1.0-alpha.24`; the current source candidate is
+  `0.1.0-alpha.25` until its complete release workflow succeeds.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
@@ -79,7 +80,8 @@ Developer entry points are `make validate`, `make packages`, `make iso-offline`,
   are downloaded only from immutable URLs and verified before the safe
   importer is invoked.
 - **LOKRO appearance packs** include the interactive Monochrome wallpaper plus
-  original Eclipse (dark) and Lunar (light) halftone wallpapers. The trusted
+  original Eclipse (dark), Lunar (light) and optional Blood (black/white/red)
+  wallpapers. The trusted
   `lokro-branding` package provides the compiled `LokroMono` cursor theme;
   downloaded packs still cannot supply executable cursor or QML code.
 - **LOKRO Settings** is a glass-styled visual landing page for the
