@@ -2,7 +2,7 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Unreleased source changes after Alpha.24
+## Alpha.25 source and CI release
 
 - The current Alpha.25 source candidate starts the live installer through an
   explicit Bash interpreter from autostart, the desktop shortcut and LOKRO
@@ -30,10 +30,12 @@ This file separates implemented source from tested release claims. An item being
 
 The Alpha.25 branch workflow run `39482325370` built both offline and online
 images, enforced the 4 GiB limit, and passed the BIOS and UEFI
-live-Plasma-plus-Calamares smoke boots. It does not prove a completed Calamares
-installation, a booted installed disk or operation on physical hardware. The
-most recent downloadable release remains Alpha.24 until the tag workflow
-repeats these gates and publishes the Alpha.25 assets.
+live-Plasma-plus-Calamares smoke boots. The tag workflow run `39486557171`
+repeated every gate and published a 3,693,772,800-byte offline ISO and a
+2,670,018,560-byte online ISO, their numbered GitHub-compatible parts,
+checksums, manifests, provenance and known limitations on 20 October 2026.
+This does not prove a completed Calamares installation, a booted installed disk
+or operation on physical hardware.
 
 - The public website now links dedicated imprint and privacy pages. The privacy
   notice describes GitHub Pages/API requests, local-only ISO assembly, email
