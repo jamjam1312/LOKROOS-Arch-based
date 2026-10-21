@@ -74,12 +74,16 @@ ensure_flathub() {
 
 case "${1:-}" in
     install)
-        (( $# == 2 )) && valid_ref "$2" || fail 'Ungültige Flatpak-App-ID.'
+        if (( $# != 2 )) || ! valid_ref "$2"; then
+            fail 'Ungültige Flatpak-App-ID.'
+        fi
         ensure_flathub
         run_flatpak install --user --noninteractive flathub "$2"
         ;;
     update)
-        (( $# == 2 )) && valid_ref "$2" || fail 'Ungültige Flatpak-App-ID.'
+        if (( $# != 2 )) || ! valid_ref "$2"; then
+            fail 'Ungültige Flatpak-App-ID.'
+        fi
         ensure_flathub
         if "$flatpak_bin" info --user "$2" >/dev/null 2>&1; then
             run_flatpak update --user --noninteractive "$2"

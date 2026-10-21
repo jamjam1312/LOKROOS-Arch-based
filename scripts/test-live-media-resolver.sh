@@ -7,11 +7,12 @@ resolver="$project_root/archiso/airootfs/usr/local/lib/lokro/live-media.sh"
 temporary="$(mktemp -d -t lokro-live-media-test.XXXXXX)"
 trap 'rm -rf "$temporary"' EXIT
 
+# shellcheck source=../archiso/airootfs/usr/local/lib/lokro/live-media.sh
 source "$resolver"
 
 mkdir -p "$temporary/archiso/bootmnt/arch/x86_64"
 : > "$temporary/archiso/bootmnt/arch/x86_64/airootfs.sfs"
-LOKRO_RUN_ROOT="$temporary" result="$(LOKRO_RUN_ROOT="$temporary" lokro_find_airootfs)"
+result="$(LOKRO_RUN_ROOT="$temporary" lokro_find_airootfs)"
 [[ "$result" == "$(readlink -f "$temporary/archiso/bootmnt/arch/x86_64/airootfs.sfs")" ]]
 
 rm -rf "$temporary/archiso"
@@ -20,7 +21,7 @@ mkdir -p "$temporary/media/ventoy-loop/random/arch/x86_64"
 result="$(LOKRO_RUN_ROOT="$temporary" lokro_find_airootfs)"
 [[ "$result" == "$(readlink -f "$temporary/media/ventoy-loop/random/arch/x86_64/airootfs.sfs")" ]]
 
-rm -rf "$temporary/media"
+rm -rf "${temporary:?}/media"
 if LOKRO_RUN_ROOT="$temporary" lokro_find_airootfs >/dev/null 2>&1; then
     printf '%s\n' 'resolver accepted a runtime tree without airootfs.sfs' >&2
     exit 1
