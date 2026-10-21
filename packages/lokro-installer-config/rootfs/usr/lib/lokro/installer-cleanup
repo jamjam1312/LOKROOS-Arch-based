@@ -15,6 +15,7 @@ rm -f /etc/systemd/system/serial-getty@ttyS0.service.d/autologin.conf
 rm -f /usr/local/sbin/lokro-create-live-user
 rm -f /usr/local/sbin/lokro-smoke-ready
 rm -f /usr/local/bin/lokro-live-installer
+rm -f /usr/local/lib/lokro/live-media.sh
 rm -f /etc/xdg/autostart/lokro-live-installer.desktop
 rm -f /etc/polkit-1/rules.d/49-lokro-live-installer.rules
 rm -f /etc/systemd/user/plasma-workspace.target.wants/lokro-live-installer.service

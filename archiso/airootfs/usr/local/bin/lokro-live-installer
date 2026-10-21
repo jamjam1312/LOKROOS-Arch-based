@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
 
+source /usr/local/lib/lokro/live-media.sh
+
 runtime_dir="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 status_file="${runtime_dir}/lokro-installer.status"
 install -d -m 0700 "$runtime_dir"
@@ -25,13 +27,19 @@ if [[ "$(id -un)" != liveuser ]]; then
     reject 'user-is-not-liveuser' 'Der Installer muss aus der LOKRO-Live-Sitzung gestartet werden.'
 fi
 
-if [[ ! -e /run/archiso/bootmnt ]]; then
-    reject 'live-media-not-mounted' 'Das LOKRO-Live-Medium ist nicht unter /run/archiso/bootmnt eingebunden. Starte die ISO neu und prüfe den USB-Stick bzw. Ventoy.'
-fi
+root_image="$(lokro_find_airootfs || true)"
+[[ -n "$root_image" && -r "$root_image" ]] || reject 'root-image-not-found' \
+    'Das eingebettete Arch-System (airootfs.sfs) wurde auf keinem eingebundenen Live-Medium gefunden. Starte die ISO neu und prüfe ISO-Prüfsumme, USB-Stick bzw. Ventoy.'
 
-root_image='/run/archiso/bootmnt/arch/x86_64/airootfs.sfs'
-[[ -r "$root_image" ]] || reject 'root-image-missing' \
-    'Das eingebettete Arch-System (airootfs.sfs) fehlt oder ist nicht lesbar. Die Installation würde unvollständig werden.'
+# Calamares receives one stable path, independent of the boot mechanism. The
+# target is a symlink to a read-only SquashFS file; no disk is mounted or
+# changed by this compatibility step.
+stable_runtime='/run/lokro-installer'
+if ! /usr/bin/sudo /usr/bin/install -d -m 0755 "$stable_runtime" || \
+   ! /usr/bin/sudo /usr/bin/ln -sfn -- "$root_image" "$stable_runtime/airootfs.sfs"; then
+    reject 'root-image-link-failed' \
+        'Der Installer konnte den erkannten Systemdatenträger nicht für Calamares bereitstellen.'
+fi
 
 missing_tools=()
 for tool in calamares rsync unsquashfs lsblk; do
@@ -60,6 +68,7 @@ calamares_log="${runtime_dir}/lokro-calamares-debug.log"
 printf '%s\n' \
     'LOKRO installer preflight: OK' \
     "root image: $root_image" \
+    "calamares image: $stable_runtime/airootfs.sfs" \
     "root image bytes: $(stat -c %s "$root_image")" \
     "boot mode: $([[ -d /sys/firmware/efi ]] && printf UEFI || printf BIOS)" \
     "disks:" \

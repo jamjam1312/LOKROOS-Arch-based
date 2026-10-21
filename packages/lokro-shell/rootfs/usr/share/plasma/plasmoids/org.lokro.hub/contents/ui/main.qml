@@ -7,6 +7,8 @@ import org.kde.plasma.plasmoid
 PlasmoidItem {
     id: root
     property string manifestUrl: "file:///var/lib/lokro/services.json"
+    property string fallbackManifestUrl: "file:///usr/share/lokro/services.json"
+    property bool triedFallback: false
     property string loadError: ""
     toolTipMainText: "Lokro Hub"
     toolTipSubText: "Lokro-Netzwerkdienste öffnen"
@@ -18,6 +20,12 @@ PlasmoidItem {
         request.onreadystatechange = function() {
             if (request.readyState !== XMLHttpRequest.DONE) return
             if (request.status !== 0 && request.status !== 200) {
+                if (!triedFallback) {
+                    triedFallback = true
+                    manifestUrl = fallbackManifestUrl
+                    loadServices()
+                    return
+                }
                 loadError = "Diensteliste ist noch nicht verfügbar."
                 return
             }
@@ -38,6 +46,12 @@ PlasmoidItem {
                 }
                 loadError = ""
             } catch (error) {
+                if (!triedFallback) {
+                    triedFallback = true
+                    manifestUrl = fallbackManifestUrl
+                    loadServices()
+                    return
+                }
                 loadError = "Die Dienstekonfiguration ist ungültig."
             }
         }
@@ -47,7 +61,7 @@ PlasmoidItem {
 
     preferredRepresentation: compactRepresentation
     compactRepresentation: Kirigami.Icon {
-        source: "network-server"
+        source: "lokro-hub"
         active: compactMouse.containsMouse
         MouseArea {
             id: compactMouse
@@ -98,7 +112,7 @@ PlasmoidItem {
                 }
             }
             PlasmaComponents.Label {
-                text: "/etc/lokro/services.d/*.json"
+                text: "LOKRO Network"
                 opacity: 0.65
                 font.pointSize: Kirigami.Theme.smallFont.pointSize
                 Layout.fillWidth: true

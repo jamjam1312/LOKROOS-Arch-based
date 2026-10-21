@@ -3,7 +3,6 @@ Description=Start the LOKRO installer inside the active Plasma live session
 Documentation=https://github.com/jamjam1312/LOKROOS-Arch-based
 After=lokro-live-user.service sddm.service
 Wants=sddm.service
-ConditionPathExists=/run/archiso/bootmnt
 
 [Service]
 Type=simple
