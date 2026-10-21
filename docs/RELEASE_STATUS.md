@@ -2,6 +2,33 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
+## Alpha.26 source candidate
+
+- The live installer no longer assumes that every ISO is mounted at
+  `/run/archiso/bootmnt`. A read-only resolver accepts the normal Archiso path
+  and already-mounted Ventoy-style runtime paths, validates `airootfs.sfs`, and
+  gives Calamares one stable runtime symlink. The supervisor is no longer
+  skipped solely because the old path is absent.
+- Calamares opens its guided partition choices with no destructive default.
+  Its built-in **Replace** flow lets the user explicitly choose a partition
+  which is then recreated as ext4 only after the final summary confirmation;
+  Ventoy, live and control mounts are protected by `essentialMounts`.
+- The Store performs normal user-scoped Flathub installs itself, repairs a
+  half-created remote when no installed app depends on it, and retains the
+  complete Flatpak output under
+  `~/.local/state/lokro-store/flatpak-last.log`. Checksum-pinned external
+  bundles still use the pinned upstream helper.
+- The Plasma panel and popup frame SVGs no longer draw borders around every
+  nine-slice segment. The pointer's two accidental dots were removed, the
+  first-login migration deduplicates LOKRO Hub widgets, and the Hub now has a
+  dedicated icon plus a read-only fallback manifest.
+
+Static JavaScript and shell regression tests pass on the contributor host.
+Package construction, ISO construction, BIOS/UEFI smoke boot and any completed
+installation to a disposable VM disk are not yet claimed for Alpha.26 until
+the GitHub Actions gates report success. No partition or firmware test was run
+on the contributor's Windows workstation.
+
 ## Alpha.25 source and CI release
 
 - The current Alpha.25 source candidate starts the live installer through an

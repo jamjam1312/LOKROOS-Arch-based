@@ -2,7 +2,7 @@
 pkgname=lokro-store
 pkgver=0.1.0.alpha8
 _upstream_version=0.1.0-alpha.8
-pkgrel=2
+pkgrel=3
 pkgdesc='Validated application and design catalog for LOKRO OS'
 arch=('any')
 url='https://github.com/jamjam1312/LOKROOS-Appstore-githubconnection'

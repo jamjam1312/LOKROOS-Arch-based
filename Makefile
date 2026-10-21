@@ -11,6 +11,7 @@ validate:
 	@node scripts/validate.mjs
 	@node scripts/test-website-download.mjs
 	@bash scripts/test-store-flatpak.sh
+	@bash scripts/test-live-media-resolver.sh
 	@if command -v python3 >/dev/null 2>&1; then python3 scripts/validate_yaml.py; else echo 'python3 not installed; YAML validation skipped'; fi
 	@if command -v python3 >/dev/null 2>&1; then python3 scripts/test-design-packs.py; else echo 'python3 not installed; design-pack tests skipped'; fi
 	@if command -v makepkg >/dev/null 2>&1; then bash scripts/validate-pkgbuilds.sh; else echo 'makepkg not installed; PKGBUILD parse checks skipped'; fi

@@ -1,17 +1,38 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Repair and verify the user-scoped Flathub remote before delegating to the
-# checksum-aware helper shipped by the pinned LOKRO Store source archive.
+# Repair and verify the user-scoped Flathub remote. Normal Flathub operations
+# are performed here so the Store can preserve the real Flatpak error log;
+# checksum-pinned bundle downloads still use the audited upstream helper.
 set -u -o pipefail
 
 flatpak_bin="${LOKRO_FLATPAK_BIN:-/usr/bin/flatpak}"
 internal_helper="${LOKRO_STORE_FLATPAK_INTERNAL:-/usr/lib/lokro/lokro-store-flatpak-internal}"
 descriptor="${LOKRO_FLATHUB_DESCRIPTOR:-/usr/share/lokro/flathub.flatpakrepo}"
 flathub_url='https://dl.flathub.org/repo/'
+state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/lokro-store"
+last_log="${state_dir}/flatpak-last.log"
 
 fail() {
     printf 'lokro-store-flatpak: %s\n' "$1" >&2
     exit 2
+}
+
+valid_ref() {
+    [[ "${1:-}" =~ ^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+){2,}$ ]]
+}
+
+run_flatpak() {
+    local output exit_code
+    mkdir -p "$state_dir" || fail 'Das Diagnoseverzeichnis konnte nicht angelegt werden.'
+    output="$({ "$flatpak_bin" "$@"; } 2>&1)"
+    exit_code=$?
+    printf '%s\n' "flatpak $*" "$output" > "$last_log"
+    if (( exit_code != 0 )); then
+        [[ -n "$output" ]] && printf '%s\n' "$output" >&2
+        fail "Flatpak wurde mit Fehlercode ${exit_code} beendet. Vollständige Diagnose: ${last_log}"
+    fi
+    [[ -n "$output" ]] && printf '%s\n' "$output"
+    return 0
 }
 
 ensure_flathub() {
@@ -33,6 +54,18 @@ ensure_flathub() {
     fi
 
     if ! "$flatpak_bin" remote-ls --user --app flathub >/dev/null 2>&1; then
+        # A half-created user remote was observed on the hardware test. It is
+        # safe to recreate only when no installed user app depends on it.
+        if ! "$flatpak_bin" list --user --columns=origin 2>/dev/null | grep -Fxq flathub; then
+            "$flatpak_bin" remote-delete --user flathub >/dev/null 2>&1 || true
+            "$flatpak_bin" remote-add --user --if-not-exists --from flathub "$descriptor" \
+                >/dev/null 2>&1 || fail 'Die beschädigte Flathub-Konfiguration konnte nicht neu angelegt werden.'
+        else
+            "$flatpak_bin" update --user --appstream --noninteractive flathub >/dev/null 2>&1 || true
+        fi
+    fi
+
+    if ! "$flatpak_bin" remote-ls --user --app flathub >/dev/null 2>&1; then
         fail 'Flathub ist eingerichtet, aber der App-Katalog ist nicht erreichbar. Prüfe Internet, Datum und Uhrzeit und versuche es erneut.'
     fi
 }
@@ -40,16 +73,35 @@ ensure_flathub() {
 [[ -x "$internal_helper" ]] || fail 'Der interne, geprüfte Store-Helfer fehlt.'
 
 case "${1:-}" in
-    install|update|update-all)
+    install)
+        if (( $# != 2 )) || ! valid_ref "$2"; then
+            fail 'Ungültige Flatpak-App-ID.'
+        fi
         ensure_flathub
+        run_flatpak install --user --noninteractive flathub "$2"
+        ;;
+    update)
+        if (( $# != 2 )) || ! valid_ref "$2"; then
+            fail 'Ungültige Flatpak-App-ID.'
+        fi
+        ensure_flathub
+        if "$flatpak_bin" info --user "$2" >/dev/null 2>&1; then
+            run_flatpak update --user --noninteractive "$2"
+        else
+            run_flatpak install --user --noninteractive flathub "$2"
+        fi
+        ;;
+    update-all)
+        (( $# == 1 )) || fail 'Ungültiger Installationsauftrag.'
+        ensure_flathub
+        run_flatpak update --user --noninteractive
         ;;
     install-bundle)
         # Versionierte Einzel-Bundles werden vom internen Helfer heruntergeladen
         # und vor der Installation gegen ihre feste SHA-256 geprüft.
+        exec "$internal_helper" "$@"
         ;;
     *)
         fail 'Ungültiger Installationsauftrag.'
         ;;
 esac
-
-exec "$internal_helper" "$@"

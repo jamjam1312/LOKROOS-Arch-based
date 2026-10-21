@@ -2,14 +2,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
 config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/lokro"
-stamp="$config_dir/first-login-v6"
+stamp="$config_dir/first-login-v7"
+previous_stamp_v6="$config_dir/first-login-v6"
 previous_stamp_v5="$config_dir/first-login-v5"
 previous_stamp_v4="$config_dir/first-login-v4"
 [[ -e "$stamp" ]] && exit 0
 mkdir -p "$(dirname "$stamp")"
 
 fresh_layout=true
-if [[ -e "$previous_stamp_v5" || -e "$previous_stamp_v4" ]]; then
+if [[ -e "$previous_stamp_v6" || -e "$previous_stamp_v5" || -e "$previous_stamp_v4" ]]; then
     fresh_layout=false
 fi
 
@@ -42,7 +43,7 @@ if command -v qdbus6 >/dev/null 2>&1; then
     if [[ "$fresh_layout" == true ]]; then
         script="$(cat /usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js)"
     else
-        script='var ds = desktops(); for (var i = 0; i < ds.length; i++) { ds[i].wallpaperPlugin = "org.lokro.slashes"; ds[i].currentConfigGroup = ["Wallpaper", "org.lokro.slashes", "General"]; ds[i].writeConfig("accentColor", "#f4f4f5"); var memoryWidgets = ds[i].widgets("org.kde.plasma.systemmonitor.memory"); for (var j = 0; j < memoryWidgets.length; ++j) { memoryWidgets[j].remove(); } }'
+        script='var ds = desktops(); var hubKept = false; for (var i = 0; i < ds.length; i++) { ds[i].wallpaperPlugin = "org.lokro.slashes"; ds[i].currentConfigGroup = ["Wallpaper", "org.lokro.slashes", "General"]; ds[i].writeConfig("accentColor", "#f4f4f5"); var memoryWidgets = ds[i].widgets("org.kde.plasma.systemmonitor.memory"); for (var j = 0; j < memoryWidgets.length; ++j) { memoryWidgets[j].remove(); } var hubs = ds[i].widgets("org.lokro.hub"); for (var h = 0; h < hubs.length; ++h) { if (!hubKept) { hubKept = true; } else { hubs[h].remove(); } } }'
     fi
     layout_applied=false
     for _attempt in {1..10}; do

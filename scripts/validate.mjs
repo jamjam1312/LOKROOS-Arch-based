@@ -22,6 +22,7 @@ const required = [
   "archiso/airootfs/etc/plymouth/plymouthd.conf",
   "packages/lokro-branding/rootfs/usr/share/plymouth/themes/lokro/logo.svg",
   "archiso/airootfs/usr/local/bin/lokro-live-installer",
+  "archiso/airootfs/usr/local/lib/lokro/live-media.sh",
   "archiso/airootfs/etc/xdg/autostart/lokro-live-installer.desktop",
   "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service",
   "archiso/airootfs/usr/local/sbin/lokro-live-installer-supervisor",
@@ -38,6 +39,7 @@ const required = [
   "website/index.html", "website/impressum.html", "website/datenschutz.html", "website/styles.css", "website/app.js", "website/download-core.mjs", "website/CNAME",
   "scripts/test-website-download.mjs",
   "scripts/test-store-flatpak.sh",
+  "scripts/test-live-media-resolver.sh",
   ".github/workflows/pages.yml",
   "packages/lokro-shell/rootfs/usr/share/plasma/wallpapers/org.lokro.slashes/metadata.json",
   "packages/lokro-shell/rootfs/usr/share/plasma/plasmoids/org.lokro.hub/metadata.json",
@@ -157,7 +159,7 @@ const browserProcess = fs.readFileSync(path.join(root, "packages/lokro-installer
 if (!browserProcess.includes("pacman -R --noconfirm firefox firefox-i18n-de")) failures.push("browser chooser cannot remove Firefox from the target");
 
 const unpackfs = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/etc/calamares/modules/unpackfs.conf"), "utf8");
-if (!unpackfs.includes("/run/archiso/bootmnt/arch/x86_64/airootfs.sfs")) failures.push("installer does not unpack the embedded x86_64 Arch root");
+if (!unpackfs.includes("/run/lokro-installer/airootfs.sfs")) failures.push("installer does not unpack the resolved embedded x86_64 Arch root");
 
 const usersConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/etc/calamares/modules/users.conf"), "utf8");
 for (const adminInvariant of ["sudoersGroup: wheel", "sudoersConfigureWithGroup: true", "setRootPassword: false", "location: EtcFile"]) {
@@ -169,7 +171,7 @@ if (!grubConfig.includes("GRUB_DISABLE_OS_PROBER: false")) failures.push("GRUB i
 if (!grubConfig.includes('GRUB_BACKGROUND: "/usr/share/backgrounds/lokro/lokro-grub.png"')) failures.push("installed GRUB does not select the LOKRO background");
 
 const installerCleanup = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/lib/lokro/installer-cleanup"), "utf8");
-for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service", "lokro-live-installer-supervisor.service", "/usr/local/sbin/lokro-live-installer-supervisor"]) {
+for (const liveArtifact of ["lokro-live-user.service", "10-lokro-live.conf", "getty@tty1.service.d/autologin.conf", "userdel --remove liveuser", "/opt/lokro/repo", "mkinitcpio.conf.d/archiso.conf", "lokro-live-installer.desktop", "/usr/local/bin/lokro-live-installer", "/usr/local/lib/lokro/live-media.sh", "49-lokro-live-installer.rules", "/etc/systemd/user/lokro-live-installer.service", "lokro-live-installer-supervisor.service", "/usr/local/sbin/lokro-live-installer-supervisor"]) {
   if (!installerCleanup.includes(liveArtifact)) failures.push(`installer cleanup does not remove live artifact: ${liveArtifact}`);
 }
 if (!installerCleanup.includes("HOOKS=(base systemd plymouth autodetect")) failures.push("installed target does not receive a disk-root initramfs configuration");
@@ -186,7 +188,8 @@ for (const themeInvariant of [
   "--key cursorTheme LokroMono",
   "plasma-apply-cursortheme LokroMono",
   "--file plasmarc --group Theme --key name lokro-black",
-  "first-login-v6",
+  "first-login-v7",
+  "previous_stamp_v6=\"$config_dir/first-login-v6\"",
   "previous_stamp_v5=\"$config_dir/first-login-v5\"",
   "previous_stamp_v4=\"$config_dir/first-login-v4\"",
   "org.kde.plasma.systemmonitor.memory",
@@ -208,7 +211,7 @@ if (!systemCursor.includes("cursorTheme=LokroMono") || !systemCursor.includes("c
 const plasmaDefaults = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/etc/xdg/plasmarc"), "utf8");
 if (!plasmaDefaults.includes("name=lokro-black")) failures.push("system Plasma defaults do not select the LOKRO Black desktop theme");
 const plasmaLayout = fs.readFileSync(path.join(root, "packages/lokro-branding/rootfs/usr/share/plasma/look-and-feel/org.lokro.dark/contents/layouts/org.kde.plasma.desktop-layout.js"), "utf8");
-for (const layoutInvariant of ["oldPanels[p].remove()", "org.kde.plasma.kickoff", "lokro-os", "org.lokro.search", "org.kde.plasma.icontasks", "org.kde.plasma.systemtray", "org.kde.plasma.digitalclock"]) {
+for (const layoutInvariant of ["oldPanels[p].remove()", "org.kde.plasma.kickoff", "lokro-os", "org.lokro.search", "org.kde.plasma.icontasks", "org.kde.plasma.systemtray", "org.kde.plasma.digitalclock", "desktop.widgets(\"org.lokro.hub\")", "showWindowIcons"]) {
   if (!plasmaLayout.includes(layoutInvariant)) failures.push(`LOKRO fresh-user panel layout is missing: ${layoutInvariant}`);
 }
 if (plasmaLayout.includes("org.kde.plasma.systemmonitor.memory")) failures.push("LOKRO fresh-user desktop still adds the removed floating RAM widget");
@@ -309,7 +312,7 @@ for (const wrapperInvariant of ["lokro-store-flatpak-internal", "rootfs/usr/bin/
   if (!storePackage.includes(wrapperInvariant)) failures.push(`LOKRO Store package is missing Flatpak wrapper invariant: ${wrapperInvariant}`);
 }
 const storeFlatpak = fs.readFileSync(path.join(root, "packages/lokro-store/rootfs/usr/bin/lokro-store-flatpak"), "utf8");
-for (const flatpakInvariant of ["remote-modify --user --enable", "remote-add --user --if-not-exists --from", "remote-ls --user --app flathub", "/usr/share/lokro/flathub.flatpakrepo", "lokro-store-flatpak-internal", "Prüfe Internet, Datum und Uhrzeit"]) {
+for (const flatpakInvariant of ["remote-modify --user --enable", "remote-add --user --if-not-exists --from", "remote-ls --user --app flathub", "remote-delete --user flathub", "flatpak-last.log", "install --user --noninteractive flathub", "/usr/share/lokro/flathub.flatpakrepo", "lokro-store-flatpak-internal", "Prüfe Internet, Datum und Uhrzeit"]) {
   if (!storeFlatpak.includes(flatpakInvariant)) failures.push(`LOKRO Store Flatpak wrapper is missing repair invariant: ${flatpakInvariant}`);
 }
 
@@ -342,7 +345,7 @@ if (!/ExecStart=\/usr\/bin\/bash \/usr\/local\/sbin\/lokro-create-live-user/.tes
   failures.push("live-user creation must run through Bash before SDDM starts");
 }
 const liveInstaller = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/bin/lokro-live-installer"), "utf8");
-for (const invariant of ["/run/archiso/bootmnt", "airootfs.sfs", "unsquashfs -s", "lokro-installer-diagnostics.txt", "lokro-calamares-debug.log", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "live-media-not-mounted", "exited code=%s"]) {
+for (const invariant of ["live-media.sh", "lokro_find_airootfs", "/run/lokro-installer", "airootfs.sfs", "unsquashfs -s", "lokro-installer-diagnostics.txt", "lokro-calamares-debug.log", "pgrep -x calamares", "/usr/bin/sudo -E /usr/bin/calamares -d", "lokro-installer.status", "flock -n 9", "root-image-not-found", "exited code=%s"]) {
   if (!liveInstaller.includes(invariant)) failures.push(`live installer launcher is missing invariant: ${invariant}`);
 }
 if (!prepareProfile.includes('chmod 0755 "$PROFILE_DIR/airootfs/usr/local/bin/lokro-live-installer"')) {
@@ -355,7 +358,7 @@ if (!liveInstallerAutostart.includes("Exec=/usr/bin/bash /usr/local/bin/lokro-li
 const installerDesktop = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/usr/share/applications/lokro-install.desktop"), "utf8");
 if (!installerDesktop.includes("Exec=/usr/bin/bash /usr/local/bin/lokro-live-installer")) failures.push("installed live shortcut does not use the mode-bit-resilient Bash launcher");
 const partitionConfig = fs.readFileSync(path.join(root, "packages/lokro-installer-config/rootfs/etc/calamares/modules/partition.conf"), "utf8");
-for (const partitionInvariant of ["allowManualPartitioning: true", "initialPartitioningChoice: manual", "initialSwapChoice: none"]) {
+for (const partitionInvariant of ["allowManualPartitioning: true", "initialPartitioningChoice: none", "initialSwapChoice: none", 'essentialMounts: [ "live-*", "control", "ventoy" ]']) {
   if (!partitionConfig.includes(partitionInvariant)) failures.push(`Calamares partition page is missing safe explicit-selection invariant: ${partitionInvariant}`);
 }
 const liveUserScript = fs.readFileSync(path.join(root, "archiso/airootfs/usr/local/sbin/lokro-create-live-user"), "utf8");
@@ -366,7 +369,7 @@ for (const supervisorInvariant of ["pgrep -u liveuser -x plasmashell", "/run/use
   if (!liveInstallerSupervisor.includes(supervisorInvariant)) failures.push(`live installer supervisor is missing invariant: ${supervisorInvariant}`);
 }
 const liveInstallerSupervisorService = fs.readFileSync(path.join(root, "archiso/airootfs/etc/systemd/system/lokro-live-installer-supervisor.service"), "utf8");
-for (const supervisorServiceInvariant of ["After=lokro-live-user.service sddm.service", "ConditionPathExists=/run/archiso/bootmnt", "Type=simple", "ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor", "WantedBy=multi-user.target"]) {
+for (const supervisorServiceInvariant of ["After=lokro-live-user.service sddm.service", "Type=simple", "ExecStart=/usr/bin/bash /usr/local/sbin/lokro-live-installer-supervisor", "WantedBy=multi-user.target"]) {
   if (!liveInstallerSupervisorService.includes(supervisorServiceInvariant)) failures.push(`live installer supervisor service is missing invariant: ${supervisorServiceInvariant}`);
 }
 if (!prepareProfile.includes("/etc/systemd/system/multi-user.target.wants/lokro-live-installer-supervisor.service")) failures.push("live installer supervisor is not enabled in the live image");
