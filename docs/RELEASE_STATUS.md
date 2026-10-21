@@ -2,7 +2,7 @@
 
 This file separates implemented source from tested release claims. An item being configured does not prove that it works on every physical computer.
 
-## Alpha.26 source candidate
+## Alpha.26 source and CI release
 
 - The live installer no longer assumes that every ISO is mounted at
   `/run/archiso/bootmnt`. A read-only resolver accepts the normal Archiso path
@@ -23,11 +23,18 @@ This file separates implemented source from tested release claims. An item being
   first-login migration deduplicates LOKRO Hub widgets, and the Hub now has a
   dedicated icon plus a read-only fallback manifest.
 
-Static JavaScript and shell regression tests pass on the contributor host.
-Package construction, ISO construction, BIOS/UEFI smoke boot and any completed
-installation to a disposable VM disk are not yet claimed for Alpha.26 until
-the GitHub Actions gates report success. No partition or firmware test was run
-on the contributor's Windows workstation.
+Static JavaScript and shell regression tests pass on the contributor host. The
+Alpha.26 branch workflow run `39669332016` built both offline and online images,
+enforced the 4 GiB limit and passed the BIOS and UEFI live smoke boots. The tag
+workflow run `39681937334` repeated every gate and published a
+3,693,772,800-byte offline ISO and a 2,670,018,560-byte online ISO, their
+numbered GitHub-compatible parts, checksums, manifests, provenance and known
+limitations on 22 October 2026 (Europe/Berlin).
+
+These automated gates prove ISO construction and a live BIOS/UEFI boot; they do
+not prove a completed Calamares installation, a booted installed disk or
+operation on physical hardware. No partition, firmware or destructive disk
+test was run on the contributor's Windows workstation.
 
 ## Alpha.25 source and CI release
 
