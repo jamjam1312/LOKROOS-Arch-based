@@ -5,8 +5,7 @@ This file is the machine-readable starting point for coding assistants and human
 ## Product contract
 
 - Product: experimental x86_64 desktop distribution. The latest downloadable
-  CI prerelease is `0.1.0-alpha.24`; the current source candidate is
-  `0.1.0-alpha.25` until its complete release workflow succeeds.
+  CI prerelease and current source release is `0.1.0-alpha.25`.
 - Base: official Arch Linux repositories and the current Archiso `releng` profile.
 - Primary session: KDE Plasma 6 on Wayland. Optional second session: Hyprland.
 - Installer: Calamares copies the complete embedded Arch root. An existing Arch installation is never required.
